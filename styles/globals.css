@@ -1,0 +1,273 @@
+html,
+body {
+  min-height: 100%;
+}
+
+#__next {
+  height: 100%;
+}
+
+code {
+  font-family: "Inter", sans-serif, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
+    "Droid Sans", "Helvetica Neue";
+  padding: 0.1rem 0.4rem;
+  font-size: 90%;
+  color: #d400ff;
+  border-radius: 0.1335rem;
+}
+code:not([class*="language-"]):before,
+code:not([class*="language-"]):after {
+  content: "`";
+}
+code[class*="language-"] {
+  padding: 0;
+}
+.css-33gw4 .content-center {
+}
+.css-e99yjz-MuiPaper-root-MuiCard-root {
+  /* width: 100% !important;
+  height: 100% !important; */
+}
+.left-bar-login {
+  /* Layout Properties */
+  top: 0px;
+  left: 0px;
+  width: 50%;
+  /* UI Properties */
+  background: #f2f2f2 0% 0% no-repeat padding-box;
+  opacity: 1;
+  padding: 35px;
+}
+.right-bar-login {
+  /* Layout Properties */
+  top: 0px;
+  left: 0px;
+  width: 50%;
+  height: 100%;
+  /* UI Properties */
+  background: #fff 0% 0% no-repeat padding-box;
+  opacity: 1;
+  padding: 35px;
+}
+.login-left-text1 {
+  /* Layout Properties */
+
+  height: 95px;
+  /* UI Properties */
+  text-align: center;
+  font: normal normal 600 36px/44px Poppins;
+  letter-spacing: 0px;
+  color: #0e446c;
+  opacity: 1;
+}
+.login-left-text2 {
+  /* Layout Properties */
+  width: auto;
+  height: 28px;
+  /* UI Properties */
+  text-align: center;
+  font: normal normal medium 20px/44px Poppins;
+  letter-spacing: 0px;
+  color: #2bace2;
+  opacity: 1;
+}
+.login-right-sigin {
+  /* top: 168px;
+left: 790px;
+width: 158px;
+height: 67px; */
+  text-align: left;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500; /* "medium" font weight */
+  font-size: 48px;
+  line-height: 72px;
+  letter-spacing: 0px;
+  color: #0e436b;
+  opacity: 1;
+}
+.login-right-box {
+  padding: 100px 50px;
+  background: white;
+  width: 50%;
+}
+.login-buton {
+  /* Layout Properties */
+  /* top: 559px;
+left: 788px;
+width: 522px; */
+  height: 64px !important;
+  /* UI Properties */
+  background: #0e436b 0% 0% no-repeat padding-box !important;
+  border-radius: 40px !important;
+  opacity: 1;
+}
+.dashboard-title {
+  /* top: 246px;
+left: 346px;
+width: 26px;
+height: 56px; */
+  /* text-align: center; */
+  /* font: normal normal 600 40px/60px Poppins;
+ */
+  /* color: #2BACE2; */
+  margin: 10px !important;
+  font-size: 35px !important;
+  letter-spacing: 0px;
+  color: #2bace2 !important;
+  opacity: 1;
+}
+.borderAMPM {
+  /* Layout Properties */
+  /* top: 461px;
+left: 1000px;
+width: 72px;
+height: 72px; */
+  /* UI Properties */
+  background: #ffffff 0% 0% no-repeat padding-box;
+  border: 1px solid #d1d1d1;
+  border-radius: 10px;
+  opacity: 1;
+  padding: 14px;
+  text-align: center;
+}
+.css-lwkkbn-MuiTypography-root {
+  color: #0e446c !important;
+  font-weight: bold;
+}
+.primary-dash-title {
+  color: #0e446c !important;
+  font-weight: bold;
+}
+.sub-title {
+  color: #0e446c !important;
+}
+/* .css-xit1y8-MuiPaper-root-MuiAppBar-root{
+  background-color:#F1F1F1 !important;
+}
+.css-1fr7uef-MuiButtonBase-root-MuiButton-root{
+  color:#033333 !important ;
+} */
+
+.main_div {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  margin-top: 2rem;
+  gap: 20px;
+  padding: 5rem 2rem;
+  justify-content: center;
+}
+
+.image_div {
+  width: 20%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #ffffff 0% 0% no-repeat padding-box;
+  border: 1px solid #c9c9c9;
+  border-radius: 10px;
+  opacity: 1;
+  padding: 10px 20px;
+}
+.event_date {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  background: #c3e5de 0% 0% no-repeat padding-box;
+  border: 1px solid #c9c9c9;
+  border-radius: 10px;
+  opacity: 1;
+  padding: 10px 20px;
+  width: 20%;
+}
+.right_div {
+  width: 40%;
+  background: #eff8ff 0% 0% no-repeat padding-box;
+  border: 1px solid #c9c9c9;
+  border-radius: 10px;
+  opacity: 1;
+  padding: 0.5rem 1rem;
+}
+.calender {
+  height: 100px;
+  width: 100px;
+  border-radius: 50%;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.event_text .first {
+  text-align: center;
+  font: normal normal medium 18px/27px Poppins;
+  letter-spacing: 0px;
+  color: #033333;
+  opacity: 1;
+}
+.event_text .second {
+  text-align: center;
+  font: normal normal 600 28px/42px Poppins;
+  letter-spacing: 0px;
+  color: #033333;
+  opacity: 1;
+  margin: 0;
+}
+
+.event_text .third {
+  text-align: center;
+  font: normal normal medium 16px/25px Poppins;
+  letter-spacing: 0px;
+  color: #033333;
+  opacity: 1;
+  margin: 0;
+}
+.event_text .four {
+  text-align: center;
+  font: normal normal 600 36px/55px Poppins;
+  letter-spacing: 0px;
+  color: #033333;
+  opacity: 1;
+  margin: 0;
+}
+
+.bottondiv {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 2rem;
+}
+.Reg_botton {
+  background: #0e436b 0% 0% no-repeat padding-box;
+  border-radius: 40px;
+  opacity: 1;
+  padding: 1rem 4rem;
+  color: white;
+  font-size: 24px;
+}
+.threediv {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 1rem 5rem;
+}
+.firstimage {
+  position: relative;
+  width: 30%;
+}
+.secondimage {
+  width: 30%;
+
+}
+.thirdimage {
+  width: 30%;
+}
+.firstimage .inside_image {
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%,-50%);
+}
