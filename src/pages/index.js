@@ -30,25 +30,11 @@ import CardHeader from '@mui/material/CardHeader'
 import CurrentEvents from 'src/views/tables/CurrentEvents'
 import UpcommingEvents from 'src/views/tables/UpcomingEvents'
 import RecentActivities from 'src/views/tables/RecentActivities'
+import { SSRProvider } from 'react-bootstrap'
 
 // import withAuth from '../views/auth/auth'
 const Dashboard = () => {
-  const router = useRouter()
 
-  // if (typeof window !== 'undefined') {
-  //   const userToken = sessionStorage.getItem('userToken')
-  //   if (!userToken) {
-  //     router.push('/pages/login')
-  //   }
-  // }
-  useEffect(()=>{
-    if (typeof window !== 'undefined') {
-      const userToken = sessionStorage.getItem('userToken')
-      if (!userToken) {
-        // router.push('/pages/login')
-      }
-    }
-  },[])
   
   return (
     <ApexChartWrapper>

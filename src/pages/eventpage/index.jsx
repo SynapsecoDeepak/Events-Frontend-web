@@ -1,16 +1,16 @@
 import React from "react";
 import BlankLayout2 from "src/@core/layouts/AnotherBlankLayout";
-import Image from 'next/image'
-import group from 'src/images/Group 2597.png'
-import group1 from 'src/images/Group 2598.png'
-import group2 from 'src/images/Group 2599.png'
+import Image from "next/image";
+import group from "src/images/Group 2597.png";
+import group1 from "src/images/Group 2598.png";
+import group2 from "src/images/Group 2599.png";
+import { useRouter } from "next/router";
 
 const EventPage = () => {
-
-
-const handleRoute=()=>{
-
-}
+  const router = useRouter();
+  const handleRoute = () => {
+    router.push('/Attendee-registration')
+  };
 
   return (
     <>
@@ -804,30 +804,49 @@ const handleRoute=()=>{
         </div>
       </div>
       <div className="bottondiv">
-        <button className="Reg_botton" onClick={handleRoute}>Register</button>
+        <button className="Reg_botton" onClick={handleRoute}>
+          Register
+        </button>
       </div>
 
-
-<div className="threediv">
-
-<div className="firstimage">
-  <Image src={group} alt="logo" height={300} width={400}/>
-  <Image className="inside_image" src={group} alt="logo" height={100} width={100}/>
-  
-</div>
-<div className="secondimage">
-<Image src={group1} alt="logo" height={300} width={400}/>
-<Image className="inside_image" src={group} alt="logo" height={100} width={100}/>
-
-</div>
-<div className="thirdimage">
-<Image src={group2} alt="logo" height={300} width={400}/>
-<Image className="inside_image" src={group} alt="logo" height={100} width={100}/>
-
-</div>
-
-</div>
-
+      <div className="threediv">
+        <div className="firstimage">
+          <Image className="firstimg" src={group} alt="logo" height={300} width={400} />
+          <div className="secondimg">
+            <Image
+              className="inside_image"
+              src="/staff.svg"
+              alt="logo"
+              height={100}
+              width={100}
+            />
+          </div>
+        </div>
+        <div className="secondimage">
+          <Image src={group1} alt="logo" height={300} width={400} />
+          <div className="secondimg">
+            <Image
+              className="inside_image"
+              src="/sponsar.svg"
+              alt="logo"
+              height={100}
+              width={100}
+            />
+          </div>
+        </div>
+        <div className="thirdimage">
+          <Image src={group2} alt="logo" height={300} width={400} />
+          <div className="secondimg">
+            <Image
+              className="inside_image"
+              src="/human.svg"
+              alt="logo"
+              height={100}
+              width={100}
+            />
+          </div>
+        </div>
+      </div>
     </>
   );
 };
