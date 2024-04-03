@@ -69,8 +69,8 @@ const AttendeeRegi = () => {
             <form>
               <Grid container spacing={2}>
                 <Grid item xs={6} md={4}>
+                  First Name
                   <TextField
-                    label="First Name"
                     name="firstName"
                     value={formData.firstName}
                     onChange={handleFormDataChange}
@@ -78,68 +78,81 @@ const AttendeeRegi = () => {
                   />
                 </Grid>
                 <Grid item xs={6} md={4}>
+                  First Name
                   <TextField
-                    label="Last Name"
-                    name="lastName"
-                    value={formData.lastName}
+                    name="firstName"
+                    value={formData.firstName}
                     onChange={handleFormDataChange}
                     margin="normal"
                   />
                 </Grid>
                 <Grid item xs={6} md={4}>
+                  First Name
                   <TextField
-                    label="Last Name"
-                    name="lastName"
-                    value={formData.lastName}
+                    name="firstName"
+                    value={formData.firstName}
                     onChange={handleFormDataChange}
                     margin="normal"
                   />
                 </Grid>
                 <Grid item xs={6} md={4}>
+                  First Name
                   <TextField
-                    label="Last Name"
-                    name="lastName"
-                    value={formData.lastName}
+                    name="firstName"
+                    value={formData.firstName}
                     onChange={handleFormDataChange}
                     margin="normal"
                   />
                 </Grid>
                 <Grid item xs={6} md={4}>
+                  First Name
                   <TextField
-                    label="Last Name"
-                    name="lastName"
-                    value={formData.lastName}
+                    name="firstName"
+                    value={formData.firstName}
                     onChange={handleFormDataChange}
                     margin="normal"
                   />
                 </Grid>
                 <Grid item xs={6} md={4}>
+                  First Name
                   <TextField
-                    label="Last Name"
-                    name="lastName"
-                    value={formData.lastName}
+                    name="firstName"
+                    value={formData.firstName}
                     onChange={handleFormDataChange}
                     margin="normal"
                   />
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={6} md={4}>
+                  First Name
                   <TextField
-                    label="Last Name"
-                    name="lastName"
-                    value={formData.lastName}
+                    name="firstName"
+                    value={formData.firstName}
                     onChange={handleFormDataChange}
                     margin="normal"
                   />
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={6} md={4}>
+                  First Name
                   <TextField
-                    label="Last Name"
-                    name="lastName"
-                    value={formData.lastName}
+                    name="firstName"
+                    value={formData.firstName}
                     onChange={handleFormDataChange}
                     margin="normal"
                   />
                 </Grid>
+                <Grid item xs={6} md={4}>
+                  First Name
+                  <TextField
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleFormDataChange}
+                    margin="normal"
+                  />
+                </Grid>
+               
+
+ 
+
               </Grid>
 
               <div style={{ display: "flex", justifyContent: "flex-end" }}>
