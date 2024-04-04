@@ -363,19 +363,19 @@ const AttendeeRegi = () => {
 
         {activeTab === 2 && (
           <div>
-            <div style={{textAlign:'center' , padding:"3rem"}}>
+            <div style={{textAlign:'center' , padding:"1rem"}}>
               <img src="/Group_2550.svg" alt="congoimage" />
               <h2 style={{font:"24px",color:"#0E436B"}}>You have successfully registered for the event.</h2>
             </div>
             <div style={{display:"flex", width:"100%",justifyContent:"space-around",paddingTop:"3rem", alignItems:"center"}}>
               <div>
-                Category: <input style={{background:' #F1F1F1 0% 0% no-repeat padding-box' , borderRadius:"5px"}} className="inpotfeild" type="text"/>
+                Category: <input style={{width:"60%",background:' #F1F1F1 0% 0% no-repeat padding-box' , borderRadius:"5px"}} className="inpotfeild" type="text"/>
               </div>
               <div>
-                Amount Paid: <input style={{background:' #F1F1F1 0% 0% no-repeat padding-box' , borderRadius:"5px"}} type="text"/>
+                Amount Paid: <input style={{ width:"60%",background:' #F1F1F1 0% 0% no-repeat padding-box' , borderRadius:"5px"}} type="text"/>
               </div>
               <div>
-                Registration Id: <input style={{background:' #F1F1F1 0% 0% no-repeat padding-box' , borderRadius:"5px"}} type="text"/>
+                Registration Id: <input style={ { width:"60%",background:' #F1F1F1 0% 0% no-repeat padding-box' , borderRadius:"5px"}} type="text"/>
               </div>
             </div>
             <div style={{display:"flex",justifyContent:"center",gap:"5rem", padding:"4rem 0rem",alignItems:"center"}}>
