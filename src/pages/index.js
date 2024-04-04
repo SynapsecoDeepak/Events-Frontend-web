@@ -62,7 +62,7 @@ const Dashboard = () => {
         <Grid item xs={12} md={4}>
           {/* <CurrentEvents /> */}
           <Card>
-          <CardHeader title='Recents Activities' titleTypographyProps={{ variant: 'h6' }} className='dashboard-title'  sx={{color: 'primary.main' }}/>
+          <CardHeader title='Recents Activities' titleTypographyProps={{ variant: 'h6' }} className='dashboard-title'  sx={{color: 'primary.main'}}/>
           <RecentActivities />
         </Card>
         </Grid>

@@ -55,6 +55,31 @@ const navigation = () => {
       icon: AccountCogOutline,
       path: '/analytics'
     },
+    {
+      title: 'Home',
+      icon: AccountCogOutline,
+      path: '/Home'
+    },
+    {
+      title: 'My Profile',
+      icon: AccountCogOutline,
+      path: '/MyProfile'
+    },
+    {
+      title: 'speakersessions',
+      icon: AccountCogOutline,
+      path: '/speakerSession'
+    },
+    {
+      title: 'Tasks',
+      icon: AccountCogOutline,
+      path: '/task'
+    },
+    {
+      title: 'Co-speaker',
+      icon: AccountCogOutline,
+      path: '/co-speaker'
+    },
     // Other navigation items
   ].filter(item => item.show !== false)
 }

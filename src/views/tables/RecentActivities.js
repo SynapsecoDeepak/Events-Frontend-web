@@ -16,12 +16,11 @@ const rows = [
   createData('PM', '12:50', 'Sam added a speaker for ABC Events'),
   createData('PM', '12:50', 'Sam added a speaker for ABC Events'),
   createData('PM', '12:50', 'Sam added a speaker for ABC Events'),
-  createData('PM', '12:50', 'Sam added a speaker for ABC Events'),
 ]
 
 const RecentActivities = () => {
   return (
-    <TableContainer component={Paper}>
+    <TableContainer style={{minHeight:550}} component={Paper}>
       <Table sx={{  }} aria-label='simple table'>
         <TableHead>
           
