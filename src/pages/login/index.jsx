@@ -14,6 +14,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import BlankLayout2 from "src/@core/layouts/AnotherBlankLayout";
 import BlankLayout from "src/@core/layouts/BlankLayout";
+import { Email } from "@mui/icons-material";
 
 const SignInCard = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -25,16 +26,16 @@ const SignInCard = () => {
   return (
     <Box
       sx={{
-        height:"100vh",
+        height: "100vh",
       }}
     >
       <Grid
         sx={{
           display: "flex",
-          width:"90%",
+          width: "90%",
           justifyContent: "center",
-          
-          margin:'8em auto'
+
+          margin: "8em auto",
         }}
         container
         spacing={2}
@@ -93,13 +94,13 @@ const SignInCard = () => {
               sx={{ color: "#0E436B", fontSize: "48px", fontWeight: "400" }}
               gutterBottom
             >
-              Sign In
+              Sign in
             </Typography>
             <Typography
-              sx={{ color: "#707070", fontSize: "12px" }}
+              sx={{ color: "#707070", fontSize: "1rem" }}
               gutterBottom
             >
-              Elevating Healthcare through Enlightening Experiences
+             Unveiling Tomorrow's Healthcare: Where Conferences Shape the Future of Medicine.
             </Typography>
             <TextField
               label="Email"
@@ -109,7 +110,7 @@ const SignInCard = () => {
               InputProps={{
                 endAdornment: (
                   <IconButton edge="end">
-                    <VisibilityIcon />
+                    <Email />
                   </IconButton>
                 ),
               }}
@@ -142,21 +143,30 @@ const SignInCard = () => {
               </Grid>
               <Grid item>
                 <Typography variant="body2">
-                  <Link href="#" color="inherit">
+                  <Link sx={{color:"#2BACE2"}} href="#" color="inherit">
                     Forgot password?
                   </Link>
                 </Typography>
               </Grid>
             </Grid>
-            <Button sx={{marginTop:"1em"}} variant="contained" color="primary" fullWidth>
+            <Button
+              sx={{
+                marginTop: "1em",
+                padding: " .50em, 1em",
+                backgroundColor: "#0E436B",
+                borderRadius: "50px",
+              }}
+              variant="contained"
+              fullWidth
+            >
               Submit
             </Button>
           </Box>
-          © 2024 CME4LIFE. All Rights Reserved.
-        </Grid>
+          <Typography sx={{margin:"1em 1em" , textAlign:"center"}}>© 2024 CME4LIFE. All Rights Reserved.</Typography> 
 
+        </Grid>
       </Grid>
-   </Box>
+    </Box>
   );
 };
 
