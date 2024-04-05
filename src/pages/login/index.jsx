@@ -13,6 +13,7 @@ import {
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import BlankLayout2 from "src/@core/layouts/AnotherBlankLayout";
+import BlankLayout from "src/@core/layouts/BlankLayout";
 
 const SignInCard = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -24,15 +25,16 @@ const SignInCard = () => {
   return (
     <Box
       sx={{
-        padding: "4rem",
-        border: "1px solid #F2F2F2",
-        borderRadius: "5px",
+        height:"100vh",
       }}
     >
       <Grid
         sx={{
           display: "flex",
-          justifyContent: "space-around",
+          width:"90%",
+          justifyContent: "center",
+          
+          margin:'8em auto'
         }}
         container
         spacing={2}
@@ -84,9 +86,9 @@ const SignInCard = () => {
         <Grid
           sx={{ border: "1px solid #F2F2F2", borderRadius: "5px" }}
           item
-          xs={6}
+          xs={4}
         >
-          <Box sx={{ width: "50%", padding: "4rem 4rem" }}>
+          <Box sx={{ width: "100%", padding: "4rem 4rem" }}>
             <Typography
               sx={{ color: "#0E436B", fontSize: "48px", fontWeight: "400" }}
               gutterBottom
@@ -146,19 +148,18 @@ const SignInCard = () => {
                 </Typography>
               </Grid>
             </Grid>
-            <Button variant="contained" color="primary" fullWidth>
+            <Button sx={{marginTop:"1em"}} variant="contained" color="primary" fullWidth>
               Submit
             </Button>
           </Box>
           © 2024 CME4LIFE. All Rights Reserved.
         </Grid>
 
-       
       </Grid>
-    </Box>
+   </Box>
   );
 };
 
-SignInCard.getLayout = (page) => <BlankLayout2>{page}</BlankLayout2>;
+SignInCard.getLayout = (page) => <BlankLayout>{page}</BlankLayout>;
 
 export default SignInCard;

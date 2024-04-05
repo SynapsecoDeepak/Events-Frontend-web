@@ -45,16 +45,16 @@ const navigation = () => {
       icon: AccountCogOutline,
       path: '/registrations'
     },
-    {
-      title: 'Reports',
-      icon: AccountCogOutline,
-      path: '/reports'
-    },
-    {
-      title: 'Analytics',
-      icon: AccountCogOutline,
-      path: '/analytics'
-    },
+    // {
+    //   title: 'Reports',
+    //   icon: AccountCogOutline,
+    //   path: '/reports'
+    // },
+    // {
+    //   title: 'Analytics',
+    //   icon: AccountCogOutline,
+    //   path: '/analytics'
+    // },
     {
       title: 'Home',
       icon: AccountCogOutline,

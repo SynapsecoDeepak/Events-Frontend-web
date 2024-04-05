@@ -26,11 +26,13 @@ import { createEmotionCache } from "src/@core/utils/create-emotion-cache";
 
 // ** React Perfect Scrollbar Style
 import "react-perfect-scrollbar/dist/css/styles.css";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
 
 // ** Global css styles
 import "../../styles/globals.css";
 import { SSRProvider } from "react-bootstrap";
+// import { Provider } from "react-redux";
+// import store from "src/redux/store";
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -70,14 +72,13 @@ const App = (props) => {
           />
           <meta name="viewport" content="initial-scale=1, width=device-width" />
         </Head>
-        
 
         <SettingsProvider>
           <SettingsConsumer>
             {({ settings }) => {
               return (
                 <ThemeComponent settings={settings}>
-                  {getLayout(<Component {...pageProps} />)}
+                    {getLayout(<Component {...pageProps} />)}
                 </ThemeComponent>
               );
             }}
