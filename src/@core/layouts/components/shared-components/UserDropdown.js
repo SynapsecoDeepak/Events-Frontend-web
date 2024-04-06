@@ -53,8 +53,9 @@ const UserDropdown = () => {
   const dispatch = useDispatch();
 
   const handleSignOut = () => {
-  //   dispatch(logout);
-  //   router.push('/login')
+    sessionStorage.removeItem("userData");
+    dispatch(logout);
+    router.push("/login");
   };
 
   // ** Hooks
@@ -106,9 +107,13 @@ const UserDropdown = () => {
             : "/images/avatars/1.png"
         }
       />{" "}
-      <span  onClick={handleDropdownOpen} style={{ color: "#0E436B !important" }}>Admin</span>{" "}
-      <ArrowDropDown   onClick={handleDropdownOpen}
- />
+      <span
+        onClick={handleDropdownOpen}
+        style={{ color: "#0E436B !important" }}
+      >
+        Admin
+      </span>{" "}
+      <ArrowDropDown onClick={handleDropdownOpen} />
       {/* </Badge> */}
       <Menu
         anchorEl={anchorEl}

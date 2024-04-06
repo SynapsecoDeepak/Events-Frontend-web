@@ -25,11 +25,13 @@ const SignInCard = () => {
   const router = useRouter();
 
   const dispatch = useDispatch();
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
-  if (isAuthenticated) {
-    router.push("/");
-  }
+  useEffect(() => {
+    const token = sessionStorage.getItem("userData");
+    if (token) {
+      router.push("/");
+    }
+  }, [router]);
 
   const [userData, setUserData] = useState({
     email: "",
@@ -94,6 +96,7 @@ const SignInCard = () => {
           toast.success("login success");
           const userData = response.data;
           dispatch(login({ userData }));
+          sessionStorage.setItem("userData", JSON.stringify(userData));
           router.push("/");
         })
         .catch((error) => {
