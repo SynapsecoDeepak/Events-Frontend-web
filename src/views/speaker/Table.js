@@ -67,7 +67,7 @@ const DashboardTable = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedAction, setSelectedAction] = useState(null);
 
-const rows = useSelector(state=> state.event?.speakerData.data)
+const rows = useSelector(state=> state.event?.speakerData?.data)
 
 
 

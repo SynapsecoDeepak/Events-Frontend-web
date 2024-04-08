@@ -1,6 +1,7 @@
 // authSlice.js
  
 import { createSlice } from '@reduxjs/toolkit';
+import {event} from "./eventSlice"
  
 const initialState = {
   isAuthenticated: false,
@@ -24,3 +25,12 @@ const authSlice = createSlice({
  
 export const { login, logout } = authSlice.actions;
 export default authSlice.reducer;
+
+
+export const logoutAndResetEvent = ()=>{
+  return (dispatch) =>{
+    dispatch(logout());
+    dispatch(event(null))
+  }
+
+}

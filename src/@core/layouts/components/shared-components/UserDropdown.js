@@ -32,7 +32,7 @@ import {
 } from "@mui/icons-material";
 import LanguageIcon from "@mui/icons-material/Language";
 import { useDispatch } from "react-redux";
-import { logout } from "src/store/slice/authSlice";
+import { logout, logoutAndResetEvent } from "src/store/slice/authSlice";
 
 // ** Styled Components
 const BadgeContentSpan = styled("span")(({ theme }) => ({
@@ -54,7 +54,7 @@ const UserDropdown = () => {
 
   const handleSignOut = () => {
     sessionStorage.removeItem("userData");
-    dispatch(logout);
+    dispatch(logoutAndResetEvent());
     router.push("/login");
   };
 
