@@ -168,7 +168,7 @@ const DashboardTable = () => {
             }}
           />
         </Box>
-        <DialogContent sx={{ width: "800px" }}>
+        <DialogContent sx={{ width: "auto" }}>
           {rowsDetails && (
             <Card>
               <Box sx={{ p: 2 }}>
@@ -179,7 +179,7 @@ const DashboardTable = () => {
                       src={`http://172.171.210.167/${rowsDetails.speaker_user.profile_photo}`}
                       alt="Speaker"
                       style={{
-                        width: "40%",
+                        width: "50%",
                         marginBottom: "16px",
                         height: "auto",
                       }}
