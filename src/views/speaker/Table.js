@@ -16,67 +16,71 @@ import {
   DialogContent,
   DialogTitle,
 } from "@mui/material";
-import { ArrowDropDown } from "@mui/icons-material";
+import { ArrowDropDown, Cancel } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios"; // Import axios for making API requests
 import { speakerDataFullDetails } from "src/store/slice/eventSlice";
- 
+
 const DashboardTable = () => {
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedAction, setSelectedAction] = useState(null);
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
- 
+
   const rows = useSelector((state) => state.event?.speakerData?.data);
-  const rowsDetails = useSelector((state) => state.event?.speakerDataFullDetails?.data.speaker_details);
+  const rowsDetails = useSelector(
+    (state) => state.event?.speakerDataFullDetails?.data.speaker_details
+  );
   const state_token = useSelector((state) => state.auth.user?.userData.token);
- 
- 
+
   const statusObj = {
     present: { color: "success" },
     absent: { color: "#E2B675" },
   };
- 
+
   useEffect(() => {
     if (selectedRowData) {
       // Fetch additional data when selectedRowData changes
       fetchRowDataDetails(selectedRowData.speaker_id); // Assuming id exists in selectedRowData, replace it with your actual identifier
     }
   }, [selectedRowData]);
- 
+
   const fetchRowDataDetails = async (id) => {
     try {
-      const response = await axios.get(`http://172.171.210.167/user/speakers/${id}/`, {
-        headers: {
-          Authorization: `Bearer ${state_token}`,
-        },
-      });
-      dispatch(speakerDataFullDetails(response.data))
- 
+      const response = await axios.get(
+        `http://172.171.210.167/user/speakers/${id}/`,
+        {
+          headers: {
+            Authorization: `Bearer ${state_token}`,
+          },
+        }
+      );
+      dispatch(speakerDataFullDetails(response.data));
+
       setOpenDialog(true);
- 
-      console.log('Row data to show',rowDataDetails)
+
+      console.log("Row data to show", rowDataDetails);
     } catch (error) {
       console.error("Error fetching row data details:", error);
     }
   };
- 
+
   const handleClick = (event, rowData) => {
     setAnchorEl(event.currentTarget);
     setSelectedRowData(rowData);
   };
- 
+
   const handleClose = () => {
     setAnchorEl(null);
     setOpenDialog(false);
   };
- 
+
   const handleMenuItemClick = (action) => {
     setSelectedAction(action);
     setAnchorEl(null);
   };
- 
+
   return (
     <Card>
       <TableContainer>
@@ -98,7 +102,6 @@ const DashboardTable = () => {
                   key={row?.speaker_user?.name}
                   sx={{ "&:last-of-type td, &:last-of-type th": { border: 0 } }}
                   onClick={(event) => handleClick(event, row)}
- 
                 >
                   <TableCell
                     sx={{ py: (theme) => `${theme.spacing(0.5)} !important` }}
@@ -146,20 +149,59 @@ const DashboardTable = () => {
           </TableBody>
         </Table>
       </TableContainer>
- 
+
       {/* Dialog Box */}
+
       <Dialog open={openDialog} onClose={handleClose}>
-        <DialogTitle>Speaker Details</DialogTitle>
-        <DialogContent>
- 
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            margin: "1em 2em",
+          }}
+        >
+          <DialogTitle>Speaker Details</DialogTitle>
+          <Cancel
+            sx={{ color: "red" }}
+            onClick={() => {
+              setOpenDialog(false);
+            }}
+          />
+        </Box>
+        <DialogContent sx={{ width: "800px" }}>
           {rowsDetails && (
-            <>
-              <Typography>Name: {rowsDetails?.speaker_user.name}</Typography>
-              <Typography>
-                Organization: {rowsDetails?.speaker_user.organization_name}
-              </Typography>
-              <Typography>Status: {rowsDetails?.bio}</Typography>
-            </>
+            <Card>
+              <Box sx={{ p: 2 }}>
+                {/* Image */}
+                {rowsDetails.speaker_user.profile_photo && (
+                  <Box sx={{ textAlign: "center" }}>
+                    <img
+                      src={`http://172.171.210.167/${rowsDetails.speaker_user.profile_photo}`}
+                      alt="Speaker"
+                      style={{
+                        width: "40%",
+                        marginBottom: "16px",
+                        height: "auto",
+                      }}
+                    />
+                  </Box>
+                )}
+                {/* Speaker Details */}
+                <Typography variant="h6" gutterBottom>
+                  {rowsDetails.speaker_user.name}
+                </Typography>
+                <Typography variant="body1" gutterBottom>
+                  Organization: {rowsDetails.speaker_user.organization_name}
+                </Typography>
+                <Typography variant="body1" gutterBottom>
+                  Bio: {rowsDetails.bio}
+                </Typography>
+                <Typography variant="body1" gutterBottom>
+                  Status: {rowsDetails.is_active.toString()}
+                </Typography>
+                {/* Additional details can be added here */}
+              </Box>
+            </Card>
           )}
         </DialogContent>
       </Dialog>
@@ -171,5 +213,5 @@ const DashboardTable = () => {
     </Card>
   );
 };
- 
+
 export default DashboardTable;
