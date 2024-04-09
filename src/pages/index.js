@@ -35,7 +35,7 @@ import axios from "axios";
 import { event } from "src/store/slice/eventSlice";
 
 const Dashboard = () => {
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  // const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   const state_token = useSelector((state) => state.auth.user?.userData.token);
 
@@ -43,17 +43,16 @@ const Dashboard = () => {
 
   const router = useRouter();
 
-
-
   useEffect(() => {
-    const token = sessionStorage.getItem("userData");
-    if (!isAuthenticated) {
+    const sessionToken = sessionStorage.getItem("userData");
+    const token =  state_token  ||  sessionToken 
+    if (!token) {
       router.push("/login");
     } else {
       axios
         .get("http://172.171.210.167/event/events_list/", {
           headers: {
-            Authorization: `Bearer ${state_token}`,
+            Authorization: `Bearer ${token}`,
           },
         })
         .then((response) => {

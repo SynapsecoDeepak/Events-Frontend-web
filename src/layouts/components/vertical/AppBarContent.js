@@ -15,7 +15,12 @@ import UserDropdown from "src/@core/layouts/components/shared-components/UserDro
 import NotificationDropdown from "src/@core/layouts/components/shared-components/NotificationDropdown";
 import { useState, Fragment, useEffect } from "react";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import { attendeesData, event, speakerData, sponsorData } from "src/store/slice/eventSlice";
+import {
+  attendeesData,
+  event,
+  speakerData,
+  sponsorData,
+} from "src/store/slice/eventSlice";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 
@@ -31,68 +36,66 @@ const AppBarContent = (props) => {
   const state_token = useSelector((state) => state.auth.user?.userData.token);
   const eventData = useSelector((state) => state.event?.eventData?.data);
 
+
+
   const handleChange = (e) => {
     const selectedEventId = e.target.value;
-    setEventList(e.target.value)
+    setEventList(e.target.value);
+      // Send a POST request with the selected event ID
+      axios
+        .post(
+          "http://172.171.210.167/event/event_speakers/",
+          { event_id: selectedEventId },
+          {
+            headers: {
+              Authorization: `Bearer ${state_token}`,
+            },
+          }
+        )
+        .then((response) => {
+          console.log("Response:", response.data);
+          const speaker_data = response.data;
+          dispatch(speakerData(speaker_data));
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
 
-    // Send a POST request with the selected event ID
-    axios
-      .post(
-        "http://172.171.210.167/event/event_speakers/",
-        { event_id: selectedEventId },
-        {
-          headers: {
-            Authorization: `Bearer ${state_token}`,
-          },
-        }
-      )
-      .then((response) => {
-        console.log("Response:", response.data);
-        const speaker_data = response.data;
-        dispatch(speakerData(speaker_data));
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+      axios
+        .get(
+          `http://172.171.210.167/event/event_sponsors/${selectedEventId}/sponsors/`,
+          {
+            headers: {
+              Authorization: `Bearer ${state_token}`,
+            },
+          }
+        )
+        .then((response) => {
+          console.log("Response:", response.data);
+          const sponsors_list = response.data;
+          dispatch(sponsorData(sponsors_list));
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
 
-
-    axios
-      .post(
-        "http://172.171.210.167/event/sponsors_list/",
-        { event_id: selectedEventId },
-        {
-          headers: {
-            Authorization: `Bearer ${state_token}`,
-          },
-        }
-      )
-      .then((response) => {
-        console.log("Response:", response.data);
-        const sponsors_list = response.data;
-        dispatch(sponsorData(sponsors_list));
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-
-    axios
-      .post(
-        "http://172.171.210.167/user/attendees_list/",
-        { event_id: selectedEventId },
-        {
-          headers: {
-            Authorization: `Bearer ${state_token}`,
-          },
-        }
-      )
-      .then((response) => {
-        console.log("Response:", response.data);
-        const attendees_list = response.data;
-        dispatch(attendeesData(attendees_list));
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+      axios
+        .get(
+          `http://172.171.210.167/event/event_attendees/${selectedEventId}/attendee/`,
+          {
+            headers: {
+              Authorization: `Bearer ${state_token}`,
+            },
+          }
+        )
+        .then((response) => {
+          console.log("Response:", response.data);
+          const attendees_list = response.data;
+          dispatch(attendeesData(attendees_list));
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
   };
 
   return (

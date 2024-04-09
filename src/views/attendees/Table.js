@@ -13,18 +13,11 @@ import { Menu, MenuItem } from "@mui/material";
 import { ArrowDropDown } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 
-
-
-const statusObj = {
-  Active: { color: "success" },
-  Inactive: { color: "#E2B675" },
-};
-
 const DashboardTable = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedAction, setSelectedAction] = useState(null);
 
-  const rows = useSelector(state=> state.event?.attendeesData?.data)
+  const rows = useSelector((state) => state.event?.attendeesData?.data);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -53,68 +46,11 @@ const DashboardTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {/* {rows.map((row) => (
-              <TableRow
-                hover
-                key={row.name}
-                sx={{ "&:last-of-type td, &:last-of-type th": { border: 0 } }}
-              >
-                <TableCell
-                  sx={{ py: (theme) => `${theme.spacing(0.5)} !important` }}
-                >
-                  <Box sx={{ display: "flex", flexDirection: "column" }}>
-                    <Typography
-                      sx={{ fontWeight: 500, fontSize: "0.875rem !important" }}
-                    >
-                      {row.name}
-                    </Typography>
-                  </Box>
-                </TableCell>
-                <TableCell style={{ color: "#2BACE2" }}>
-                  {row.organization}
-                </TableCell>
-                <TableCell>{row.date}</TableCell>
-                <TableCell sx={{ fontSize: "12px !important" }}>
-                  <Button
-                    variant="contained"
-                    sx={{
-                      bgcolor: statusObj[row.status].color,
-                      padding: "5px",
-                      width: "68px",
-                      height: "22px",
-                    }}
-                  >
-                    {row.status}
-                  </Button>
-                </TableCell>
-                <TableCell>
-                <Button sx={{backgroundColor:"#0E446C !important",color:"white !important"}} onClick={handleClick}>
-                    Action <ArrowDropDown />
-                  </Button>
-                  <Menu
-                    id="simple-menu"
-                    anchorEl={anchorEl}
-                    keepMounted
-                    open={Boolean(anchorEl)}
-                    onClose={handleClose}
-                  >
-                    <MenuItem onClick={() => handleMenuItemClick("Edit")}>
-                      Edit
-                    </MenuItem>
-                    <MenuItem onClick={() => handleMenuItemClick("Delete")}>
-                      Delete
-                    </MenuItem>
-                  </Menu>
-                </TableCell>
-              </TableRow>
-            ))} */}
-
-
-{Array.isArray(rows) &&
-                rows.map((row) => (
-                  <TableRow
+            {Array.isArray(rows) &&
+              rows.map((row) => (
+                <TableRow
                   hover
-                  key={row.attendess_user?.name}
+                  key={row.attendee_user?.name}
                   sx={{ "&:last-of-type td, &:last-of-type th": { border: 0 } }}
                 >
                   <TableCell
@@ -122,31 +58,38 @@ const DashboardTable = () => {
                   >
                     <Box sx={{ display: "flex", flexDirection: "column" }}>
                       <Typography
-                        sx={{ fontWeight: 500, fontSize: "0.875rem !important" }}
+                        sx={{
+                          fontWeight: 500,
+                          fontSize: "1rem  !important",
+                        }}
                       >
-                        {row.attendess_user?.name}
+                        {row.attendee_user?.name}
                       </Typography>
                     </Box>
                   </TableCell>
                   <TableCell style={{ color: "#2BACE2" }}>
-                    {row.attendess_user?.organization}
+                    {row.attendee_user?.email}
                   </TableCell>
-                  <TableCell>{row?.date}</TableCell>
-                  <TableCell sx={{ fontSize: "12px !important" }}>
-                    <Button
-                      variant="contained"
-                      sx={{
-                        bgcolor: statusObj[row.attendess_user?.status].color,
-                        padding: "5px",
-                        width: "68px",
-                        height: "22px",
-                      }}
-                    >
-                      {row.status}
-                    </Button>
+                  <TableCell  sx={{
+                          fontWeight: 500,
+                          fontSize: "1rem  !important",
+                        }}> {row.attendee_user?.organization_name}</TableCell>
+                  {/* <TableCell sx={{ fontSize: "12px !important" }}>
+                    {Array.isArray(row.attendee_user.tag)
+                      && row.attendee_user.tag.map((tag) => tag.name).join(", ")
+                     }
+                  </TableCell> */}
+                  <TableCell sx={{ fontSize: "1rem !important" }}>
+                    {row?.tag.map(tag=>tag.name).join(',')}
                   </TableCell>
                   <TableCell>
-                  <Button sx={{backgroundColor:"#0E446C !important",color:"white !important"}} onClick={handleClick}>
+                    <Button
+                      sx={{
+                        backgroundColor: "#0E446C !important",
+                        color: "white !important",
+                      }}
+                      onClick={handleClick}
+                    >
                       Action <ArrowDropDown />
                     </Button>
                     <Menu
@@ -165,7 +108,7 @@ const DashboardTable = () => {
                     </Menu>
                   </TableCell>
                 </TableRow>
-                ))}
+              ))}
           </TableBody>
         </Table>
       </TableContainer>
