@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import Table from "@mui/material/Table";
@@ -9,86 +9,74 @@ import TableCell from "@mui/material/TableCell";
 import Typography from "@mui/material/Typography";
 import TableContainer from "@mui/material/TableContainer";
 import Button from "@mui/material/Button";
-import { Menu, MenuItem } from "@mui/material";
-import { ArrowDropDown, MoreVert } from "@mui/icons-material";
-import { useSelector } from "react-redux";
-
-// const rows = [
-//   {
-//     age: 27,
-//     status: "Active",
-//     date: "2",
-//     name: "Sally Quinn",
-//     salary: "$19586.23",
-//     organization: "The Energy Research Institute(TERI)",
-//     designation: "Human Resources Assistant",
-//   },
-//   {
-//     age: 61,
-//     date: "5",
-//     status: "Inactive",
-//     name: "Margaret Bowers",
-//     organization: "International Panel on Climate Change(IPCC)",
-//     designation: "Nuclear Power Engineer",
-//   },
-//   {
-//     age: 59,
-//     date: "5",
-//     name: "Minnie Roy",
-//     status: "Active",
-//     salary: "$18991.67",
-//     organization: "Institute for Global Environment Startegies...",
-//     designation: "Environmental Specialist",
-//   },
-//   {
-//     age: 30,
-//     date: "1",
-//     status: "Inactive",
-//     salary: "$19252.12",
-//     name: "Ralph Leonard",
-//     organization: "The Energy Research Institute(TERI)",
-//     designation: "Sales Representative",
-//   },
-//   {
-//     age: 66,
-//     status: "Active",
-//     date: "5",
-//     salary: "$13076.28",
-//     name: "Annie Martin",
-//     designation: "Operator",
-//     organization: "International Panel on Climate Change(IPCC)",
-//   },
-// ];
-
-
-
-
+import {
+  Menu,
+  MenuItem,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from "@mui/material";
+import { ArrowDropDown } from "@mui/icons-material";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios"; // Import axios for making API requests
+import { speakerDataFullDetails } from "src/store/slice/eventSlice";
+ 
 const DashboardTable = () => {
+  const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedAction, setSelectedAction] = useState(null);
-
-const rows = useSelector(state=> state.event?.speakerData?.data)
-
-
-
-const statusObj = {
-  present: { color: "success" },
-  absent: { color: "#E2B675" },
-};
-
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+  const [selectedRowData, setSelectedRowData] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
+ 
+  const rows = useSelector((state) => state.event?.speakerData?.data);
+  const rowsDetails = useSelector((state) => state.event?.speakerDataFullDetails?.data.speaker_details);
+  const state_token = useSelector((state) => state.auth.user?.userData.token);
+ 
+ 
+  const statusObj = {
+    present: { color: "success" },
+    absent: { color: "#E2B675" },
   };
-
+ 
+  useEffect(() => {
+    if (selectedRowData) {
+      // Fetch additional data when selectedRowData changes
+      fetchRowDataDetails(selectedRowData.speaker_id); // Assuming id exists in selectedRowData, replace it with your actual identifier
+    }
+  }, [selectedRowData]);
+ 
+  const fetchRowDataDetails = async (id) => {
+    try {
+      const response = await axios.get(`http://172.171.210.167/user/speakers/${id}/`, {
+        headers: {
+          Authorization: `Bearer ${state_token}`,
+        },
+      });
+      dispatch(speakerDataFullDetails(response.data))
+ 
+      setOpenDialog(true);
+ 
+      console.log('Row data to show',rowDataDetails)
+    } catch (error) {
+      console.error("Error fetching row data details:", error);
+    }
+  };
+ 
+  const handleClick = (event, rowData) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedRowData(rowData);
+  };
+ 
   const handleClose = () => {
     setAnchorEl(null);
+    setOpenDialog(false);
   };
-
+ 
   const handleMenuItemClick = (action) => {
     setSelectedAction(action);
     setAnchorEl(null);
   };
-
+ 
   return (
     <Card>
       <TableContainer>
@@ -103,27 +91,31 @@ const statusObj = {
             </TableRow>
           </TableHead>
           <TableBody>
-
-{Array.isArray(rows) &&
-                rows.map((row) => (
-                  <TableRow
+            {Array.isArray(rows) &&
+              rows.map((row) => (
+                <TableRow
                   hover
                   key={row?.speaker_user?.name}
                   sx={{ "&:last-of-type td, &:last-of-type th": { border: 0 } }}
+                  onClick={(event) => handleClick(event, row)}
+ 
                 >
                   <TableCell
                     sx={{ py: (theme) => `${theme.spacing(0.5)} !important` }}
                   >
                     <Box sx={{ display: "flex", flexDirection: "column" }}>
                       <Typography
-                        sx={{ fontWeight: 500, fontSize: "0.875rem !important" }}
+                        sx={{
+                          fontWeight: 500,
+                          fontSize: "0.875rem !important",
+                        }}
                       >
                         {row?.speaker_user?.name}
                       </Typography>
                     </Box>
                   </TableCell>
                   <TableCell style={{ color: "#2BACE2" }}>
-                    {row?. speaker_user?.organization_name}
+                    {row?.speaker_user?.organization_name}
                   </TableCell>
                   <TableCell>{row?.date}</TableCell>
                   <TableCell sx={{ fontSize: "12px !important" }}>
@@ -131,7 +123,6 @@ const statusObj = {
                       variant="contained"
                       sx={{
                         bgcolor: statusObj[row.speaker_user.status].color,
-                        // color:"white !important",
                         padding: "5px",
                         width: "68px",
                         height: "22px",
@@ -141,30 +132,37 @@ const statusObj = {
                     </Button>
                   </TableCell>
                   <TableCell>
-                  <Button sx={{backgroundColor:"#0E446C !important",color:"white !important"}} onClick={handleClick}>
+                    <Button
+                      sx={{
+                        backgroundColor: "#0E446C !important",
+                        color: "white !important",
+                      }}
+                    >
                       Action <ArrowDropDown />
                     </Button>
-                    <Menu
-                      id="simple-menu"
-                      anchorEl={anchorEl}
-                      keepMounted
-                      open={Boolean(anchorEl)}
-                      onClose={handleClose}
-                    >
-                      <MenuItem onClick={() => handleMenuItemClick("Edit")}>
-                        Edit
-                      </MenuItem>
-                      <MenuItem onClick={() => handleMenuItemClick("Delete")}>
-                        Delete
-                      </MenuItem>
-                    </Menu>
                   </TableCell>
                 </TableRow>
-                ))}
-
+              ))}
           </TableBody>
         </Table>
       </TableContainer>
+ 
+      {/* Dialog Box */}
+      <Dialog open={openDialog} onClose={handleClose}>
+        <DialogTitle>Speaker Details</DialogTitle>
+        <DialogContent>
+ 
+          {rowsDetails && (
+            <>
+              <Typography>Name: {rowsDetails?.speaker_user.name}</Typography>
+              <Typography>
+                Organization: {rowsDetails?.speaker_user.organization_name}
+              </Typography>
+              <Typography>Status: {rowsDetails?.bio}</Typography>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
       {selectedAction && (
         <Typography variant="subtitle1">
           Selected Action: {selectedAction}
@@ -173,5 +171,5 @@ const statusObj = {
     </Card>
   );
 };
-
+ 
 export default DashboardTable;

@@ -7,6 +7,7 @@ const initialState = {
   speakerData: null,
   sponsorData:null,
   attendeesData:null,
+  speakerDataFullDetails:null,
 };
  
 const eventSlice = createSlice({
@@ -19,6 +20,9 @@ const eventSlice = createSlice({
       speakerData(state, action) {
         state.speakerData = action.payload;
       },
+      speakerDataFullDetails(state, action) {
+        state.speakerDataFullDetails = action.payload;
+      },
       sponsorData(state, action) {
         state.sponsorData = action.payload;
       },
@@ -28,7 +32,7 @@ const eventSlice = createSlice({
   },
 });
 
-export const { event , speakerData,sponsorData,attendeesData} = eventSlice.actions;
+export const { event , speakerData,speakerDataFullDetails,sponsorData,attendeesData} = eventSlice.actions;
 
  
 export default eventSlice.reducer;
