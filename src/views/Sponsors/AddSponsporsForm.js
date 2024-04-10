@@ -12,11 +12,80 @@ import TableContainer from "@mui/material/TableContainer";
 import styles from "./speaker.module.css";
 
 import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
+import axios from "axios";
+import { useState } from "react";
+import toast from "react-hot-toast";
+
 // import { Chip } from '@mui/material-next'
 // import { Chip } from '@mui/material-next'
 
 const AddSponsorsForm = () => {
   const router = useRouter();
+
+  const state_token = useSelector((state) => state.auth.user?.userData.token);
+
+  const [formData, setFormData] = useState({
+    name: "",
+    sponsor_tagline: "",
+    description: "",
+    logo: null,
+    thumbnail:null,
+    email: "",
+  });
+
+  const handleInputChange = (prop) => (event) => {
+    setFormData({ ...formData, [prop]: event.target.value });
+  };
+
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    setFormData({ ...formData, logo: file });
+  };
+
+  const handleImageChange2 = (event) => {
+    const file = event.target.files[0];
+    setFormData({ ...formData, thumbnail: file });
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault(); // Prevent default form submission
+    const formDataToSend = new FormData(); // Create a new FormData object
+   
+    // Append each field to FormData object
+    formDataToSend.append('name', formData.name);
+    formDataToSend.append('sponsor_tagline', formData.sponsor_tagline);
+    formDataToSend.append('description', formData.description);
+    formDataToSend.append('email', formData.email);
+    formDataToSend.append('logo', formData.logo); // Append logo file
+    formDataToSend.append('thumbnail', formData.thumbnail); // Append thumbnail file
+    try {
+      const response = await axios.post(
+        "http://172.171.210.167/event/sponsors/",
+        formDataToSend,
+        {
+          headers: {
+            Authorization: `Bearer ${state_token}`,
+            'Content-Type': 'multipart/form-data' // Set content type as multipart/form-data
+          },
+        }
+      );
+      console.log("Data submitted successfully:", response.data);
+      setFormData({
+        name: "",
+        sponsor_tagline: "",
+        description: "",
+        logo: null,
+        thumbnail: null,
+        email: "",
+      });
+     toast.success("The Sponsor added successfully")
+     router.back();
+    } catch (error) {
+      console.error("Error submitting data:", error);
+    }
+  };
+
 
   return (
     <div className={styles.container}>
@@ -30,18 +99,25 @@ const AddSponsorsForm = () => {
       >
         <div className={styles.column}>
           <div>
-            <label className={styles.label}>Sponsors Title</label>
+            <label className={styles.label}>Sponsors Name</label>
           </div>
           <div>
-            <input className={styles.input} />
+            <input
+              id="name"
+              onChange={handleInputChange("name")}
+              value={formData.name}
+              className={styles.input}
+            />
           </div>
         </div>
         <div className={styles.column}>
           <div>
-            <label className={styles.label}>Contact Name</label>
+            <label className={styles.label}>Sponsors Tagline</label>
           </div>
           <div>
-            <input className={styles.input} />
+            <input  id="sponsor_tagline"
+              onChange={handleInputChange("sponsor_tagline")}
+              value={formData.sponsor_tagline} className={styles.input} />
           </div>
         </div>
         <div className={styles.column}>
@@ -49,7 +125,10 @@ const AddSponsorsForm = () => {
             <label className={styles.label}>Contact Email</label>
           </div>
           <div>
-            <input className={styles.input} />
+            <input  id="email"
+              onChange={handleInputChange("email")}
+              value={formData.email}  
+              className={styles.input} />
           </div>
         </div>
       </div>
@@ -57,27 +136,13 @@ const AddSponsorsForm = () => {
         style={{
           display: "flex",
           width: "100%",
-          justifyContent: "space-between",
+          justifyContent: "flex-start",
+          gap: "10em",
           marginBottom: 25,
         }}
       >
-        <div className={styles.column}>
-          <div>
-            <label className={styles.label}>Contact Number</label>
-          </div>
-          <div>
-            <input className={styles.input} />
-          </div>
-        </div>
-        <div className={styles.column}>
-          <div>
-            <label className={styles.label}>Sponsored Amount</label>
-          </div>
-          <div>
-            <input className={styles.input} />
-          </div>
-        </div>
-        <div className={styles.column} style={{width:'35%'}}>
+
+        <div className={styles.column} style={{ width: "35%" }}>
           <div>
             <label className={styles.label}>Logo</label>
           </div>
@@ -85,7 +150,9 @@ const AddSponsorsForm = () => {
             <input
               placeholder="choose file"
               type="file"
-              id="fileInput"
+              id="logo"
+              onChange={handleImageChange}
+              value={formData?.logo?.file?.name}
               className={styles.fileInput}
             />
             <label for="fileInput" className={styles.customButton}>
@@ -93,8 +160,33 @@ const AddSponsorsForm = () => {
             </label>
           </div>
           <div>
-        <span style={{fontSize:11,color:'#707070'}}>Example: Accepts PNG, GIF, JPG, JPEG</span>
-      </div>
+            <span style={{ fontSize: 11, color: "#707070" }}>
+              Example: Accepts PNG, GIF, JPG, JPEG
+            </span>
+          </div>
+        </div>
+        <div className={styles.column} style={{ width: "35%" }}>
+          <div>
+            <label className={styles.label}>Thumbnail</label>
+          </div>
+          <div className={styles.fileInputContainer}>
+            <input
+              placeholder="choose file"
+              type="file"
+              id="thumbnail"
+              onChange={handleImageChange2}
+              value={formData?.thumbnail?.file?.name}
+              className={styles.fileInput}
+            />
+            <label for="fileInput" className={styles.customButton}>
+              Choose File
+            </label>
+          </div>
+          <div>
+            <span style={{ fontSize: 11, color: "#707070" }}>
+              Example: Accepts PNG, GIF, JPG, JPEG
+            </span>
+          </div>
         </div>
       </div>
       <div className={styles.fullWidth}>
@@ -102,7 +194,9 @@ const AddSponsorsForm = () => {
           <label className={styles.label}>Description</label>
         </div>
         <div>
-          <textarea rows="6" className={styles.textarea} />
+          <textarea   id="description"
+              onChange={handleInputChange("description")}
+              value={formData.description} rows="6" className={styles.textarea} />
         </div>
       </div>
 
@@ -125,12 +219,10 @@ const AddSponsorsForm = () => {
             />
           </div>
         </div> */}
-
-
       </div>
-      
+
       <div style={{ display: "flex", justifyContent: "center" }}>
-        <button className={styles.submitButton}>Submit</button>
+        <button onClick={handleSubmit} className={styles.submitButton}>Submit</button>
       </div>
     </div>
   );

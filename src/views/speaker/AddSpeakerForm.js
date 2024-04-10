@@ -10,14 +10,20 @@ import TableCell from "@mui/material/TableCell";
 import Typography from "@mui/material/Typography";
 import TableContainer from "@mui/material/TableContainer";
 import styles from "./speaker.module.css";
+import axios from "axios";
+
 
 import { useRouter } from "next/router";
 import { useRef, useState } from "react";
+import { useSelector } from "react-redux";
 // import { Chip } from '@mui/material-next'
 // import { Chip } from '@mui/material-next'
 
 const AddSpeakerForm = () => {
   const router = useRouter();
+
+  const state_token = useSelector((state) => state.auth.user?.userData.token);
+
 
   const [formData, setFormData] = useState({
     // State to hold form data
@@ -48,24 +54,12 @@ const AddSpeakerForm = () => {
 
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
-    console.log("form values:", formData);
-    setFormData({
-      speakerName: "",
-      emailAddress: "",
-      contactNumber: "",
-      location: "",
-      designation: "",
-      organization: "",
-      description: "",
-      sessions: "",
-      photo:{},
-      personalWebsite: "",
-      twitterLink: "",
-      linkedInLink: "",
-    });
     try {
-      const response = await axios.post("YOUR_API_ENDPOINT", formData);
+      const response = await axios.post("http://172.171.210.167/user/create_speaker/", formData,   {
+        headers: {
+          Authorization: `Bearer ${state_token}`,
+        },
+      });
       console.log("Data submitted successfully:", response.data);
       setFormData({
         speakerName: "",
@@ -76,7 +70,7 @@ const AddSpeakerForm = () => {
         organization: "",
         description: "",
         sessions: "",
-        photo: {},
+        photo:{},
         personalWebsite: "",
         twitterLink: "",
         linkedInLink: "",
