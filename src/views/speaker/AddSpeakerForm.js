@@ -12,7 +12,7 @@ import TableContainer from "@mui/material/TableContainer";
 import styles from "./speaker.module.css";
 
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useRef, useState } from "react";
 // import { Chip } from '@mui/material-next'
 // import { Chip } from '@mui/material-next'
 
@@ -29,7 +29,7 @@ const AddSpeakerForm = () => {
     organization: "",
     description: "",
     sessions: "",
-    photo: [],
+    photo:{},
     personalWebsite: "",
     twitterLink: "",
     linkedInLink: "",
@@ -39,13 +39,13 @@ const AddSpeakerForm = () => {
     setFormData({ ...formData, [prop]: event.target.value });
   };
 
-  // const handleImageChange = (e) => {
-  //   const file = e.target.files[0];
-  //   setFormData({
-  //     ...formData,
-  //     image: file,
-  //   });
-  // };
+
+  const handleImageChange = (event) => {
+    const file = event.target.files[0]
+    setFormData({ ...formData, photo:file });
+  };
+
+
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -59,7 +59,7 @@ const AddSpeakerForm = () => {
       organization: "",
       description: "",
       sessions: "",
-      photo: [],
+      photo:{},
       personalWebsite: "",
       twitterLink: "",
       linkedInLink: "",
@@ -76,7 +76,7 @@ const AddSpeakerForm = () => {
         organization: "",
         description: "",
         sessions: "",
-        photo: [],
+        photo: {},
         personalWebsite: "",
         twitterLink: "",
         linkedInLink: "",
@@ -239,9 +239,9 @@ const AddSpeakerForm = () => {
               placeholder="choose file"
               type="file"
               accept="image/*"
-              value={formData.photo}
+              value={formData?.photo?.file?.name}
               id="photo"
-              onChange={handleInputChange("photo")}
+              onChange={handleImageChange}
               className={styles.fileInput}
             />
             <label for="fileInput" className={styles.customButton}>
