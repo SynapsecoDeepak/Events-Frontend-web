@@ -39,13 +39,13 @@ const AddSpeakerForm = () => {
     setFormData({ ...formData, [prop]: event.target.value });
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setFormData({
-      ...formData,
-      image: file,
-    });
-  };
+  // const handleImageChange = (e) => {
+  //   const file = e.target.files[0];
+  //   setFormData({
+  //     ...formData,
+  //     image: file,
+  //   });
+  // };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
