@@ -199,7 +199,6 @@ const DashboardTable = () => {
                 <Typography variant="body1" gutterBottom>
                   Status: {rowsDetails.is_active.toString()}
                 </Typography>
-                {/* Additional details can be added here */}
               </Box>
             </Card>
           )}
