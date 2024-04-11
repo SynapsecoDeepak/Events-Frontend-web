@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import Table from "@mui/material/Table";
@@ -9,39 +9,82 @@ import TableCell from "@mui/material/TableCell";
 import Typography from "@mui/material/Typography";
 import TableContainer from "@mui/material/TableContainer";
 import Button from "@mui/material/Button";
-import { Menu, MenuItem } from "@mui/material";
-import { ArrowDropDown, MoreVert } from "@mui/icons-material";
-import { useSelector } from "react-redux";
-
-
+import {
+  Menu,
+  MenuItem,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from "@mui/material";
+import { ArrowDropDown, Cancel } from "@mui/icons-material";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios"; // Import axios for making API requests
+import { sponsorDataFullDetails } from "src/store/slice/eventSlice";
 
 const DashboardTable = () => {
+  const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedAction, setSelectedAction] = useState(null);
+  const [selectedRowData, setSelectedRowData] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
 
-  const rows = useSelector(state=> state.event?.sponsorData?.data)
+  const rows = useSelector((state) => state.event?.sponsorData?.data);
 
+  const state_token = useSelector((state) => state.auth.user?.userData.token);
 
-  
-const statusObj = {
-  true: { color: "#5EAF41" },
-  false: { color: "#E2B675" },
-};
+  const rowsDetails = useSelector(
+    (state) => state.event?.sponsorDataFullDetails?.data
+  );
 
+  const statusObj = {
+    true: { color: "#5EAF41" },
+    false: { color: "#E2B675" },
+  };
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+  useEffect(() => {
+    if (selectedRowData) {
+      // Fetch additional data when selectedRowData changes
+      fetchRowDataDetails(selectedRowData.sponsor_id); // Assuming id exists in selectedRowData, replace it with your actual identifier
+    }
+  }, [selectedRowData]);
+
+  const fetchRowDataDetails = async (id) => {
+    try {
+      const response = await axios.get(
+        `http://172.171.210.167/event/sponsors/${id}/`,
+        {
+          headers: {
+            Authorization: `Bearer ${state_token}`,
+          },
+        }
+      );
+      dispatch(sponsorDataFullDetails(response.data));
+      setOpenDialog(true);
+    } catch (error) {
+      console.error("Error fetching row data details:", error);
+    }
+  };
+
+  const handleClick = (rowData) => {
+    console.log("rowdata", rowData);
+    setSelectedRowData(rowData);
   };
 
   const handleClose = () => {
     setAnchorEl(null);
+    setOpenDialog(false);
   };
 
-  const handleMenuItemClick = (action) => {
-    setSelectedAction(action);
-    setAnchorEl(null);
+  const handleEdit = () => {
+    console.log("edit");
+  };
+  const handleDelete = () => {
+    console.log("delete");
   };
 
+  const handleAction = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
   return (
     <Card>
       <TableContainer>
@@ -56,35 +99,43 @@ const statusObj = {
             </TableRow>
           </TableHead>
           <TableBody>
-
-{Array.isArray(rows) &&
-                rows.map((row) => (
-                  <TableRow
+            {Array.isArray(rows) &&
+              rows.map((row) => (
+                <TableRow
                   hover
                   key={row?.name}
                   sx={{ "&:last-of-type td, &:last-of-type th": { border: 0 } }}
                 >
                   <TableCell
                     sx={{ py: (theme) => `${theme.spacing(0.5)} !important` }}
+                    onClick={() => handleClick(row)}
                   >
                     <Box sx={{ display: "flex", flexDirection: "column" }}>
                       <Typography
-                        sx={{ fontWeight: 500, fontSize: "0.875rem !important" }}
+                        sx={{
+                          fontWeight: 500,
+                          fontSize: "0.875rem !important",
+                        }}
                       >
                         {row?.name}
                       </Typography>
                     </Box>
                   </TableCell>
-                  <TableCell style={{ color: "#2BACE2" }}>
+                  <TableCell
+                    style={{ color: "#2BACE2" }}
+                    onClick={() => handleClick(row)}
+                  >
                     {row?.contact_primary_name}
                   </TableCell>
-                  <TableCell>{row?.amount}</TableCell>
+                  <TableCell onClick={() => handleClick(row)}>
+                    {row?.amount}
+                  </TableCell>
                   <TableCell sx={{ fontSize: "12px !important" }}>
                     <Button
                       variant="contained"
                       sx={{
                         bgcolor: statusObj[row?.is_active.toString()].color,
-                        color:"white !important",
+                        color: "white !important",
                         padding: "5px",
                         width: "68px",
                         height: "22px",
@@ -94,7 +145,13 @@ const statusObj = {
                     </Button>
                   </TableCell>
                   <TableCell>
-                  <Button sx={{backgroundColor:"#0E446C !important",color:"white !important"}} onClick={handleClick}>
+                    <Button
+                      sx={{
+                        backgroundColor: "#0E446C !important",
+                        color: "white !important",
+                      }}
+                      onClick={(event) => handleAction(event)}
+                    >
                       Action <ArrowDropDown />
                     </Button>
                     <Menu
@@ -104,26 +161,72 @@ const statusObj = {
                       open={Boolean(anchorEl)}
                       onClose={handleClose}
                     >
-                      <MenuItem onClick={() => handleMenuItemClick("Edit")}>
-                        Edit
-                      </MenuItem>
-                      <MenuItem onClick={() => handleMenuItemClick("Delete")}>
+                      {/* <MenuItem onClick={() => handleClick(row)}>View</MenuItem> */}
+                      <MenuItem onClick={() => handleEdit(row)}>Edit</MenuItem>
+                      <MenuItem onClick={() => handleDelete(row)}>
                         Delete
                       </MenuItem>
                     </Menu>
                   </TableCell>
                 </TableRow>
-                ))}
-
-
+              ))}
           </TableBody>
         </Table>
       </TableContainer>
-      {/* {selectedAction && (
-        <Typography variant="subtitle1">
-          Selected Action: {selectedAction}
-        </Typography>
-      )} */}
+      {/* Dialog Box */}
+
+      <Dialog open={openDialog} onClose={handleClose}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            margin: "1em 2em",
+          }}
+        >
+          <DialogTitle>Speaker Details</DialogTitle>
+          <Cancel
+            sx={{ color: "red" }}
+            onClick={() => {
+              setOpenDialog(false);
+            }}
+          />
+        </Box>
+        <DialogContent sx={{ width: "auto" }}>
+          {rowsDetails && (
+            <Card>
+              <Box sx={{ p: 2 }}>
+                {/* Image */}
+                {rowsDetails?.logo && (
+                  <Box sx={{ textAlign: "center" }}>
+                    <img
+                      src={`http://172.171.210.167/${rowsDetails?.logo}`}
+                      alt="Speaker"
+                      style={{
+                        width: "50%",
+                        marginBottom: "16px",
+                        height: "auto",
+                      }}
+                    />
+                  </Box>
+                )}
+                {/* Speaker Details */}
+                <Typography variant="h6" gutterBottom>
+                  {rowsDetails?.name}
+                </Typography>
+                <Typography variant="body1" gutterBottom>
+                  Organization: {rowsDetails?.organization_name}
+                </Typography>
+                <Typography variant="body1" gutterBottom>
+                  Bio: {rowsDetails?.bio}
+                </Typography>
+                <Typography variant="body1" gutterBottom>
+                  Status: {rowsDetails?.is_active.toString()}
+                </Typography>
+              </Box>
+            </Card>
+          )}
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 };
