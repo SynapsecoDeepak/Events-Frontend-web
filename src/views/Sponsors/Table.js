@@ -16,13 +16,15 @@ import {
   DialogContent,
   DialogTitle,
 } from "@mui/material";
-import { ArrowDropDown, Cancel } from "@mui/icons-material";
+import { ArrowDropDown, Cancel, Router } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios"; // Import axios for making API requests
 import { sponsorDataFullDetails } from "src/store/slice/eventSlice";
+import { useRouter } from "next/router";
 
 const DashboardTable = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedAction, setSelectedAction] = useState(null);
   const [selectedRowData, setSelectedRowData] = useState(null);
@@ -76,7 +78,8 @@ const DashboardTable = () => {
   };
 
   const handleEdit = () => {
-    console.log("edit");
+    router.push('/sponsors/edit-sponsors')
+
   };
   const handleDelete = () => {
     console.log("delete");

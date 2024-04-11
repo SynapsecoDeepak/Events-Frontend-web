@@ -93,11 +93,19 @@ const SignInCard = () => {
         })
         .then((response) => {
           console.log("API Response:", response.data);
-          toast.success("login success");
           const userData = response.data;
           dispatch(login({ userData }));
           sessionStorage.setItem("userData", JSON.stringify(userData));
-          router.push("/");
+          if(response.data.status === true){
+            toast.success("login success");
+            router.push("/");
+            return;
+          }
+          if(response.data.status === false){
+            toast.error("login failed");
+            return;
+          }
+
         })
         .catch((error) => {
           console.error("API Error:", error);
