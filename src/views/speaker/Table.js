@@ -27,12 +27,13 @@ const DashboardTable = () => {
   const [selectedAction, setSelectedAction] = useState(null);
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
+  // const [rowDataDetails, setRowDataDetails] = useState(null);
 
   const rows = useSelector((state) => state.event?.speakerData?.data);
+  const state_token = useSelector((state) => state.auth.user?.userData.token);
   const rowsDetails = useSelector(
     (state) => state.event?.speakerDataFullDetails?.data.speaker_details
   );
-  const state_token = useSelector((state) => state.auth.user?.userData.token);
 
   const statusObj = {
     present: { color: "success" },
@@ -57,17 +58,14 @@ const DashboardTable = () => {
         }
       );
       dispatch(speakerDataFullDetails(response.data));
-
       setOpenDialog(true);
-
-      console.log("Row data to show", rowDataDetails);
     } catch (error) {
       console.error("Error fetching row data details:", error);
     }
   };
 
-  const handleClick = (event, rowData) => {
-    setAnchorEl(event.currentTarget);
+  const handleClick = (rowData) => {
+    console.log("rowdata", rowData);
     setSelectedRowData(rowData);
   };
 
@@ -76,9 +74,15 @@ const DashboardTable = () => {
     setOpenDialog(false);
   };
 
-  const handleMenuItemClick = (action) => {
-    setSelectedAction(action);
-    setAnchorEl(null);
+  const handleEdit = () => {
+    console.log("edit");
+  };
+  const handleDelete = () => {
+    console.log("delete");
+  };
+
+  const handleAction = (event) => {
+    setAnchorEl(event.currentTarget);
   };
 
   return (
@@ -101,10 +105,10 @@ const DashboardTable = () => {
                   hover
                   key={row?.speaker_user?.name}
                   sx={{ "&:last-of-type td, &:last-of-type th": { border: 0 } }}
-                  onClick={(event) => handleClick(event, row)}
                 >
                   <TableCell
                     sx={{ py: (theme) => `${theme.spacing(0.5)} !important` }}
+                    onClick={() => handleClick(row)}
                   >
                     <Box sx={{ display: "flex", flexDirection: "column" }}>
                       <Typography
@@ -117,10 +121,15 @@ const DashboardTable = () => {
                       </Typography>
                     </Box>
                   </TableCell>
-                  <TableCell style={{ color: "#2BACE2" }}>
+                  <TableCell
+                    style={{ color: "#2BACE2" }}
+                    onClick={() => handleClick(row)}
+                  >
                     {row?.speaker_user?.organization_name}
                   </TableCell>
-                  <TableCell>{row?.date}</TableCell>
+                  <TableCell onClick={() => handleClick(row)}>
+                    {row?.date}
+                  </TableCell>
                   <TableCell sx={{ fontSize: "12px !important" }}>
                     <Button
                       variant="contained"
@@ -140,9 +149,23 @@ const DashboardTable = () => {
                         backgroundColor: "#0E446C !important",
                         color: "white !important",
                       }}
+                      onClick={(event) => handleAction(event)}
                     >
                       Action <ArrowDropDown />
                     </Button>
+                    <Menu
+                      id="simple-menu"
+                      anchorEl={anchorEl}
+                      keepMounted
+                      open={Boolean(anchorEl)}
+                      onClose={handleClose}
+                    >
+                      {/* <MenuItem onClick={() => handleClick(row)}>View</MenuItem> */}
+                      <MenuItem onClick={() => handleEdit(row)}>Edit</MenuItem>
+                      <MenuItem onClick={() => handleDelete(row)}>
+                        Delete
+                      </MenuItem>
+                    </Menu>
                   </TableCell>
                 </TableRow>
               ))}
@@ -204,11 +227,6 @@ const DashboardTable = () => {
           )}
         </DialogContent>
       </Dialog>
-      {selectedAction && (
-        <Typography variant="subtitle1">
-          Selected Action: {selectedAction}
-        </Typography>
-      )}
     </Card>
   );
 };
