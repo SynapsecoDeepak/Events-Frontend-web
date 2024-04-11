@@ -16,6 +16,8 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { useRef, useState } from "react";
 import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
+
 // import { Chip } from '@mui/material-next'
 // import { Chip } from '@mui/material-next'
 
@@ -54,8 +56,24 @@ const AddSpeakerForm = () => {
 
 
   const handleSubmit = async (event) => {
+event.preventDefault();
+const formDataToSend = new FormData();
+
+ 
+ formDataToSend.append('speaker_user_name', formData.name);
+ formDataToSend.append('speaker_user_email', formData.emailAddress);
+ formDataToSend.append('session_speaker', formData.sessions);
+ formDataToSend.append('speaker_user_profile_photo', formData.photo);
+ formDataToSend.append('speaker_user_location', formData.location);
+ formDataToSend.append('speaker_user_website', formData.personalWebsite);
+ formDataToSend.append('speaker_user_twitter', formData.twitterLink);
+ formDataToSend.append('speaker_user_linkdin', formData.linkedInLink);
+//  formDataToSend.append('expertise', formData.add);
+//  formDataToSend.append('added_by', formData.thumbnail);
+
+
     try {
-      const response = await axios.post("http://172.171.210.167/user/create_speaker/", formData,   {
+      const response = await axios.post("http://172.171.210.167/user/create_speaker/",    formDataToSend,   {
         headers: {
           Authorization: `Bearer ${state_token}`,
         },
@@ -75,6 +93,8 @@ const AddSpeakerForm = () => {
         twitterLink: "",
         linkedInLink: "",
       });
+      toast.success("The Sponsor added successfully")
+
     } catch (error) {
       console.error("Error submitting data:", error);
     }
