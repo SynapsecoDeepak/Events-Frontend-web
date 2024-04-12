@@ -33,20 +33,6 @@ import SessionList from 'src/views/sessions/SessionList'
 const Sessions = () => {
   const router = useRouter()
 
-  // if (typeof window !== 'undefined') {
-  //   const userToken = sessionStorage.getItem('userToken')
-  //   if (!userToken) {
-  //     router.push('/pages/login')
-  //   }
-  // }
-  useEffect(()=>{
-    if (typeof window !== 'undefined') {
-      const userToken = sessionStorage.getItem('userToken')
-      if (!userToken) {
-        // router.push('/pages/login')
-      }
-    }
-  },[])
   
   return (
     <ApexChartWrapper>

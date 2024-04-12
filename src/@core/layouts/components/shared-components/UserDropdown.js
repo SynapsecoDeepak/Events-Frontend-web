@@ -33,6 +33,7 @@ import {
 import LanguageIcon from "@mui/icons-material/Language";
 import { useDispatch } from "react-redux";
 import { logout, logoutAndResetEvent } from "src/store/slice/authSlice";
+import Cookies from "js-cookie";
 
 // ** Styled Components
 const BadgeContentSpan = styled("span")(({ theme }) => ({
@@ -53,6 +54,7 @@ const UserDropdown = () => {
   const dispatch = useDispatch();
 
   const handleSignOut = () => {
+    Cookies.remove('token')
     sessionStorage.removeItem("userData");
     dispatch(logoutAndResetEvent());
     router.push("/login");

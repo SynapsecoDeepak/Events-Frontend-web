@@ -17,6 +17,8 @@ import { useRouter } from "next/router";
 import { useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
+import Cookies from "js-cookie";
+
 
 // import { Chip } from '@mui/material-next'
 // import { Chip } from '@mui/material-next'
@@ -24,8 +26,11 @@ import toast from "react-hot-toast";
 const EditSpeakerForm = () => {
   const router = useRouter();
 
-  const state_token = useSelector((state) => state.auth.user?.userData.token);
 
+  const state_token = useSelector((state) => state.auth.user?.userData?.token);
+  const CookiesToken = Cookies.get('token')
+
+  const token = CookiesToken   || state_token
 
   const [formData, setFormData] = useState({
     // State to hold form data
@@ -75,7 +80,7 @@ const formDataToSend = new FormData();
     try {
       const response = await axios.post("http://172.171.210.167/user/create_speaker/",    formDataToSend,   {
         headers: {
-          Authorization: `Bearer ${state_token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       console.log("Data submitted successfully:", response.data);

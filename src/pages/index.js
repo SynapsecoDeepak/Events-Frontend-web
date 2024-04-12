@@ -33,26 +33,31 @@ import RecentActivities from "src/views/tables/RecentActivities";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { event } from "src/store/slice/eventSlice";
+import { BASE_URL } from "src/constants";
+import Cookies from "js-cookie";
+import { login } from "src/store/slice/authSlice";
 
 const Dashboard = () => {
   // const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
-  const state_token = useSelector((state) => state.auth.user?.userData.token);
+  const state_token = useSelector((state) => state.auth.user?.userData?.token);
 
   const dispatch = useDispatch();
 
   const router = useRouter();
 
   useEffect(() => {
-    const sessionToken = sessionStorage.getItem("userData");
-    const token =  state_token  ||  sessionToken 
-    if (!token) {
+    // const sessionToken = sessionStorage.getItem("userData");
+    const CookiesToken = Cookies.get('token')
+
+    // const token =  state_token  ||  sessionToken 
+    if (!CookiesToken) {
       router.push("/login");
     } else {
       axios
-        .get("http://172.171.210.167/event/events_list/", {
+        .get(`${BASE_URL}/event/events_list/`, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${CookiesToken}`,
           },
         })
         .then((response) => {

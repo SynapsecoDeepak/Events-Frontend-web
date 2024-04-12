@@ -26,25 +26,21 @@ import CurrentEvents from "src/views/tables/CurrentEvents";
 import UpcommingEvents from "src/views/tables/UpcomingEvents";
 import RecentActivities from "src/views/tables/RecentActivities";
 import AddSponsporsForm from "src/views/Sponsors/AddSponsporsForm";
+import Cookies from "js-cookie";
 // import './App.css';
 // import withAuth from '../views/auth/auth'
 const AddSpeaker = () => {
   const router = useRouter();
 
-  // if (typeof window !== 'undefined') {
-  //   const userToken = sessionStorage.getItem('userToken')
-  //   if (!userToken) {
-  //     router.push('/pages/login')
-  //   }
-  // }
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const userToken = sessionStorage.getItem("userToken");
-      if (!userToken) {
-        // router.push('/pages/login')
-      }
+
+  useEffect(()=>{
+    const CookiesToken = Cookies.get('token')
+
+    // const token =  state_token  ||  sessionToken 
+    if (!CookiesToken) {
+      router.push("/login");
     }
-  }, []);
+  },[])
 
   return (
     <ApexChartWrapper>

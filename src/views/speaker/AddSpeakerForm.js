@@ -11,6 +11,8 @@ import Typography from "@mui/material/Typography";
 import TableContainer from "@mui/material/TableContainer";
 import styles from "./speaker.module.css";
 import axios from "axios";
+import Cookies from "js-cookie";
+
 
 
 import { useRouter } from "next/router";
@@ -24,8 +26,10 @@ import toast from "react-hot-toast";
 const AddSpeakerForm = () => {
   const router = useRouter();
 
-  const state_token = useSelector((state) => state.auth.user?.userData.token);
+  const state_token = useSelector((state) => state.auth.user?.userData?.token);
+  const CookiesToken = Cookies.get('token')
 
+  const token = CookiesToken   || state_token
 
   const [formData, setFormData] = useState({
     // State to hold form data
@@ -75,7 +79,7 @@ const formDataToSend = new FormData();
     try {
       const response = await axios.post("http://172.171.210.167/user/create_speaker/",    formDataToSend,   {
         headers: {
-          Authorization: `Bearer ${state_token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       console.log("Data submitted successfully:", response.data);

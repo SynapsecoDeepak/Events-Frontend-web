@@ -23,6 +23,8 @@ import {
 } from "src/store/slice/eventSlice";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import { BASE_URL } from "src/constants";
+import Cookies from "js-cookie";
 
 const AppBarContent = (props) => {
   const dispatch = useDispatch();
@@ -33,7 +35,11 @@ const AppBarContent = (props) => {
 
   const [eventList, setEventList] = useState("");
 
-  const state_token = useSelector((state) => state.auth.user?.userData.token);
+  const state_token = useSelector((state) => state.auth.user?.userData?.token);
+  const CookiesToken = Cookies.get('token')
+
+  const token = CookiesToken   || state_token
+
   const eventData = useSelector((state) => state.event?.eventData?.data);
 
 
@@ -44,11 +50,11 @@ const AppBarContent = (props) => {
       // Send a POST request with the selected event ID
       axios
         .post(
-          "http://172.171.210.167/event/event_speakers/",
+          `${BASE_URL}/event/event_speakers/`,
           { event_id: selectedEventId },
           {
             headers: {
-              Authorization: `Bearer ${state_token}`,
+              Authorization: `Bearer ${token}`,
             },
           }
         )
@@ -63,10 +69,10 @@ const AppBarContent = (props) => {
 
       axios
         .get(
-          `http://172.171.210.167/event/event_sponsors/${selectedEventId}/sponsors/`,
+          `${BASE_URL}/event/event_sponsors/${selectedEventId}/sponsors/`,
           {
             headers: {
-              Authorization: `Bearer ${state_token}`,
+              Authorization: `Bearer ${token}`,
             },
           }
         )
@@ -81,10 +87,10 @@ const AppBarContent = (props) => {
 
       axios
         .get(
-          `http://172.171.210.167/event/event_attendees/${selectedEventId}/attendee/`,
+          `${BASE_URL}/event/event_attendees/${selectedEventId}/attendee/`,
           {
             headers: {
-              Authorization: `Bearer ${state_token}`,
+              Authorization: `Bearer ${token}`,
             },
           }
         )

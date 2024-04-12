@@ -21,6 +21,8 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios"; // Import axios for making API requests
 import { sponsorDataFullDetails } from "src/store/slice/eventSlice";
 import { useRouter } from "next/router";
+import Cookies from "js-cookie";
+
 
 const DashboardTable = () => {
   const dispatch = useDispatch();
@@ -32,7 +34,11 @@ const DashboardTable = () => {
 
   const rows = useSelector((state) => state.event?.sponsorData?.data);
 
-  const state_token = useSelector((state) => state.auth.user?.userData.token);
+
+  const state_token = useSelector((state) => state.auth.user?.userData?.token);
+  const CookiesToken = Cookies.get('token')
+
+  const token = CookiesToken   || state_token
 
   const rowsDetails = useSelector(
     (state) => state.event?.sponsorDataFullDetails?.data
@@ -56,7 +62,7 @@ const DashboardTable = () => {
         `http://172.171.210.167/event/sponsors/${id}/`,
         {
           headers: {
-            Authorization: `Bearer ${state_token}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );

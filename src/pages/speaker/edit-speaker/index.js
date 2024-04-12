@@ -26,17 +26,18 @@ import CurrentEvents from "src/views/tables/CurrentEvents";
 import UpcommingEvents from "src/views/tables/UpcomingEvents";
 import RecentActivities from "src/views/tables/RecentActivities";
 import EditSpeakerForm from "src/views/speaker/EditSpeakerForm";
+import Cookies from "js-cookie";
+
 const EditSpeaker = () => {
   const router = useRouter();
+  useEffect(()=>{
+    const CookiesToken = Cookies.get('token')
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const userToken = sessionStorage.getItem("userToken");
-      if (!userToken) {
-        // router.push('/pages/login')
-      }
+    // const token =  state_token  ||  sessionToken 
+    if (!CookiesToken) {
+      router.push("/login");
     }
-  }, []);
+  },[])
 
   return (
     <ApexChartWrapper>

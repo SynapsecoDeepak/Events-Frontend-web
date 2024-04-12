@@ -27,25 +27,21 @@ import UpcommingEvents from 'src/views/tables/UpcomingEvents'
 import RecentActivities from 'src/views/tables/RecentActivities'
 import { Box } from 'mdi-material-ui'
 import SearchInput from 'src/views/speaker/SearchInput'
+import Cookies from 'js-cookie'
 
-// import withAuth from '../views/auth/auth'
 const Speaker = () => {
   const router = useRouter()
 
-  // if (typeof window !== 'undefined') {
-  //   const userToken = sessionStorage.getItem('userToken')
-  //   if (!userToken) {
-  //     router.push('/pages/login')
-  //   }
-  // }
   useEffect(()=>{
-    if (typeof window !== 'undefined') {
-      const userToken = sessionStorage.getItem('userToken')
-      if (!userToken) {
-        // router.push('/pages/login')
-      }
+    const CookiesToken = Cookies.get('token')
+
+    // const token =  state_token  ||  sessionToken 
+    if (!CookiesToken) {
+      router.push("/login");
     }
   },[])
+
+ 
   
   return (
     <ApexChartWrapper>

@@ -20,6 +20,8 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "src/store/slice/authSlice";
+import { BASE_URL } from "src/constants";
+import Cookies from "js-cookie";
 
 const SignInCard = () => {
   const router = useRouter();
@@ -27,8 +29,10 @@ const SignInCard = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const token = sessionStorage.getItem("userData");
-    if (token) {
+    // const token = sessionStorage.getItem("userData");
+    const CookiesToken = Cookies.get('token')
+
+    if (CookiesToken) {
       router.push("/");
     }
   }, [router]);
@@ -87,7 +91,7 @@ const SignInCard = () => {
   const handleLogin = () => {
     if (validateForm()) {
       axios
-        .post("http://172.171.210.167/api/user/login/", {
+        .post(`${BASE_URL}/api/user/login/`, {
           email: userData.email,
           password: userData.password,
         })
@@ -95,7 +99,9 @@ const SignInCard = () => {
           console.log("API Response:", response.data);
           const userData = response.data;
           dispatch(login({ userData }));
-          sessionStorage.setItem("userData", JSON.stringify(userData));
+          const token = response.data.token;
+          Cookies.set('token',token,{expires:15});
+          // sessionStorage.setItem("userData", JSON.stringify(userData));
           if(response.data.status === true){
             toast.success("login success");
             router.push("/");

@@ -34,20 +34,6 @@ import EventDetails from 'src/views/events/EventDetails'
 const Events = () => {
   const router = useRouter()
 
-  // if (typeof window !== 'undefined') {
-  //   const userToken = sessionStorage.getItem('userToken')
-  //   if (!userToken) {
-  //     router.push('/pages/login')
-  //   }
-  // }
-  useEffect(()=>{
-    if (typeof window !== 'undefined') {
-      const userToken = sessionStorage.getItem('userToken')
-      if (!userToken) {
-        // router.push('/pages/login')
-      }
-    }
-  },[])
   
   return (
     <ApexChartWrapper>

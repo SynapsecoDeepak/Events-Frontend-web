@@ -21,6 +21,8 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios"; // Import axios for making API requests
 import { speakerDataFullDetails } from "src/store/slice/eventSlice";
 import { useRouter } from "next/router";
+import Cookies from "js-cookie";
+
 
 const DashboardTable = () => {
   const dispatch = useDispatch();
@@ -32,7 +34,12 @@ const DashboardTable = () => {
   // const [rowDataDetails, setRowDataDetails] = useState(null);
 
   const rows = useSelector((state) => state.event?.speakerData?.data);
-  const state_token = useSelector((state) => state.auth.user?.userData.token);
+
+  const state_token = useSelector((state) => state.auth.user?.userData?.token);
+  const CookiesToken = Cookies.get('token')
+
+  const token = CookiesToken   || state_token
+  
   const rowsDetails = useSelector(
     (state) => state.event?.speakerDataFullDetails?.data.speaker_details
   );
@@ -55,7 +62,7 @@ const DashboardTable = () => {
         `http://172.171.210.167/user/speakers/${id}/`,
         {
           headers: {
-            Authorization: `Bearer ${state_token}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
