@@ -29,9 +29,7 @@ const SignInCard = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // const token = sessionStorage.getItem("userData");
-    const CookiesToken = Cookies.get('token')
-
+    const CookiesToken = Cookies.get("token");
     if (CookiesToken) {
       router.push("/");
     }
@@ -45,7 +43,7 @@ const SignInCard = () => {
   const [errors, setErrors] = useState({
     email: "",
     password: "",
-    apiError: "", // Error from API response
+    apiError: "",
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -56,11 +54,6 @@ const SignInCard = () => {
 
   const handlePasswordChange = (e) => {
     setUserData({ ...userData, password: e.target.value });
-  };
-
-  const validateEmail = (email) => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
   };
 
   const validateForm = () => {
@@ -100,18 +93,18 @@ const SignInCard = () => {
           const userData = response.data;
           dispatch(login({ userData }));
           const token = response.data.token;
-          Cookies.set('token',token,{expires:15});
-          // sessionStorage.setItem("userData", JSON.stringify(userData));
-          if(response.data.status === true){
-            toast.success("login success");
+          Cookies.set("token", token, { expires: 15 });
+
+          if (response.data.status === true) {
+            toast.success("Login successful");
             router.push("/");
-            return;
-          }
-          if(response.data.status === false){
-            toast.error("login failed");
-            return;
+          } else {
+            toast.error("Login failed");
           }
 
+          if (response && response.data && response.data.message) {
+            setErrors({ ...errors, apiError: response.data.message });
+          }
         })
         .catch((error) => {
           console.error("API Error:", error);
@@ -123,22 +116,22 @@ const SignInCard = () => {
             setErrors({ ...errors, apiError: error.response.data.message });
             toast.error(error.response.data.message);
           }
-          // Handle error
         });
     }
   };
+
+  const validateEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
+
   return (
-    <Box
-      sx={{
-        height: "100vh",
-      }}
-    >
+    <Box sx={{ height: "100vh" }}>
       <Grid
         sx={{
           display: "flex",
           width: "90%",
           justifyContent: "center",
-
           margin: "8em auto",
         }}
         container
@@ -215,7 +208,7 @@ const SignInCard = () => {
               fullWidth
               margin="normal"
               error={!!errors.email}
-              helperText={!!errors.email}
+              helperText={errors.email}
               InputProps={{
                 endAdornment: (
                   <IconButton edge="end">
@@ -233,7 +226,7 @@ const SignInCard = () => {
               fullWidth
               margin="normal"
               error={!!errors.password}
-              helperText={!!errors.password}
+              helperText={errors.password}
               InputProps={{
                 endAdornment: (
                   <IconButton
@@ -266,7 +259,7 @@ const SignInCard = () => {
               onClick={handleLogin}
               sx={{
                 marginTop: "1em",
-                padding: " .50em, 1em",
+                padding: ".50em, 1em",
                 backgroundColor: "#0E436B",
                 borderRadius: "50px",
               }}
@@ -291,7 +284,5 @@ const SignInCard = () => {
     </Box>
   );
 };
-
-// SignInCard.getLayout = (page) => <BlankLayout>{page}</BlankLayout>;
 
 export default SignInCard;
