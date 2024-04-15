@@ -33,8 +33,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../../styles/globals.css";
 import { SSRProvider } from "react-bootstrap";
 import { Toaster } from "react-hot-toast";
-import { store } from "src/store/store";
+import { persistor, store } from "src/store/store";
 import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -62,6 +63,8 @@ const App = (props) => {
   return (
     <>
       <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+
         <Toaster />
         <SSRProvider>
           <CacheProvider value={emotionCache}>
@@ -94,6 +97,8 @@ const App = (props) => {
             </SettingsProvider>
           </CacheProvider>
         </SSRProvider>
+        </PersistGate>
+
       </Provider>
     </>
   );

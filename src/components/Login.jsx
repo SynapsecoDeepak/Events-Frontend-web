@@ -92,9 +92,6 @@ const SignInCard = () => {
           console.log("API Response:", response.data);
           const userData = response.data;
           dispatch(login({ userData }));
-          const token = response.data.token;
-          Cookies.set("token", token, { expires: 15 });
-
           if (response.data.status === true) {
             toast.success("Login successful");
             router.push("/");

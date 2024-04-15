@@ -1,12 +1,18 @@
-// store.js
- 
 import { configureStore } from '@reduxjs/toolkit';
-import authReducer from '../store/slice/authSlice';
-import eventReducer from '../store/slice/eventSlice';
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
+import rootReducer from './rootReducer';
+ 
+ 
+const persistConfig = {
+  key: 'root',
+  storage,
+};
+ 
+const persistedReducer = persistReducer(persistConfig, rootReducer);
  
 export const store = configureStore({
-  reducer: {
-    auth: authReducer,
-    event:eventReducer,
-  },
+  reducer: persistedReducer,
 });
+ 
+export const persistor = persistStore(store);

@@ -27,11 +27,19 @@ import UpcommingEvents from 'src/views/tables/UpcomingEvents'
 import RecentActivities from 'src/views/tables/RecentActivities'
 import { Box } from 'mdi-material-ui'
 import SearchInput from 'src/views/Sponsors/SearchInput'
+import { useSelector } from 'react-redux'
 
 const Speaker = () => {
   const router = useRouter()
 
+  const state_token = useSelector((state) => state.auth.user?.userData?.token);
 
+
+  useEffect(()=>{
+    if (!state_token) {
+      router.push("/login");
+    }
+  },[])
 
   
   return (

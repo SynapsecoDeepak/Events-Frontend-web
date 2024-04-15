@@ -28,15 +28,15 @@ import RecentActivities from 'src/views/tables/RecentActivities'
 import { Box } from 'mdi-material-ui'
 import SearchInput from 'src/views/speaker/SearchInput'
 import Cookies from 'js-cookie'
+import { useSelector } from 'react-redux'
 
 const Speaker = () => {
   const router = useRouter()
+  const state_token = useSelector((state) => state.auth.user?.userData?.token);
+
 
   useEffect(()=>{
-    const CookiesToken = Cookies.get('token')
-
-    // const token =  state_token  ||  sessionToken 
-    if (!CookiesToken) {
+    if (!state_token) {
       router.push("/login");
     }
   },[])

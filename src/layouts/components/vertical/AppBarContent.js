@@ -36,9 +36,6 @@ const AppBarContent = (props) => {
   const [eventList, setEventList] = useState("");
 
   const state_token = useSelector((state) => state.auth.user?.userData?.token);
-  const CookiesToken = Cookies.get('token')
-
-  const token = CookiesToken   || state_token
 
   const eventData = useSelector((state) => state.event?.eventData?.data);
 
@@ -54,7 +51,7 @@ const AppBarContent = (props) => {
           { event_id: selectedEventId },
           {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${state_token}`,
             },
           }
         )
@@ -72,7 +69,7 @@ const AppBarContent = (props) => {
           `${BASE_URL}/event/event_sponsors/${selectedEventId}/sponsors/`,
           {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${state_token}`,
             },
           }
         )
@@ -90,7 +87,7 @@ const AppBarContent = (props) => {
           `${BASE_URL}/event/event_attendees/${selectedEventId}/attendee/`,
           {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${state_token}`,
             },
           }
         )

@@ -26,12 +26,20 @@ import CurrentEvents from "src/views/tables/CurrentEvents";
 import UpcommingEvents from "src/views/tables/UpcomingEvents";
 import RecentActivities from "src/views/tables/RecentActivities";
 import AddSponsporsForm from "src/views/Sponsors/AddSponsporsForm";
+import { useSelector } from "react-redux";
 // import './App.css';
 // import withAuth from '../views/auth/auth'
 const AddSpeaker = () => {
   const router = useRouter();
 
+  const state_token = useSelector((state) => state.auth.user?.userData?.token);
 
+
+  useEffect(()=>{
+    if (!state_token) {
+      router.push("/login");
+    }
+  },[])
 
   return (
     <ApexChartWrapper>

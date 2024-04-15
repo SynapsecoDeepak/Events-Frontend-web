@@ -27,14 +27,15 @@ import UpcommingEvents from "src/views/tables/UpcomingEvents";
 import RecentActivities from "src/views/tables/RecentActivities";
 import EditSponsorsForm from "src/views/Sponsors/EditSponsporsForm";
 import Cookies from "js-cookie";
+import { useSelector } from "react-redux";
 
 const EditSponsors = () => {
   const router = useRouter();
-  useEffect(()=>{
-    const CookiesToken = Cookies.get('token')
+  const state_token = useSelector((state) => state.auth.user?.userData?.token);
 
-    // const token =  state_token  ||  sessionToken 
-    if (!CookiesToken) {
+
+  useEffect(()=>{
+    if (!state_token) {
       router.push("/login");
     }
   },[])

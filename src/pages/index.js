@@ -47,17 +47,13 @@ const Dashboard = () => {
   const router = useRouter();
 
   useEffect(() => {
-    // const sessionToken = sessionStorage.getItem("userData");
-    const CookiesToken = Cookies.get('token')
-
-    // const token =  state_token  ||  sessionToken 
-    if (!CookiesToken) {
+    if (!state_token) {
       router.push("/login");
     } else {
       axios
         .get(`${BASE_URL}/event/events_list/`, {
           headers: {
-            Authorization: `Bearer ${CookiesToken}`,
+            Authorization: `Bearer ${state_token}`,
           },
         })
         .then((response) => {
