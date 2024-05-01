@@ -19,9 +19,15 @@ import {
 import { ArrowDropDown, Cancel } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios"; // Import axios for making API requests
-import { speakerDataFullDetails } from "src/store/slice/eventSlice";
+import {
+  deleteSpeaker,
+  speakerDataFullDetails,
+  speakerEditData,
+} from "src/store/slice/eventSlice";
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
+import { BASE_URL } from "src/constants";
+import toast from "react-hot-toast";
 
 
 const DashboardTable = () => {
@@ -34,15 +40,11 @@ const DashboardTable = () => {
   // const [rowDataDetails, setRowDataDetails] = useState(null);
 
   const rows = useSelector((state) => state.event?.speakerData?.data);
-
   const state_token = useSelector((state) => state.auth.user?.userData?.token);
-  const CookiesToken = Cookies.get('token')
-
-  const token = CookiesToken   || state_token
-  
-  const rowsDetails = useSelector(
-    (state) => state.event?.speakerDataFullDetails?.data.speaker_details
-  );
+  const UserEditAbleData = useSelector( (state) => state?.event?.speakerEditData);
+  const CookiesToken = Cookies.get("token");
+  const token = CookiesToken || state_token;
+  const rowsDetails = useSelector((state) => state.event?.speakerDataFullDetails?.data?.speaker_details);
 
   const statusObj = {
     present: { color: "success" },
@@ -59,7 +61,7 @@ const DashboardTable = () => {
   const fetchRowDataDetails = async (id) => {
     try {
       const response = await axios.get(
-        `http://172.171.210.167/user/speakers/${id}/`,
+        `${BASE_URL}/user/speakers/${id}/`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -74,7 +76,6 @@ const DashboardTable = () => {
   };
 
   const handleClick = (rowData) => {
-    console.log("rowdata", rowData);
     setSelectedRowData(rowData);
   };
 
@@ -84,15 +85,31 @@ const DashboardTable = () => {
   };
 
   const handleEdit = () => {
-    console.log("edit");
-    router.push('/speaker/edit-speaker')
+    router.push("/speaker/edit-speaker");
   };
-  const handleDelete = () => {
+
+  const handleDelete = async() => {
+    try {
+      const response = await axios.delete(
+        `${BASE_URL}/user/speakers/${UserEditAbleData?.speaker_id}/`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success('Speaker deleted successfully')
+      dispatch(deleteSpeaker(UserEditAbleData?.speaker_id))
+      setAnchorEl(null)
+    } catch (error) {
+      console.error("Error fetching row data details:", error);
+    }
     console.log("delete");
   };
 
-  const handleAction = (event) => {
+  const handleAction = (event, row) => {
     setAnchorEl(event.currentTarget);
+    dispatch(speakerEditData(row));
   };
 
   return (
@@ -159,7 +176,7 @@ const DashboardTable = () => {
                         backgroundColor: "#0E446C !important",
                         color: "white !important",
                       }}
-                      onClick={(event) => handleAction(event)}
+                      onClick={(event) => handleAction(event, row)}
                     >
                       Action <ArrowDropDown />
                     </Button>
@@ -170,7 +187,6 @@ const DashboardTable = () => {
                       open={Boolean(anchorEl)}
                       onClose={handleClose}
                     >
-                      {/* <MenuItem onClick={() => handleClick(row)}>View</MenuItem> */}
                       <MenuItem onClick={() => handleEdit(row)}>Edit</MenuItem>
                       <MenuItem onClick={() => handleDelete(row)}>
                         Delete

@@ -18,6 +18,7 @@ import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import {
   attendeesData,
   event,
+  eventID,
   speakerData,
   sponsorData,
 } from "src/store/slice/eventSlice";
@@ -44,6 +45,7 @@ const AppBarContent = (props) => {
   const handleChange = (e) => {
     const selectedEventId = e.target.value;
     setEventList(e.target.value);
+    dispatch(eventID(e.target.value))
       // Send a POST request with the selected event ID
       axios
         .post(

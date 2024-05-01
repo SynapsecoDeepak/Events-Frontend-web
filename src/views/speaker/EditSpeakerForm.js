@@ -12,12 +12,12 @@ import TableContainer from "@mui/material/TableContainer";
 import styles from "./speaker.module.css";
 import axios from "axios";
 
-
 import { useRouter } from "next/router";
 import { useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import Cookies from "js-cookie";
+import { BASE_URL } from "src/constants";
 
 
 // import { Chip } from '@mui/material-next'
@@ -26,23 +26,28 @@ import Cookies from "js-cookie";
 const EditSpeakerForm = () => {
   const router = useRouter();
 
-
   const state_token = useSelector((state) => state.auth.user?.userData?.token);
-  const CookiesToken = Cookies.get('token')
+  const UserEditAbleData = useSelector(    (state) => state?.event?.speakerEditData);
+  const eventId = useSelector((state) => state?.event?.eventID);
 
-  const token = CookiesToken   || state_token
+
+
+  console.log("UserEditAbledata", UserEditAbleData);
+  const CookiesToken = Cookies.get("token");
+
+  const token = CookiesToken || state_token;
 
   const [formData, setFormData] = useState({
     // State to hold form data
-    speakerName: "",
+    speakerName: UserEditAbleData.speaker_user.name,
     emailAddress: "",
     contactNumber: "",
-    location: "",
+    location: UserEditAbleData.location,
     designation: "",
-    organization: "",
-    description: "",
+    organization: UserEditAbleData.speaker_user.organization_name,
+    description: UserEditAbleData.bio,
     sessions: "",
-    photo:{},
+    photo: {},
     personalWebsite: "",
     twitterLink: "",
     linkedInLink: "",
@@ -52,37 +57,38 @@ const EditSpeakerForm = () => {
     setFormData({ ...formData, [prop]: event.target.value });
   };
 
-
   const handleImageChange = (event) => {
-    const file = event.target.files[0]
-    setFormData({ ...formData, photo:file });
+    const file = event.target.files[0];
+    setFormData({ ...formData, photo: file });
   };
 
-
-
   const handleSubmit = async (event) => {
-event.preventDefault();
-const formDataToSend = new FormData();
+    event.preventDefault();
+    const formDataToSend = new FormData();
 
- 
- formDataToSend.append('speaker_user_name', formData.name);
- formDataToSend.append('speaker_user_email', formData.emailAddress);
- formDataToSend.append('session_speaker', formData.sessions);
- formDataToSend.append('speaker_user_profile_photo', formData.photo);
- formDataToSend.append('speaker_user_location', formData.location);
- formDataToSend.append('speaker_user_website', formData.personalWebsite);
- formDataToSend.append('speaker_user_twitter', formData.twitterLink);
- formDataToSend.append('speaker_user_linkdin', formData.linkedInLink);
-//  formDataToSend.append('expertise', formData.add);
-//  formDataToSend.append('added_by', formData.thumbnail);
-
+    formDataToSend.append("speaker_user_name", formData.speakerName);
+    formDataToSend.append("speaker_user",UserEditAbleData?.speaker_user?.id );
+    formDataToSend.append("speaker_event", [eventId]);
+    formDataToSend.append("speaker_user_email", formData.emailAddress);
+    formDataToSend.append("session_speaker", formData.sessions);
+    formDataToSend.append("speaker_user_profile_photo", formData.photo);
+    formDataToSend.append("speaker_user_location", formData.location);
+    formDataToSend.append("speaker_user_website", formData.personalWebsite);
+    formDataToSend.append("speaker_user_twitter", formData.twitterLink);
+    formDataToSend.append("speaker_user_linkdin", formData.linkedInLink);
+    //  formDataToSend.append('expertise', formData.add);
+    //  formDataToSend.append('added_by', formData.thumbnail);
 
     try {
-      const response = await axios.post("http://172.171.210.167/user/create_speaker/",    formDataToSend,   {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.patch(
+        `${BASE_URL}/user/create_speaker/${UserEditAbleData.speaker_id}`,  
+              formDataToSend,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       console.log("Data submitted successfully:", response.data);
       setFormData({
         speakerName: "",
@@ -93,13 +99,12 @@ const formDataToSend = new FormData();
         organization: "",
         description: "",
         sessions: "",
-        photo:{},
+        photo: {},
         personalWebsite: "",
         twitterLink: "",
         linkedInLink: "",
       });
-      toast.success("The Sponsor added successfully")
-
+      toast.success("The Sponsor added successfully");
     } catch (error) {
       console.error("Error submitting data:", error);
     }

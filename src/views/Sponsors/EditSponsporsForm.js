@@ -17,6 +17,7 @@ import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import Cookies from "js-cookie";
+import { BASE_URL } from "src/constants";
 
 // import { Chip } from '@mui/material-next'
 // import { Chip } from '@mui/material-next'
@@ -24,19 +25,19 @@ import Cookies from "js-cookie";
 const EditSponsorsForm = () => {
   const router = useRouter();
 
-
   const state_token = useSelector((state) => state.auth.user?.userData?.token);
-  const CookiesToken = Cookies.get('token')
-
-  const token = CookiesToken   || state_token
+  const UserEditAbleData = useSelector((state) => state?.event?.sponsorsEditData );
+  const eventId = useSelector((state) => state?.event?.eventID);
+  const CookiesToken = Cookies.get("token");
+  const token = CookiesToken || state_token;
 
   const [formData, setFormData] = useState({
-    name: "",
+    name: UserEditAbleData.contact_primary_name,
     sponsor_tagline: "",
     description: "",
-    logo: null,
-    thumbnail:null,
-    email: "",
+    logo: UserEditAbleData.logo,
+    thumbnail: null,
+    email: UserEditAbleData.email,
   });
 
   const handleInputChange = (prop) => (event) => {
@@ -56,22 +57,24 @@ const EditSponsorsForm = () => {
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission
     const formDataToSend = new FormData(); // Create a new FormData object
-   
+
     // Append each field to FormData object
-    formDataToSend.append('name', formData.name);
-    formDataToSend.append('sponsor_tagline', formData.sponsor_tagline);
-    formDataToSend.append('description', formData.description);
-    formDataToSend.append('email', formData.email);
-    formDataToSend.append('logo', formData.logo); // Append logo file
-    formDataToSend.append('thumbnail', formData.thumbnail); // Append thumbnail file
+    formDataToSend.append("name", formData.name);
+    // formDataToSend.append("sponsor_user",UserEditAbleData?.sponsor_user?.id );
+    // formDataToSend.append("sponsor_event", [eventId]);
+    formDataToSend.append("sponsor_tagline", formData.sponsor_tagline);
+    formDataToSend.append("description", formData.description);
+    formDataToSend.append("email", formData.email);
+    formDataToSend.append("logo", formData.logo); // Append logo file
+    formDataToSend.append("thumbnail", formData.thumbnail); // Append thumbnail file
     try {
-      const response = await axios.post(
-        "http://172.171.210.167/event/sponsors/",
+      const response = await axios.patch(
+        `${BASE_URL}/event/sponsors/${UserEditAbleData.sponsor_id}`,
         formDataToSend,
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data' // Set content type as multipart/form-data
+            "Content-Type": "multipart/form-data", // Set content type as multipart/form-data
           },
         }
       );
@@ -84,13 +87,12 @@ const EditSponsorsForm = () => {
         thumbnail: null,
         email: "",
       });
-     toast.success("The Sponsor added successfully")
-     router.back();
+      toast.success("The Sponsor added successfully");
+      router.back();
     } catch (error) {
       console.error("Error submitting data:", error);
     }
   };
-
 
   return (
     <div className={styles.container}>
@@ -120,9 +122,12 @@ const EditSponsorsForm = () => {
             <label className={styles.label}>Sponsors Tagline</label>
           </div>
           <div>
-            <input  id="sponsor_tagline"
+            <input
+              id="sponsor_tagline"
               onChange={handleInputChange("sponsor_tagline")}
-              value={formData.sponsor_tagline} className={styles.input} />
+              value={formData.sponsor_tagline}
+              className={styles.input}
+            />
           </div>
         </div>
         <div className={styles.column}>
@@ -130,10 +135,12 @@ const EditSponsorsForm = () => {
             <label className={styles.label}>Contact Email</label>
           </div>
           <div>
-            <input  id="email"
+            <input
+              id="email"
               onChange={handleInputChange("email")}
-              value={formData.email}  
-              className={styles.input} />
+              value={formData.email}
+              className={styles.input}
+            />
           </div>
         </div>
       </div>
@@ -146,7 +153,6 @@ const EditSponsorsForm = () => {
           marginBottom: 25,
         }}
       >
-
         <div className={styles.column} style={{ width: "35%" }}>
           <div>
             <label className={styles.label}>Logo</label>
@@ -199,9 +205,13 @@ const EditSponsorsForm = () => {
           <label className={styles.label}>Description</label>
         </div>
         <div>
-          <textarea   id="description"
-              onChange={handleInputChange("description")}
-              value={formData.description} rows="6" className={styles.textarea} />
+          <textarea
+            id="description"
+            onChange={handleInputChange("description")}
+            value={formData.description}
+            rows="6"
+            className={styles.textarea}
+          />
         </div>
       </div>
 
@@ -227,7 +237,9 @@ const EditSponsorsForm = () => {
       </div>
 
       <div style={{ display: "flex", justifyContent: "center" }}>
-        <button onClick={handleSubmit} className={styles.submitButton}>Submit</button>
+        <button onClick={handleSubmit} className={styles.submitButton}>
+          Submit
+        </button>
       </div>
     </div>
   );

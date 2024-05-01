@@ -19,9 +19,12 @@ import {
 import { ArrowDropDown, Cancel, Router } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios"; // Import axios for making API requests
-import { sponsorDataFullDetails } from "src/store/slice/eventSlice";
+import { deleteSponsors, sponsorDataFullDetails, sponsorsEditData } from "src/store/slice/eventSlice";
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
+import { BASE_URL } from "src/constants";
+import toast from "react-hot-toast";
+
 
 
 const DashboardTable = () => {
@@ -33,16 +36,12 @@ const DashboardTable = () => {
   const [openDialog, setOpenDialog] = useState(false);
 
   const rows = useSelector((state) => state.event?.sponsorData?.data);
-
-
   const state_token = useSelector((state) => state.auth.user?.userData?.token);
   const CookiesToken = Cookies.get('token')
-
   const token = CookiesToken   || state_token
+  const rowsDetails = useSelector( (state) => state.event?.sponsorDataFullDetails?.data );
+  const UserEditAbleData = useSelector((state) => state?.event?.sponsorsEditData );
 
-  const rowsDetails = useSelector(
-    (state) => state.event?.sponsorDataFullDetails?.data
-  );
 
   const statusObj = {
     true: { color: "#5EAF41" },
@@ -59,7 +58,7 @@ const DashboardTable = () => {
   const fetchRowDataDetails = async (id) => {
     try {
       const response = await axios.get(
-        `http://172.171.210.167/event/sponsors/${id}/`,
+        `${BASE_URL}7/event/sponsors/${id}/`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -74,7 +73,6 @@ const DashboardTable = () => {
   };
 
   const handleClick = (rowData) => {
-    console.log("rowdata", rowData);
     setSelectedRowData(rowData);
   };
 
@@ -87,12 +85,29 @@ const DashboardTable = () => {
     router.push('/sponsors/edit-sponsors')
 
   };
-  const handleDelete = () => {
+
+  const handleDelete = async() => {
+    try {
+      const response = await axios.delete(
+        `${BASE_URL}/event/sponsors/${UserEditAbleData?.sponsor_id}/`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success('Sponsor deleted successfully')
+      dispatch(deleteSponsors(UserEditAbleData?.sponsor_id))
+      setAnchorEl(null)
+    } catch (error) {
+      console.error("Error fetching row data details:", error);
+    }
     console.log("delete");
   };
 
-  const handleAction = (event) => {
+  const handleAction = (event,row) => {
     setAnchorEl(event.currentTarget);
+    dispatch(sponsorsEditData(row))
   };
   return (
     <Card>
@@ -159,7 +174,7 @@ const DashboardTable = () => {
                         backgroundColor: "#0E446C !important",
                         color: "white !important",
                       }}
-                      onClick={(event) => handleAction(event)}
+                      onClick={(event) => handleAction(event,row)}
                     >
                       Action <ArrowDropDown />
                     </Button>
