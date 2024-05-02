@@ -19,13 +19,15 @@ import {
 import { ArrowDropDown, Cancel, Router } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios"; // Import axios for making API requests
-import { deleteSponsors, sponsorDataFullDetails, sponsorsEditData } from "src/store/slice/eventSlice";
+import {
+  deleteSponsors,
+  sponsorDataFullDetails,
+  sponsorsEditData,
+} from "src/store/slice/eventSlice";
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import { BASE_URL } from "src/constants";
 import toast from "react-hot-toast";
-
-
 
 const DashboardTable = () => {
   const dispatch = useDispatch();
@@ -33,15 +35,18 @@ const DashboardTable = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedAction, setSelectedAction] = useState(null);
   const [selectedRowData, setSelectedRowData] = useState(null);
-  const [openDialog, setOpenDialog] = useState(false);
+  // const [openDialog, setOpenDialog] = useState(false);
 
   const rows = useSelector((state) => state.event?.sponsorData?.data);
   const state_token = useSelector((state) => state.auth.user?.userData?.token);
-  const CookiesToken = Cookies.get('token')
-  const token = CookiesToken   || state_token
-  const rowsDetails = useSelector( (state) => state.event?.sponsorDataFullDetails?.data );
-  const UserEditAbleData = useSelector((state) => state?.event?.sponsorsEditData );
-
+  const CookiesToken = Cookies.get("token");
+  const token = CookiesToken || state_token;
+  const rowsDetails = useSelector(
+    (state) => state.event?.sponsorDataFullDetails?.data
+  );
+  const UserEditAbleData = useSelector(
+    (state) => state?.event?.sponsorsEditData
+  );
 
   const statusObj = {
     true: { color: "#5EAF41" },
@@ -57,16 +62,13 @@ const DashboardTable = () => {
 
   const fetchRowDataDetails = async (id) => {
     try {
-      const response = await axios.get(
-        `${BASE_URL}7/event/sponsors/${id}/`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.get(`${BASE_URL}/event/sponsors/${id}/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       dispatch(sponsorDataFullDetails(response.data));
-      setOpenDialog(true);
+      // setOpenDialog(true);
     } catch (error) {
       console.error("Error fetching row data details:", error);
     }
@@ -78,15 +80,14 @@ const DashboardTable = () => {
 
   const handleClose = () => {
     setAnchorEl(null);
-    setOpenDialog(false);
+    setSelectedRowData(null)
   };
 
   const handleEdit = () => {
-    router.push('/sponsors/edit-sponsors')
-
+    router.push("/sponsors/edit-sponsors");
   };
 
-  const handleDelete = async() => {
+  const handleDelete = async () => {
     try {
       const response = await axios.delete(
         `${BASE_URL}/event/sponsors/${UserEditAbleData?.sponsor_id}/`,
@@ -96,18 +97,18 @@ const DashboardTable = () => {
           },
         }
       );
-      toast.success('Sponsor deleted successfully')
-      dispatch(deleteSponsors(UserEditAbleData?.sponsor_id))
-      setAnchorEl(null)
+      toast.success("Sponsor deleted successfully");
+      dispatch(deleteSponsors(UserEditAbleData?.sponsor_id));
+      setAnchorEl(null);
     } catch (error) {
       console.error("Error fetching row data details:", error);
     }
     console.log("delete");
   };
 
-  const handleAction = (event,row) => {
+  const handleAction = (event, row) => {
     setAnchorEl(event.currentTarget);
-    dispatch(sponsorsEditData(row))
+    dispatch(sponsorsEditData(row));
   };
   return (
     <Card>
@@ -165,7 +166,7 @@ const DashboardTable = () => {
                         height: "22px",
                       }}
                     >
-                      {row.is_active.toString()}
+                      {row?.is_active?.toString()}
                     </Button>
                   </TableCell>
                   <TableCell>
@@ -174,7 +175,7 @@ const DashboardTable = () => {
                         backgroundColor: "#0E446C !important",
                         color: "white !important",
                       }}
-                      onClick={(event) => handleAction(event,row)}
+                      onClick={(event) => handleAction(event, row)}
                     >
                       Action <ArrowDropDown />
                     </Button>
@@ -199,20 +200,23 @@ const DashboardTable = () => {
       </TableContainer>
       {/* Dialog Box */}
 
-      <Dialog open={openDialog} onClose={handleClose}>
+      {/* Dialog Box */}
+
+      <Dialog open={Boolean(selectedRowData)} onClose={handleClose}>
         <Box
           sx={{
             display: "flex",
             justifyContent: "space-between",
             margin: "1em 2em",
+            width: 500,
+            bgcolor: "background.paper",
+            borderRadius: 2,
           }}
         >
-          <DialogTitle>Speaker Details</DialogTitle>
+          <DialogTitle>Sponsors Details</DialogTitle>
           <Cancel
             sx={{ color: "red" }}
-            onClick={() => {
-              setOpenDialog(false);
-            }}
+            onClick={handleClose}
           />
         </Box>
         <DialogContent sx={{ width: "auto" }}>
@@ -220,13 +224,13 @@ const DashboardTable = () => {
             <Card>
               <Box sx={{ p: 2 }}>
                 {/* Image */}
-                {rowsDetails?.logo && (
+                {rowsDetails?.thumbnail && (
                   <Box sx={{ textAlign: "center" }}>
                     <img
-                      src={`http://172.171.210.167/${rowsDetails?.logo}`}
+                      src={`http://172.171.210.167/${rowsDetails?.thumbnail}`}
                       alt="Speaker"
                       style={{
-                        width: "50%",
+                        width: "auto",
                         marginBottom: "16px",
                         height: "auto",
                       }}
@@ -244,7 +248,7 @@ const DashboardTable = () => {
                   Bio: {rowsDetails?.bio}
                 </Typography>
                 <Typography variant="body1" gutterBottom>
-                  Status: {rowsDetails?.is_active.toString()}
+                  Status: {rowsDetails?.status?.toString()}
                 </Typography>
               </Box>
             </Card>

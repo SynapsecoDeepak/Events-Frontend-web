@@ -29,22 +29,25 @@ import Cookies from "js-cookie";
 import { BASE_URL } from "src/constants";
 import toast from "react-hot-toast";
 
-
 const DashboardTable = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedAction, setSelectedAction] = useState(null);
   const [selectedRowData, setSelectedRowData] = useState(null);
-  const [openDialog, setOpenDialog] = useState(false);
+  // const [openDialog, setOpenDialog] = useState(false);
   // const [rowDataDetails, setRowDataDetails] = useState(null);
 
   const rows = useSelector((state) => state.event?.speakerData?.data);
   const state_token = useSelector((state) => state.auth.user?.userData?.token);
-  const UserEditAbleData = useSelector( (state) => state?.event?.speakerEditData);
+  const UserEditAbleData = useSelector(
+    (state) => state?.event?.speakerEditData
+  );
   const CookiesToken = Cookies.get("token");
   const token = CookiesToken || state_token;
-  const rowsDetails = useSelector((state) => state.event?.speakerDataFullDetails?.data?.speaker_details);
+  const rowsDetails = useSelector(
+    (state) => state.event?.speakerDataFullDetails?.data?.speaker_user
+  );
 
   const statusObj = {
     present: { color: "success" },
@@ -60,16 +63,13 @@ const DashboardTable = () => {
 
   const fetchRowDataDetails = async (id) => {
     try {
-      const response = await axios.get(
-        `${BASE_URL}/user/speakers/${id}/`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.get(`${BASE_URL}/user/speakers/${id}/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       dispatch(speakerDataFullDetails(response.data));
-      setOpenDialog(true);
+      // setOpenDialog(true);
     } catch (error) {
       console.error("Error fetching row data details:", error);
     }
@@ -81,14 +81,14 @@ const DashboardTable = () => {
 
   const handleClose = () => {
     setAnchorEl(null);
-    setOpenDialog(false);
+  setSelectedRowData(null)
   };
 
   const handleEdit = () => {
     router.push("/speaker/edit-speaker");
   };
 
-  const handleDelete = async() => {
+  const handleDelete = async () => {
     try {
       const response = await axios.delete(
         `${BASE_URL}/user/speakers/${UserEditAbleData?.speaker_id}/`,
@@ -98,9 +98,9 @@ const DashboardTable = () => {
           },
         }
       );
-      toast.success('Speaker deleted successfully')
-      dispatch(deleteSpeaker(UserEditAbleData?.speaker_id))
-      setAnchorEl(null)
+      toast.success("Speaker deleted successfully");
+      dispatch(deleteSpeaker(UserEditAbleData?.speaker_id));
+      setAnchorEl(null);
     } catch (error) {
       console.error("Error fetching row data details:", error);
     }
@@ -201,20 +201,21 @@ const DashboardTable = () => {
 
       {/* Dialog Box */}
 
-      <Dialog open={openDialog} onClose={handleClose}>
+      <Dialog open={Boolean(selectedRowData)} onClose={handleClose}>
         <Box
           sx={{
             display: "flex",
             justifyContent: "space-between",
             margin: "1em 2em",
+            width: 500,
+            bgcolor: "background.paper",
+            borderRadius: 2,
           }}
         >
           <DialogTitle>Speaker Details</DialogTitle>
           <Cancel
             sx={{ color: "red" }}
-            onClick={() => {
-              setOpenDialog(false);
-            }}
+            onClick={handleClose}
           />
         </Box>
         <DialogContent sx={{ width: "auto" }}>
@@ -222,13 +223,13 @@ const DashboardTable = () => {
             <Card>
               <Box sx={{ p: 2 }}>
                 {/* Image */}
-                {rowsDetails.speaker_user.profile_photo && (
+                {rowsDetails?.profile_photo && (
                   <Box sx={{ textAlign: "center" }}>
                     <img
-                      src={`http://172.171.210.167/${rowsDetails.speaker_user.profile_photo}`}
+                      src={`http://172.171.210.167/${rowsDetails?.profile_photo}`}
                       alt="Speaker"
                       style={{
-                        width: "50%",
+                        width: "auto",
                         marginBottom: "16px",
                         height: "auto",
                       }}
@@ -237,16 +238,16 @@ const DashboardTable = () => {
                 )}
                 {/* Speaker Details */}
                 <Typography variant="h6" gutterBottom>
-                  {rowsDetails.speaker_user.name}
+                  {rowsDetails?.name}
                 </Typography>
                 <Typography variant="body1" gutterBottom>
-                  Organization: {rowsDetails.speaker_user.organization_name}
+                  Organization: {rowsDetails?.organization_name}
                 </Typography>
                 <Typography variant="body1" gutterBottom>
-                  Bio: {rowsDetails.bio}
+                  Bio: {rowsDetails?.bio}
                 </Typography>
                 <Typography variant="body1" gutterBottom>
-                  Status: {rowsDetails.is_active.toString()}
+                  Status: {rowsDetails?.status?.toString()}
                 </Typography>
               </Box>
             </Card>
