@@ -45,6 +45,7 @@ const AppBarContent = (props) => {
   const handleChange = (e) => {
     const selectedEventId = e.target.value;
     setEventList(e.target.value);
+    // storing event id  to use while in add speaker , sponsor form  to send event id
     dispatch(eventID(e.target.value))
       // Send a POST request with the selected event ID
       axios
