@@ -69,7 +69,7 @@ const EditSponsorsForm = () => {
     formDataToSend.append("thumbnail", formData.thumbnail); // Append thumbnail file
     try {
       const response = await axios.patch(
-        `${BASE_URL}/event/sponsors/${UserEditAbleData.sponsor_id}`,
+        `${BASE_URL}/event/newsponsors/${UserEditAbleData.sponsor_id}/`,
         formDataToSend,
         {
           headers: {
@@ -79,14 +79,14 @@ const EditSponsorsForm = () => {
         }
       );
       console.log("Data submitted successfully:", response.data);
-      setFormData({
-        name: "",
-        sponsor_tagline: "",
-        description: "",
-        logo: null,
-        thumbnail: null,
-        email: "",
-      });
+      // setFormData({
+      //   name: "",
+      //   sponsor_tagline: "",
+      //   description: "",
+      //   logo: null,
+      //   thumbnail: null,
+      //   email: "",
+      // });
       toast.success("The Sponsor added successfully");
       router.back();
     } catch (error) {

@@ -74,7 +74,7 @@ const AddSpeakerForm = () => {
 
     try {
       const response = await axios.post(
-        `${BASE_URL}/user/create_speaker`,
+        `${BASE_URL}/user/create_speaker/`,
         formDataToSend,
         {
           headers: {
@@ -99,6 +99,7 @@ const AddSpeakerForm = () => {
         linkedInLink: "",
       });
       toast.success("The Sponsor added successfully");
+      // router.back();
     } catch (error) {
       console.error("Error submitting data:", error);
     }

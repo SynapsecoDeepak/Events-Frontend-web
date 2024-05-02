@@ -81,7 +81,7 @@ const EditSpeakerForm = () => {
 
     try {
       const response = await axios.patch(
-        `${BASE_URL}/user/create_speaker/${UserEditAbleData.speaker_id}`,  
+        `${BASE_URL}/user/speakers/${UserEditAbleData.speaker_id}/`,  
               formDataToSend,
         {
           headers: {
@@ -90,21 +90,22 @@ const EditSpeakerForm = () => {
         }
       );
       console.log("Data submitted successfully:", response.data);
-      setFormData({
-        speakerName: "",
-        emailAddress: "",
-        contactNumber: "",
-        location: "",
-        designation: "",
-        organization: "",
-        description: "",
-        sessions: "",
-        photo: {},
-        personalWebsite: "",
-        twitterLink: "",
-        linkedInLink: "",
-      });
+      // setFormData({
+      //   speakerName: "",
+      //   emailAddress: "",
+      //   contactNumber: "",
+      //   location: "",
+      //   designation: "",
+      //   organization: "",
+      //   description: "",
+      //   sessions: "",
+      //   photo: {},
+      //   personalWebsite: "",
+      //   twitterLink: "",
+      //   linkedInLink: "",
+      // });
       toast.success("The Sponsor added successfully");
+      router.back();
     } catch (error) {
       console.error("Error submitting data:", error);
     }
