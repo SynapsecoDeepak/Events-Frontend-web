@@ -33,6 +33,7 @@ const AddSponsorsForm = () => {
 
   const [formData, setFormData] = useState({
     name: "",
+    type: "",
     sponsor_tagline: "",
     description: "",
     logo: null,
@@ -60,6 +61,7 @@ const AddSponsorsForm = () => {
 
     // Append each field to FormData object
     formDataToSend.append("name", formData.name);
+    formDataToSend.append("sponsor_type", formData.type);
     formDataToSend.append("sponsor_event", eventId);
     formDataToSend.append("sponsor_tagline", formData.sponsor_tagline);
     formDataToSend.append("description", formData.description);
@@ -80,6 +82,7 @@ const AddSponsorsForm = () => {
       console.log("Data submitted successfully:", response.data);
       setFormData({
         name: "",
+        type: "",
         sponsor_tagline: "",
         description: "",
         logo: null,
@@ -112,6 +115,19 @@ const AddSponsorsForm = () => {
               id="name"
               onChange={handleInputChange("name")}
               value={formData.name}
+              className={styles.input}
+            />
+          </div>
+        </div>
+        <div className={styles.column}>
+          <div>
+            <label className={styles.label}>Sponsors Type</label>
+          </div>
+          <div>
+            <input
+              id="type"
+              onChange={handleInputChange("type")}
+              value={formData.type}
               className={styles.input}
             />
           </div>
