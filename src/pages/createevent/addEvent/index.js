@@ -11,27 +11,24 @@ import "react-quill/dist/quill.snow.css"; // Import Quill styles
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
-import { Button } from "@mui/material";
+import { Button, Modal, TextField, Box, Typography } from "@mui/material";
 import { Add } from "@mui/icons-material";
 
 const EventCreateForm = () => {
   const router = useRouter();
-
   const state_token = useSelector((state) => state.auth.user?.userData?.token);
   const eventId = useSelector((state) => state?.event?.eventID);
   const CookiesToken = Cookies.get("token");
-
   const token = CookiesToken || state_token;
-
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [venues, setVenues] = useState([]);
   const [selectedVenue, setSelectedVenue] = useState("");
-  const [showModal, setShowModal] = useState(false);
   const [venueName, setVenueName] = useState("");
   const [pdfFile, setPdfFile] = useState(null);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     // Fetch venue data from the map API
@@ -47,9 +44,7 @@ const EventCreateForm = () => {
     fetchVenues();
   }, []);
 
-  const handleModalToggle = () => {
-    setShowModal(!showModal);
-  };
+
 
   const handleVenueInputChange = (event) => {
     setVenueName(event.target.value);
@@ -61,6 +56,14 @@ const EventCreateForm = () => {
 
   const handleVenueChange = (event) => {
     setSelectedVenue(event.target.value);
+  };
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   const handleStartDateChange = (date) => {
@@ -80,7 +83,7 @@ const EventCreateForm = () => {
   };
 
   const handleSubmitCustomVenue = async () => {
-    setShowModal(false);
+    setOpen(false);
     try {
       // Construct form data with venue name and PDF file
       const formData = new FormData();
@@ -265,34 +268,53 @@ const EventCreateForm = () => {
                 </option>
               ))}
             </select>
-            <Button variant="outlined" onClick={handleModalToggle}>
+            <Button variant="outlined" onClick={handleOpen}>
               <Add />
             </Button>
           </div>
         </div>
       </div>
-      {/* Modal */}
-      {showModal && (
-        <div className={styles.modal}>
-          <div className={styles.modalContent}>
-            <h2>Add Venue</h2>
-            <label>Venue Name:</label>
-            <input
-              type="text"
-              value={venueName}
-              onChange={handleVenueInputChange}
-            />
-            <label>Upload PDF:</label>
-            <input type="file" onChange={handlePdfFileChange} />
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            borderRadius:"1rem",
+            p: 8,
+          }}
+        >
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Add Venue
+          </Typography>
+          <TextField
+            label="Venue Name"
+            variant="outlined"
+            value={venueName}
+            onChange={handleVenueInputChange}
+            fullWidth
+            sx={{ mb: 2,mt:4}}
+          />
+          <input type="file" style={{marginTop:"1rem"}} onChange={handlePdfFileChange} />
+          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 4 }}>
             <Button variant="contained" onClick={handleSubmitCustomVenue}>
               OK
             </Button>
-            <Button variant="outlined" onClick={handleModalToggle}>
+            <Button variant="outlined" onClick={handleClose}>
               Cancel
             </Button>
-          </div>
-        </div>
-      )}
+          </Box>
+        </Box>
+      </Modal>
 
       {/* Long description div */}
       <div
