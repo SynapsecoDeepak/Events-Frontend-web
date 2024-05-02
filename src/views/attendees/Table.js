@@ -11,13 +11,26 @@ import TableContainer from "@mui/material/TableContainer";
 import Button from "@mui/material/Button";
 import { Menu, MenuItem } from "@mui/material";
 import { ArrowDropDown } from "@mui/icons-material";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { BASE_URL } from "src/constants";
+import { attendeesEditData, deleteAttendee } from "src/store/slice/eventSlice";
+import axios from "axios";
+import Cookies from "js-cookie";
+import toast from "react-hot-toast";
+
+
 
 const DashboardTable = () => {
   const [anchorEl, setAnchorEl] = useState(null);
+  const dispatch = useDispatch();
   const [selectedAction, setSelectedAction] = useState(null);
 
   const rows = useSelector((state) => state.event?.attendeesData?.data);
+  const UserEditAbleData = useSelector( (state) => state?.event?.attendeesEditData);
+  const state_token = useSelector((state) => state.auth.user?.userData?.token);
+  const CookiesToken = Cookies.get("token");
+  const token = CookiesToken || state_token;
+
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -27,9 +40,31 @@ const DashboardTable = () => {
     setAnchorEl(null);
   };
 
-  const handleMenuItemClick = (action) => {
-    setSelectedAction(action);
-    setAnchorEl(null);
+
+
+
+  const handleDelete = async() => {
+    try {
+      const response = await axios.delete(
+        `${BASE_URL}/user/attendees/${UserEditAbleData?.attendee_id}/`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success('Attendee deleted successfully')
+      dispatch(deleteAttendee(UserEditAbleData?.attendee_id))
+      setAnchorEl(null)
+    } catch (error) {
+      console.error("Error fetching row data details:", error);
+    }
+    console.log("delete");
+  };
+
+  const handleAction = (event, row) => {
+    setAnchorEl(event.currentTarget);
+    dispatch(attendeesEditData(row));
   };
 
   return (
@@ -88,7 +123,7 @@ const DashboardTable = () => {
                         backgroundColor: "#0E446C !important",
                         color: "white !important",
                       }}
-                      onClick={handleClick}
+                      onClick={(event)=>handleAction(event,row)}
                     >
                       Action <ArrowDropDown />
                     </Button>
@@ -102,7 +137,7 @@ const DashboardTable = () => {
                       <MenuItem onClick={() => handleMenuItemClick("Edit")}>
                         Edit
                       </MenuItem>
-                      <MenuItem onClick={() => handleMenuItemClick("Delete")}>
+                      <MenuItem onClick={() => handleDelete(row)}>
                         Delete
                       </MenuItem>
                     </Menu>

@@ -26,8 +26,8 @@ import CurrentEvents from 'src/views/tables/CurrentEvents'
 import UpcommingEvents from 'src/views/tables/UpcomingEvents'
 import RecentActivities from 'src/views/tables/RecentActivities'
 import { Box } from 'mdi-material-ui'
-import SearchInput from 'src/views/Sponsors/SearchInput'
 import { useSelector } from 'react-redux'
+import SearchInput from 'src/views/attendees/SearchInput'
 
 const Speaker = () => {
   const router = useRouter()

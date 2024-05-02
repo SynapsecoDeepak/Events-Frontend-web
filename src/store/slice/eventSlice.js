@@ -57,6 +57,12 @@ const eventSlice = createSlice({
       state.sponsorData.data = state.sponsorData.data.filter(
         (sponsor)=>sponsor.sponsor_id !== sponsorId
       )
+    },
+    deleteAttendee:(state,action)=>{
+      const attendeeId = action.payload;
+      state.attendeesData.data = state.attendeesData.data.filter(
+        (attendee)=>attendee.attendee_id !== attendeeId
+      )
     }
   },
 });
@@ -73,7 +79,8 @@ export const {
   sponsorsEditData,
   attendeesEditData,
   deleteSpeaker,
-  deleteSponsors
+  deleteSponsors,
+  deleteAttendee
 } = eventSlice.actions;
 
 export default eventSlice.reducer;
