@@ -21,9 +21,20 @@ const navigation = () => {
 
   return [
     {
+      sectionTitle: 'Create Event page'
+    },
+    {
       title: 'Dashboard',
       icon: HomeOutline,
       path: '/'
+    },
+    {
+      title: 'Event Page',
+      icon: HomeOutline,
+      path: '/createevent'
+    },
+    {
+      sectionTitle: 'List'
     },
     {
       title: 'Speaker',
