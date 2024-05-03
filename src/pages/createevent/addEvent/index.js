@@ -1,6 +1,6 @@
 import styles from "src/views/speaker/speaker.module.css";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -13,11 +13,13 @@ import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import { Button, Modal, TextField, Box, Typography } from "@mui/material";
 import { Add } from "@mui/icons-material";
+import { event } from "src/store/slice/eventSlice";
 
 const EventCreateForm = () => {
   const router = useRouter();
+  const dispatch = useDispatch();
   const state_token = useSelector((state) => state.auth.user?.userData?.token);
-  const eventId = useSelector((state) => state?.event?.eventID);
+  const userId = useSelector((state) => state?.auth?.user?.userData?.data?.id);
   const CookiesToken = Cookies.get("token");
   const token = CookiesToken || state_token;
   const [startDate, setStartDate] = useState(null);
@@ -69,41 +71,34 @@ const EventCreateForm = () => {
     setOpen(false);
   };
 
-  // const handleStartDateChange = (date) => {
-  //   setStartDate(date);
-  // };
-
-  // const handleEndDateChange = (date) => {
-  //   setEndDate(date);
-  // };
-
-  // const handleStartTimeChange = (event) => {
-  //   setStartTime(event.target.value);
-  // };
-
-  // const handleEndTimeChange = (event) => {
-  //   setEndTime(event.target.value);
-  // };
-
-
   const handleStartDateChange = (date) => {
     if (date < new Date()) {
       setStartDate(new Date());
-      toast.error("Start date cannot be in the past");
     } else {
       setStartDate(date);
     }
   };
-   
+
+  // const handleEndDateChange = (date) => {
+  //   if (date < new Date()) {
+  //     setEndDate(new Date());
+  //     toast.error("End date cannot be in the past");
+  //   } else {
+  //     setEndDate(date);
+  //   }
+  // };
   const handleEndDateChange = (date) => {
-    if (date < new Date()) {
-      setEndDate(new Date());
-      toast.error("End date cannot be in the past");
+    // Check if the selected date is before the start date
+    if (date < startDate) {
+      // If it's before the start date, set the end date to the start date
+      setEndDate(startDate);
+      toast.error("End date cannot be before start date");
     } else {
+      // If it's after or equal to the start date, set the end date to the selected date
       setEndDate(date);
     }
   };
-   
+
   const handleStartTimeChange = (event) => {
     const selectedTime = event.target.value;
     const currentTime = moment().format("HH:mm");
@@ -114,7 +109,7 @@ const EventCreateForm = () => {
       setStartTime(selectedTime);
     }
   };
-   
+
   const handleEndTimeChange = (event) => {
     const selectedTime = event.target.value;
     const currentTime = moment().format("HH:mm");
@@ -125,25 +120,6 @@ const EventCreateForm = () => {
       setEndTime(selectedTime);
     }
   };
-
-  // const handleEndTimeChange = (event) => {
-  //   const selectedEndTime = event.target.value;
-  //   // Get current time
-  //   const currentTime = moment().format("HH:mm");
-  //   // Check if the selected time is in the past
-  //   if (moment(selectedEndTime, "HH:mm").isBefore(moment(currentTime, "HH:mm"))) {
-  //     // If it's in the past, set the end time to the current time
-  //     setEndTime(currentTime);
-  //     toast.error("End time cannot be in the past");
-  //   } else if (moment(selectedEndTime, "HH:mm").isBefore(moment(startTime, "HH:mm"))) {
-  //     // If end time is before start time, set end time equal to start time
-  //     setEndTime(startTime);
-  //     toast.error("End time cannot be before start time");
-  //   } else {
-  //     // If it's in the future and greater than start time, set the end time to the selected time
-  //     setEndTime(selectedEndTime);
-  //   }
-  // };
 
   const handleSubmitCustomVenue = async () => {
     try {
@@ -187,16 +163,6 @@ const EventCreateForm = () => {
     setFormData({ ...formData, [prop]: event.target.value });
   };
 
-  // const handleImageChange = (event) => {
-  //   const file = event.target.files[0];
-  //   setFormData({ ...formData, logo: file });
-  // };
-
-  // const handleImageChange2 = (event) => {
-  //   const file = event.target.files[0];
-  //   setFormData({ ...formData, thumbnail: file });
-  // };
-
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     setFormData({ ...formData, logo: file });
@@ -225,12 +191,28 @@ const EventCreateForm = () => {
     }
   };
 
+  const fetchEventData = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}/event/events_list/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("evnet list ", response.data);
+      const eventData = response.data;
+      dispatch(event(eventData));
+    } catch (error) {
+      console.error("api error", error);
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission
     const formDataToSend = new FormData(); // Create a new FormData object
 
     // Append each field to FormData object
-    formDataToSend.append("EventName", formData.name);
+    formDataToSend.append("name", formData.name);
+    formDataToSend.append("user", userId);
     formDataToSend.append("shortDescription", formData.shortDescription);
     formDataToSend.append("venue", selectedVenue);
     formDataToSend.append("longDescription", description);
@@ -264,6 +246,10 @@ const EventCreateForm = () => {
       setEndDate(null);
       setEndTime("");
       setDescription("");
+      setLogoPreview(null)
+      setThumbnailPreview(null)
+      fetchEventData();
+
       toast.success("The Event added successfully");
       // router.back();
     } catch (error) {
@@ -329,7 +315,7 @@ const EventCreateForm = () => {
               <option value="">Select Venue</option>
               {venues.map((venue) => (
                 <option key={venue.id} value={venue.id}>
-                  {venue.name}
+                  {venue.name || 'null'}
                 </option>
               ))}
             </select>

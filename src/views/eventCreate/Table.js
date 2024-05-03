@@ -48,6 +48,7 @@ const DashboardTable = () => {
   const rowsDetails = useSelector(
     (state) => state.event?.speakerDataFullDetails?.data?.speaker_user
   );
+  const eventData = useSelector((state) => state.event?.eventData?.data);
 
   const statusObj = {
     present: { color: "success" },
@@ -118,46 +119,46 @@ const DashboardTable = () => {
         <Table sx={{ minWidth: 800 }} aria-label="table in dashboard">
           <TableHead>
             <TableRow>
-              <TableCell>Event Name</TableCell>
-              <TableCell>Organization</TableCell>
+              <TableCell>Event List</TableCell>
+              {/* <TableCell>Organization</TableCell>
               <TableCell>Session</TableCell>
               <TableCell>Status</TableCell>
-              <TableCell>Action</TableCell>
+              <TableCell>Action</TableCell> */}
             </TableRow>
           </TableHead>
           <TableBody>
-            {Array.isArray(rows) &&
-              rows.map((row) => (
+            {Array.isArray(eventData) &&
+              eventData.map((row) => (
                 <TableRow
                   hover
-                  key={row?.speaker_user?.name}
+                  key={row?.event_id}
                   sx={{ "&:last-of-type td, &:last-of-type th": { border: 0 } }}
                 >
                   <TableCell
                     sx={{ py: (theme) => `${theme.spacing(0.5)} !important` }}
-                    onClick={() => handleClick(row)}
+                    // onClick={() => handleClick(row)}
                   >
-                    <Box sx={{ display: "flex", flexDirection: "column" }}>
+                    <Box sx={{ display: "flex", flexDirection: "column" ,padding:"1em 2em"}}>
                       <Typography
                         sx={{
                           fontWeight: 500,
                           fontSize: "0.875rem !important",
                         }}
                       >
-                        {row?.speaker_user?.name}
+                        {row?.name  || 'Null'}
                       </Typography>
                     </Box>
                   </TableCell>
-                  <TableCell
+                  {/* <TableCell
                     style={{ color: "#2BACE2" }}
                     onClick={() => handleClick(row)}
                   >
                     {row?.speaker_user?.organization_name}
-                  </TableCell>
-                  <TableCell onClick={() => handleClick(row)}>
+                  </TableCell> */}
+                  {/* <TableCell onClick={() => handleClick(row)}>
                     {row?.date}
-                  </TableCell>
-                  <TableCell sx={{ fontSize: "12px !important" }}>
+                  </TableCell> */}
+                  {/* <TableCell sx={{ fontSize: "12px !important" }}>
                     <Button
                       variant="contained"
                       sx={{
@@ -169,8 +170,8 @@ const DashboardTable = () => {
                     >
                       {row.speaker_user.status}
                     </Button>
-                  </TableCell>
-                  <TableCell>
+                  </TableCell> */}
+                  {/* <TableCell>
                     <Button
                       sx={{
                         backgroundColor: "#0E446C !important",
@@ -192,7 +193,7 @@ const DashboardTable = () => {
                         Delete
                       </MenuItem>
                     </Menu>
-                  </TableCell>
+                  </TableCell> */}
                 </TableRow>
               ))}
           </TableBody>
