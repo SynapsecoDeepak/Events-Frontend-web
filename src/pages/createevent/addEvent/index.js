@@ -216,9 +216,15 @@ const EventCreateForm = () => {
     formDataToSend.append("shortDescription", formData.shortDescription);
     formDataToSend.append("venue", selectedVenue);
     formDataToSend.append("longDescription", description);
-    formDataToSend.append("startDate", startDate);
+
+      // Extract only the date part from startDate and endDate
+  const startDateOnly = startDate ? moment(startDate).format("YYYY-MM-DD") : null;
+  const endDateOnly = endDate ? moment(endDate).format("YYYY-MM-DD") : null;
+
+
+    formDataToSend.append("start_date", startDateOnly);
     formDataToSend.append("startTime", startTime);
-    formDataToSend.append("endDate", endDate);
+    formDataToSend.append("end_date", endDateOnly);
     formDataToSend.append("endTime", endTime);
     formDataToSend.append("logo", formData.logo); // Append logo file
     formDataToSend.append("thumbnail", formData.thumbnail); // Append thumbnail file

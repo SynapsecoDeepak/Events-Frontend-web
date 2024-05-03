@@ -123,10 +123,10 @@ const DashboardTable = () => {
           <TableHead>
             <TableRow>
               <TableCell>Event List</TableCell>
-              {/* <TableCell>Organization</TableCell>
-              <TableCell>Session</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Action</TableCell> */}
+              <TableCell>Venue</TableCell>
+              <TableCell>Start Date</TableCell>
+             <TableCell>End Date</TableCell>
+               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -152,15 +152,18 @@ const DashboardTable = () => {
                       </Typography>
                     </Box>
                   </TableCell>
-                  {/* <TableCell
+                  <TableCell
                     style={{ color: "#2BACE2" }}
                     onClick={() => handleClick(row)}
                   >
-                    {row?.speaker_user?.organization_name}
-                  </TableCell> */}
-                  {/* <TableCell onClick={() => handleClick(row)}>
-                    {row?.date}
-                  </TableCell> */}
+                    {row?.venue[0]}
+                  </TableCell>
+                  <TableCell onClick={() => handleClick(row)}>
+                    {row?.start_date}
+                  </TableCell>
+                  <TableCell onClick={() => handleClick(row)}>
+                    {row?.end_date}
+                  </TableCell>
                   {/* <TableCell sx={{ fontSize: "12px !important" }}>
                     <Button
                       variant="contained"

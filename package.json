@@ -42,12 +42,12 @@
     "@mui/material-next": "^6.0.0-alpha.123",
     "@popperjs/core": "^2.11.2",
     "@reduxjs/toolkit": "^2.2.3",
+    "@tinymce/tinymce-react": "^5.0.1",
     "apexcharts-clevision": "3.28.5",
     "axios": "^1.6.5",
     "babel-eslint": "^10.1.0",
     "bootstrap": "^5.3.3",
     "clsx": "^1.1.1",
-    "draft-js": "^0.11.7",
     "eslint-plugin-react": "^7.29.4",
     "js-cookie": "^3.0.5",
     "mdi-material-ui": "^7.1.0",
@@ -66,7 +66,9 @@
     "react-popper": "^2.2.5",
     "react-quill": "^2.0.0",
     "react-redux": "^7.2.9",
-    "redux-persist": "^6.0.0"
+    "redux-persist": "^6.0.0",
+    "slate-react": "^0.102.0",
+    "tinymce": "^7.0.1"
   },
   "devDependencies": {
     "eslint": "^7.32.0",
