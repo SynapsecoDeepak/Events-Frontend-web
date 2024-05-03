@@ -34,8 +34,13 @@ const EventCreateForm = () => {
     // Fetch venue data from the map API
     const fetchVenues = async () => {
       try {
-        const response = await axios.get("your_map_api_endpoint");
-        setVenues(response.data); // Assuming the response contains an array of venue objects
+        const response = await axios.get(`${BASE_URL}/event/venues/`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data", // Set content type as multipart/form-data
+          },
+        });
+        setVenues(response.data.data);
       } catch (error) {
         console.error("Error fetching venues:", error);
       }
@@ -43,8 +48,6 @@ const EventCreateForm = () => {
 
     fetchVenues();
   }, []);
-
-
 
   const handleVenueInputChange = (event) => {
     setVenueName(event.target.value);
@@ -83,26 +86,28 @@ const EventCreateForm = () => {
   };
 
   const handleSubmitCustomVenue = async () => {
-    setOpen(false);
     try {
       // Construct form data with venue name and PDF file
       const formData = new FormData();
-      formData.append("venue", venueName);
-      formData.append("pdfFile", pdfFile);
+      formData.append("name", venueName);
+      formData.append("location_details", pdfFile);
 
       // Send POST request to the API
-      const response = await axios.post("your_post_api_endpoint", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      // Handle success response
-      console.log("Response:", response.data);
-
-      // Close modal
-
+      const response = await axios.post(
+        `${BASE_URL}/event/add_venue/`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log("Response:", response.data.data.name);
+      const newVenue = response.data.data.name;
+      setVenues([...venues], newVenue);
       // Clear form fields
+      setOpen(false);
       setVenueName("");
       setPdfFile(null);
     } catch (error) {
@@ -114,12 +119,8 @@ const EventCreateForm = () => {
   const [formData, setFormData] = useState({
     name: "",
     shortDescription: "",
-    LongDescription: "",
-    sponsor_tagline: "",
-    description: "",
     logo: null,
     thumbnail: null,
-    email: "",
   });
 
   const handleInputChange = (prop) => (event) => {
@@ -169,17 +170,19 @@ const EventCreateForm = () => {
     const formDataToSend = new FormData(); // Create a new FormData object
 
     // Append each field to FormData object
-    formDataToSend.append("name", formData.name);
-    formDataToSend.append("sponsor_type", formData.type);
-    formDataToSend.append("sponsor_event", eventId);
-    formDataToSend.append("sponsor_tagline", formData.sponsor_tagline);
-    formDataToSend.append("description", formData.description);
-    formDataToSend.append("email", formData.email);
+    formDataToSend.append("EventName", formData.name);
+    formDataToSend.append("shortDescription", formData.shortDescription);
+    formDataToSend.append("venue", selectedVenue);
+    formDataToSend.append("longDescription", description);
+    formDataToSend.append("startDate", startDate);
+    formDataToSend.append("startTime", startTime);
+    formDataToSend.append("endDate", endDate);
+    formDataToSend.append("endTime", endTime);
     formDataToSend.append("logo", formData.logo); // Append logo file
     formDataToSend.append("thumbnail", formData.thumbnail); // Append thumbnail file
     try {
       const response = await axios.post(
-        `${BASE_URL}/event/sponsors/`,
+        `${BASE_URL}/event/create_event/`,
         formDataToSend,
         {
           headers: {
@@ -192,14 +195,16 @@ const EventCreateForm = () => {
       setFormData({
         name: "",
         shortDescription: "",
-        LongDescription: "",
-        sponsor_tagline: "",
-        description: "",
         logo: null,
         thumbnail: null,
-        email: "",
       });
-      toast.success("The Sponsor added successfully");
+      setSelectedVenue("");
+      setStartDate(null);
+      setStartTime("");
+      setEndDate(null);
+      setEndTime("");
+      setDescription("");
+      toast.success("The Event added successfully");
       // router.back();
     } catch (error) {
       console.error("Error submitting data:", error);
@@ -243,8 +248,8 @@ const EventCreateForm = () => {
           </div>
           <div>
             <input
-              id="type"
-              onChange={handleInputChange("type")}
+              id="shortDescription"
+              onChange={handleInputChange("shortDescription")}
               value={formData.shortDescription}
               className={styles.input}
             />
@@ -289,7 +294,7 @@ const EventCreateForm = () => {
             width: 400,
             bgcolor: "background.paper",
             boxShadow: 24,
-            borderRadius:"1rem",
+            borderRadius: "1rem",
             p: 8,
           }}
         >
@@ -302,9 +307,13 @@ const EventCreateForm = () => {
             value={venueName}
             onChange={handleVenueInputChange}
             fullWidth
-            sx={{ mb: 2,mt:4}}
+            sx={{ mb: 2, mt: 4 }}
           />
-          <input type="file" style={{marginTop:"1rem"}} onChange={handlePdfFileChange} />
+          <input
+            type="file"
+            style={{ marginTop: "1rem" }}
+            onChange={handlePdfFileChange}
+          />
           <Box sx={{ display: "flex", justifyContent: "space-between", mt: 4 }}>
             <Button variant="contained" onClick={handleSubmitCustomVenue}>
               OK
