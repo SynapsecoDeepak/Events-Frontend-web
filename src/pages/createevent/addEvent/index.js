@@ -69,21 +69,81 @@ const EventCreateForm = () => {
     setOpen(false);
   };
 
+  // const handleStartDateChange = (date) => {
+  //   setStartDate(date);
+  // };
+
+  // const handleEndDateChange = (date) => {
+  //   setEndDate(date);
+  // };
+
+  // const handleStartTimeChange = (event) => {
+  //   setStartTime(event.target.value);
+  // };
+
+  // const handleEndTimeChange = (event) => {
+  //   setEndTime(event.target.value);
+  // };
+
+
   const handleStartDateChange = (date) => {
-    setStartDate(date);
+    if (date < new Date()) {
+      setStartDate(new Date());
+      toast.error("Start date cannot be in the past");
+    } else {
+      setStartDate(date);
+    }
   };
-
+   
   const handleEndDateChange = (date) => {
-    setEndDate(date);
+    if (date < new Date()) {
+      setEndDate(new Date());
+      toast.error("End date cannot be in the past");
+    } else {
+      setEndDate(date);
+    }
   };
-
+   
   const handleStartTimeChange = (event) => {
-    setStartTime(event.target.value);
+    const selectedTime = event.target.value;
+    const currentTime = moment().format("HH:mm");
+    if (moment(selectedTime, "HH:mm").isBefore(moment(currentTime, "HH:mm"))) {
+      setStartTime(currentTime);
+      toast.error("Start time cannot be in the past");
+    } else {
+      setStartTime(selectedTime);
+    }
+  };
+   
+  const handleEndTimeChange = (event) => {
+    const selectedTime = event.target.value;
+    const currentTime = moment().format("HH:mm");
+    if (moment(selectedTime, "HH:mm").isBefore(moment(currentTime, "HH:mm"))) {
+      setEndTime(currentTime);
+      toast.error("End time cannot be in the past");
+    } else {
+      setEndTime(selectedTime);
+    }
   };
 
-  const handleEndTimeChange = (event) => {
-    setEndTime(event.target.value);
-  };
+  // const handleEndTimeChange = (event) => {
+  //   const selectedEndTime = event.target.value;
+  //   // Get current time
+  //   const currentTime = moment().format("HH:mm");
+  //   // Check if the selected time is in the past
+  //   if (moment(selectedEndTime, "HH:mm").isBefore(moment(currentTime, "HH:mm"))) {
+  //     // If it's in the past, set the end time to the current time
+  //     setEndTime(currentTime);
+  //     toast.error("End time cannot be in the past");
+  //   } else if (moment(selectedEndTime, "HH:mm").isBefore(moment(startTime, "HH:mm"))) {
+  //     // If end time is before start time, set end time equal to start time
+  //     setEndTime(startTime);
+  //     toast.error("End time cannot be before start time");
+  //   } else {
+  //     // If it's in the future and greater than start time, set the end time to the selected time
+  //     setEndTime(selectedEndTime);
+  //   }
+  // };
 
   const handleSubmitCustomVenue = async () => {
     try {
