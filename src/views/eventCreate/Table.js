@@ -20,9 +20,8 @@ import { ArrowDropDown, Cancel } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios"; // Import axios for making API requests
 import {
-  deleteSpeaker,
-  speakerDataFullDetails,
-  speakerEditData,
+  deleteEventData,
+  eventEditData,
 } from "src/store/slice/eventSlice";
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
@@ -41,8 +40,9 @@ const DashboardTable = () => {
   const rows = useSelector((state) => state.event?.speakerData?.data);
   const state_token = useSelector((state) => state.auth.user?.userData?.token);
   const UserEditAbleData = useSelector(
-    (state) => state?.event?.speakerEditData
+    (state) => state?.event?.eventEditData
   );
+  console.log('evendata dele',UserEditAbleData)
   const CookiesToken = Cookies.get("token");
   const token = CookiesToken || state_token;
   const rowsDetails = useSelector(
@@ -63,17 +63,17 @@ const DashboardTable = () => {
   }, [selectedRowData]);
 
   const fetchRowDataDetails = async (id) => {
-    try {
-      const response = await axios.get(`${BASE_URL}/user/speakers/${id}/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      dispatch(speakerDataFullDetails(response.data));
-      // setOpenDialog(true);
-    } catch (error) {
-      console.error("Error fetching row data details:", error);
-    }
+    // try {
+    //   const response = await axios.get(`${BASE_URL}/user/speakers/${id}/`, {
+    //     headers: {
+    //       Authorization: `Bearer ${token}`,
+    //     },
+    //   });
+    //   dispatch(speakerDataFullDetails(response.data));
+    //   // setOpenDialog(true);
+    // } catch (error) {
+    //   console.error("Error fetching row data details:", error);
+    // }
   };
 
   const handleClick = (rowData) => {
@@ -90,17 +90,19 @@ const DashboardTable = () => {
   };
 
   const handleDelete = async () => {
+   console.log('deleid', UserEditAbleData?.event_id)
     try {
       const response = await axios.delete(
-        `${BASE_URL}/user/speakers/${UserEditAbleData?.speaker_id}/`,
+        `${BASE_URL}/event/
+        ${UserEditAbleData?.event_id}/`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      toast.success("Speaker deleted successfully");
-      dispatch(deleteSpeaker(UserEditAbleData?.speaker_id));
+      toast.success("Event deleted successfully");
+      dispatch(deleteEventData(UserEditAbleData?.event_id));
       setAnchorEl(null);
     } catch (error) {
       console.error("Error fetching row data details:", error);
@@ -109,8 +111,9 @@ const DashboardTable = () => {
   };
 
   const handleAction = (event, row) => {
+    console.log(row)
     setAnchorEl(event.currentTarget);
-    dispatch(speakerEditData(row));
+    dispatch(eventEditData(row));
   };
 
   return (
@@ -171,7 +174,7 @@ const DashboardTable = () => {
                       {row.speaker_user.status}
                     </Button>
                   </TableCell> */}
-                  {/* <TableCell>
+                 <TableCell>
                     <Button
                       sx={{
                         backgroundColor: "#0E446C !important",
@@ -193,7 +196,7 @@ const DashboardTable = () => {
                         Delete
                       </MenuItem>
                     </Menu>
-                  </TableCell> */}
+                  </TableCell> 
                 </TableRow>
               ))}
           </TableBody>

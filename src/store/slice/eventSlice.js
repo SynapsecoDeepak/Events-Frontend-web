@@ -10,6 +10,7 @@ const initialState = {
   speakerEditData: null,
   sponsorsEditData: null,
   attendeesEditData: null,
+  eventEditData: null,
 };
 
 const eventSlice = createSlice({
@@ -46,6 +47,9 @@ const eventSlice = createSlice({
     attendeesEditData(state, action) {
       state.attendeesEditData = action.payload;
     },
+    eventEditData(state, action) {
+      state.eventEditData = action.payload;
+    },
     deleteSpeaker:(state,action)=>{
       const speakerId = action.payload;
       state.speakerData.data = state.speakerData.data.filter(
@@ -63,6 +67,12 @@ const eventSlice = createSlice({
       state.attendeesData.data = state.attendeesData.data.filter(
         (attendee)=>attendee.attendee_id !== attendeeId
       )
+    },
+    deleteEventData:(state,action)=>{
+      const E_id = action.payload;
+      state.eventData.data = state.eventData.data.filter(
+        (del)=>del.event_id !== E_id
+      )
     }
   },
 });
@@ -78,9 +88,11 @@ export const {
   speakerEditData,
   sponsorsEditData,
   attendeesEditData,
+  eventEditData,
   deleteSpeaker,
   deleteSponsors,
-  deleteAttendee
+  deleteAttendee,
+  deleteEventData
 } = eventSlice.actions;
 
 export default eventSlice.reducer;

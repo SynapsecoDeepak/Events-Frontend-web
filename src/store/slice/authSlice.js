@@ -1,7 +1,7 @@
 // authSlice.js
  
 import { createSlice } from '@reduxjs/toolkit';
-import {attendeesData, event, eventID, speakerData, speakerDataFullDetails, sponsorData, sponsorDataFullDetails} from "./eventSlice"
+import {attendeesData, attendeesEditData, event, eventEditData, eventID, speakerData, speakerDataFullDetails, speakerEditData, sponsorData, sponsorDataFullDetails, sponsorsEditData} from "./eventSlice"
  
 const initialState = {
   isAuthenticated: false,
@@ -36,6 +36,10 @@ export const logoutAndResetEvent = ()=>{
     dispatch(sponsorData(null))
     dispatch(attendeesData(null))
     dispatch(speakerDataFullDetails(null))
+    dispatch(speakerEditData(null))
+    dispatch(sponsorsEditData(null))
+    dispatch(attendeesEditData(null))
+    dispatch(eventEditData(null))
     dispatch(sponsorDataFullDetails(null))
   }
 
