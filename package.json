@@ -60,14 +60,12 @@
     "react-bootstrap": "^2.10.2",
     "react-datepicker": "^4.25.0",
     "react-dom": "17.0.2",
-    "react-draft-wysiwyg": "^1.15.0",
     "react-hot-toast": "^2.4.1",
     "react-perfect-scrollbar": "^1.5.8",
     "react-popper": "^2.2.5",
     "react-quill": "^2.0.0",
     "react-redux": "^7.2.9",
     "redux-persist": "^6.0.0",
-    "slate-react": "^0.102.0",
     "tinymce": "^7.0.1"
   },
   "devDependencies": {
