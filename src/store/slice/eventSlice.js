@@ -5,6 +5,7 @@ const initialState = {
   speakerData: null,
   sponsorData: null,
   attendeesData: null,
+  registrationData: null,
   speakerDataFullDetails: null,
   sponsorDataFullDetails: null,
   speakerEditData: null,
@@ -23,8 +24,14 @@ const eventSlice = createSlice({
     eventID(state, action) {
       state.eventID = action.payload;
     },
+    eventIDByQuery(state, action) {
+      state.eventIDByQuery = action.payload;
+    },
     speakerData(state, action) {
       state.speakerData = action.payload;
+    },
+    registrationData(state, action) {
+      state.registrationData = action.payload;
     },
     speakerDataFullDetails(state, action) {
       state.speakerDataFullDetails = action.payload;
@@ -80,7 +87,9 @@ const eventSlice = createSlice({
 export const {
   event,
   eventID,
+  eventIDByQuery,
   speakerData,
+  registrationData,
   speakerDataFullDetails,
   sponsorDataFullDetails,
   sponsorData,

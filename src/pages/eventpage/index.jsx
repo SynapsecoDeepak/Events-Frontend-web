@@ -5,9 +5,25 @@ import group from "src/images/Group 2597.png";
 import group1 from "src/images/Group 2598.png";
 import group2 from "src/images/Group 2599.png";
 import { useRouter } from "next/router";
+import { useDispatch } from "react-redux";
+import { eventIDByQuery } from "src/store/slice/eventSlice";
 
 const EventPage = () => {
   const router = useRouter();
+
+  
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    // Dispatch an action to save the ID in Redux when the page loads
+    const { id } = router.query;
+    if (id) {
+      dispatch(eventIDByQuery(id));
+    }
+  }, []);
+
+
+
   const handleRoute = () => {
     router.push('/Attendee-registration')
   };

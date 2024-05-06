@@ -17,11 +17,13 @@ import { attendeesEditData, deleteAttendee } from "src/store/slice/eventSlice";
 import axios from "axios";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
+import { useRouter } from "next/router";
 
 
 
 const DashboardTable = () => {
   const [anchorEl, setAnchorEl] = useState(null);
+  const router = useRouter();
   const dispatch = useDispatch();
   const [selectedAction, setSelectedAction] = useState(null);
 
@@ -63,8 +65,13 @@ const DashboardTable = () => {
   };
 
   const handleAction = (event, row) => {
+    console.log(row)
     setAnchorEl(event.currentTarget);
     dispatch(attendeesEditData(row));
+  };
+
+  const handleEdit = () => {
+    router.push("/attendees/edit-attendees");
   };
 
   return (
@@ -134,9 +141,7 @@ const DashboardTable = () => {
                       open={Boolean(anchorEl)}
                       onClose={handleClose}
                     >
-                      <MenuItem onClick={() => handleMenuItemClick("Edit")}>
-                        Edit
-                      </MenuItem>
+                          <MenuItem onClick={() => handleEdit(row)}>Edit</MenuItem>
                       <MenuItem onClick={() => handleDelete(row)}>
                         Delete
                       </MenuItem>

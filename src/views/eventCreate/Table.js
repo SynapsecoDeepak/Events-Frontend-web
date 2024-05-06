@@ -86,7 +86,7 @@ const DashboardTable = () => {
   };
 
   const handleEdit = () => {
-    router.push("/speaker/edit-speaker");
+    router.push("/createevent/editEvent");
   };
 
   const handleDelete = async () => {

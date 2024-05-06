@@ -19,6 +19,7 @@ import {
   attendeesData,
   event,
   eventID,
+  registrationData,
   speakerData,
   sponsorData,
 } from "src/store/slice/eventSlice";
@@ -37,6 +38,8 @@ const AppBarContent = (props) => {
   const [eventList, setEventList] = useState("");
 
   const state_token = useSelector((state) => state.auth.user?.userData?.token);
+  const userId = useSelector((state) => state.auth.user?.userData?.data?.id);
+
 
   const eventData = useSelector((state) => state.event?.eventData?.data);
 
@@ -59,7 +62,7 @@ const AppBarContent = (props) => {
           }
         )
         .then((response) => {
-          console.log("Response:", response.data);
+          console.log("speaker:", response.data);
           const speaker_data = response.data;
           dispatch(speakerData(speaker_data));
         })
@@ -77,7 +80,7 @@ const AppBarContent = (props) => {
           }
         )
         .then((response) => {
-          console.log("Response:", response.data);
+          console.log("sponsors", response.data);
           const sponsors_list = response.data;
           dispatch(sponsorData(sponsors_list));
         })
@@ -98,6 +101,28 @@ const AppBarContent = (props) => {
           console.log("Response:", response.data);
           const attendees_list = response.data;
           dispatch(attendeesData(attendees_list));
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+
+      axios
+        .post(
+          `${BASE_URL}/user/registration_list/`,
+            {
+              "event_id":selectedEventId,
+              "user_id":userId   
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${state_token}`,
+            },
+          }
+        )
+        .then((response) => {
+          console.log("attendessdata:", response.data);
+          const attendees_list = response.data;
+          dispatch(registrationData(attendees_list));
         })
         .catch((error) => {
           console.error("Error:", error);

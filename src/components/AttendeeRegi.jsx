@@ -18,6 +18,8 @@ const AttendeeRegi = () => {
   const [activeTab, setActiveTab] = useState(0); // State to manage active tab
 
   const state_token = useSelector((state) => state.auth.user?.userData?.token);
+  const eventIDByQueryID = useSelector((state) => state?.event?.eventIDByQuery);
+
   const CookiesToken = Cookies.get("token");
 
   const token = CookiesToken || state_token;
@@ -82,6 +84,7 @@ const AttendeeRegi = () => {
         website: formData.personalWebsite,
         organization_name: formData.organization,
       },
+      event_id:eventIDByQueryID,
       ticket: {
         ticket_type: formData.ticketType,
         ticket_price: parseFloat(formData.ticketPrice), // Convert to number if necessary
@@ -132,10 +135,10 @@ const AttendeeRegi = () => {
 
       <div
         style={{
+          backgroundColor:"white !important",
           width: "100%",
           maxWidth: 1000,
           border: "1px solid #C9C9C9",
-          background: "white !important",
           borderRadius: "5px",
         }}
       >

@@ -72,7 +72,7 @@ const SearchInput = () => {
           src="/page_two.svg"
         />
         <div
-          onClick={() => router.push("/sponsors/add-sponsors/")}
+          // onClick={() => router.push("/sponsors/add-sponsors/")}
           style={{
             width: 160,
             height: 40,
