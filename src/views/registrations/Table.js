@@ -11,6 +11,7 @@ import TableContainer from "@mui/material/TableContainer";
 import Button from "@mui/material/Button";
 import { Menu, MenuItem } from "@mui/material";
 import { ArrowDropDown, MoreVert } from "@mui/icons-material";
+import { useSelector } from "react-redux";
 
 const rows = [
   {
@@ -69,17 +70,23 @@ const rows = [
 ];
 
 const statusObj = {
-  Active: { color: "success" },
-  Inactive: { color: "#E2B675" },
+  absent: { color: "success" },
+  present: { color: "#E2B675" },
 };
 const statusObj2 = {
-  paid: { color: "success" },
-  unpaid: { color: "#E2B675" },
+  "true": { color: "success" },
+  "false": { color: "#E2B675" },
 };
 
 const DashboardTable = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedAction, setSelectedAction] = useState(null);
+
+  const rowsDetails = useSelector(
+    (state) => state.event?.registrationData?.data
+  );
+
+  console.log('redis',rowsDetails)
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -100,19 +107,18 @@ const DashboardTable = () => {
         <Table sx={{ minWidth: 800 }} aria-label="table in dashboard">
           <TableHead>
             <TableRow>
-              <TableCell>Speaker Name</TableCell>
+              <TableCell> Name</TableCell>
               <TableCell>Organization</TableCell>
-              <TableCell>Category</TableCell>
               <TableCell>Status</TableCell>
               <TableCell>Payment-Status</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
+            {rowsDetails?.map((row) => (
               <TableRow
                 hover
-                key={row.name}
+                key={row.registration_id}
                 sx={{ "&:last-of-type td, &:last-of-type th": { border: 0 } }}
               >
                 <TableCell
@@ -122,38 +128,40 @@ const DashboardTable = () => {
                     <Typography
                       sx={{ fontWeight: 500, fontSize: "0.875rem !important" }}
                     >
-                      {row.name}
+                      {row?.user_id?.name}
                     </Typography>
                   </Box>
                 </TableCell>
                 <TableCell style={{ color: "#2BACE2" }}>
-                  {row.organization}
+                  {row?.user_id?.organization ||'Not Available'}
                 </TableCell>
-                <TableCell>{row.date}</TableCell>
                 <TableCell sx={{ fontSize: "12px !important" }}>
                   <Button
                     variant="contained"
                     sx={{
-                      bgcolor: statusObj[row.status].color,
+                      bgcolor: statusObj[row?.user_id?.status].color,
                       padding: "5px",
                       width: "68px",
                       height: "22px",
+                      color:"white !important"
                     }}
                   >
-                    {row.status}
+                    {row?.user_id?.status}
                   </Button>
                 </TableCell>
                 <TableCell sx={{ fontSize: "12px !important" }}>
                   <Button
                     variant="contained"
                     sx={{
-                      bgcolor: statusObj2[row.paymentStatus].color,
+                      bgcolor: statusObj2[row?.payment_status.toString()].color,
                       padding: "5px",
                       width: "68px",
                       height: "22px",
+                      color:"white !important"
+
                     }}
                   >
-                    {row.paymentStatus}
+                    {row?.payment_status.toString()}
                   </Button>
                 </TableCell>
                 <TableCell>

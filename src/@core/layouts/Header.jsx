@@ -1,6 +1,11 @@
 import React from "react";
+import { useSelector } from "react-redux";
 
 const Header = () => {
+    const rowsDetails = useSelector(
+    (state) => state.event?.eventPublicData?.data
+  );
+
   return (
     <nav
       className="head_nav"
@@ -12,7 +17,7 @@ const Header = () => {
       }}
     >
       <div className="logo">
-        <img src="/dummy-logo.png" alt="logo" />
+        <img src={rowsDetails?.event_banner} alt="logo" />
       </div>
       <div className="link">
         <ul

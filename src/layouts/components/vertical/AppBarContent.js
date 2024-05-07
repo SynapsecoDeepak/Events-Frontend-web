@@ -21,7 +21,7 @@ import {
   eventID,
   registrationData,
   speakerData,
-  sponsorData,
+  sponsorData
 } from "src/store/slice/eventSlice";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
@@ -120,8 +120,8 @@ const AppBarContent = (props) => {
           }
         )
         .then((response) => {
-          console.log("attendessdata:", response.data);
           const attendees_list = response.data;
+          console.log("attendessdata:", response.data);
           dispatch(registrationData(attendees_list));
         })
         .catch((error) => {

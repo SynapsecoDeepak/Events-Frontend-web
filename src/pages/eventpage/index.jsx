@@ -5,8 +5,10 @@ import group from "src/images/Group 2597.png";
 import group1 from "src/images/Group 2598.png";
 import group2 from "src/images/Group 2599.png";
 import { useRouter } from "next/router";
-import { useDispatch } from "react-redux";
-import { eventIDByQuery } from "src/store/slice/eventSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { eventIDByQuery, eventPublicData } from "src/store/slice/eventSlice";
+import axios from "axios";
+import { BASE_URL } from "src/constants";
 
 const EventPage = () => {
   const router = useRouter();
@@ -19,10 +21,26 @@ const EventPage = () => {
     if(router.query && router.query.id){
       const { id } = router.query;
       console.log('event id from url',id)
-
         dispatch(eventIDByQuery(id));
       }
+      const fetchEventData = async () => {
+        try {
+          const response = await axios.get(`${BASE_URL}/event/eventpage/${id}/`, {
+          });
+          dispatch(eventPublicData(response.data))
+        } catch (error) {
+          console.error("api error", error);
+        }
+      };
+      fetchEventData();
+
     }, [router.query,dispatch]);
+
+
+    const rowsDetails = useSelector(
+      (state) => state.event?.eventPublicData?.data
+    );
+  
 
 
 
@@ -34,7 +52,7 @@ const EventPage = () => {
     <>
       <div className="main_div">
         <div className="image_div">
-          <img src="/dummy-logo.png" alt="logo" height="40%" width="60%" />
+          <img src={rowsDetails?.event_banner} alt="logo"  width="100%" />
         </div>
         <div className="event_date">
           <div className="calender">
@@ -802,22 +820,18 @@ const EventPage = () => {
             </svg>
           </div>
           <div className="event_text">
-            <p className="first">Event Date</p>
-            <p className="second">10-jan 25-jan</p>
-            <p className="third">10:00Am - 4:00Pm</p>
-            <p className="four">2024</p>
+            <p className="first">{rowsDetails?.name}</p>
+            <p className="second" style={{fontSize:'1rem'}}>{rowsDetails?.start_date} to {rowsDetails?.start_date}</p>
+            {/* <p className="third">{rowsDetails?.time}-{rowsDetails?.end_time} </p> */}
+            {/* <p className="third">10:00Am - 4:00Pm</p> */}
+            {/* <p className="four">2024</p> */}
           </div>
         </div>
 
         <div className="right_div">
-          <h1>SimulCare Symposium 2024</h1>
+          <h3>{rowsDetails?.event_short_description}</h3>
           <p>
-            Experience healthcare innovation at SimulCare Symposium 2024! Join
-            leading experts for hands-on simulations, discussions, and insights
-            into the future of medical training. Explore cutting-edge
-            technologies shaping the industry and elevate your understanding of
-            simulated healthcare scenarios. Uncover the next frontier in patient
-            care with us!
+          {rowsDetails?.event_long_description}
           </p>
         </div>
       </div>

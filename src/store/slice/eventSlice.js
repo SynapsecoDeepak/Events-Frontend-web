@@ -12,6 +12,7 @@ const initialState = {
   sponsorsEditData: null,
   attendeesEditData: null,
   eventEditData: null,
+  eventPublicData:null
 };
 
 const eventSlice = createSlice({
@@ -57,6 +58,9 @@ const eventSlice = createSlice({
     eventEditData(state, action) {
       state.eventEditData = action.payload;
     },
+    eventPublicData(state, action) {
+      state.eventPublicData = action.payload;
+    },
     deleteSpeaker:(state,action)=>{
       const speakerId = action.payload;
       state.speakerData.data = state.speakerData.data.filter(
@@ -101,7 +105,8 @@ export const {
   deleteSpeaker,
   deleteSponsors,
   deleteAttendee,
-  deleteEventData
+  deleteEventData,
+  eventPublicData
 } = eventSlice.actions;
 
 export default eventSlice.reducer;
