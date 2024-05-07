@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import BlankLayout2 from "src/@core/layouts/AnotherBlankLayout";
 import Image from "next/image";
 import group from "src/images/Group 2597.png";
@@ -16,11 +16,13 @@ const EventPage = () => {
 
   useEffect(() => {
     // Dispatch an action to save the ID in Redux when the page loads
-    const { id } = router.query;
-    if (id) {
-      dispatch(eventIDByQuery(id));
-    }
-  }, []);
+    if(router.query && router.query.id){
+      const { id } = router.query;
+      console.log('event id from url',id)
+
+        dispatch(eventIDByQuery(id));
+      }
+    }, [router.query,dispatch]);
 
 
 
