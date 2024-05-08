@@ -136,6 +136,7 @@ const EditSponsorsForm = () => {
           </div>
           <div>
             <input
+            disabled
               id="email"
               onChange={handleInputChange("email")}
               value={formData.email}

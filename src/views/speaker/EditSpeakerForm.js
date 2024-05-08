@@ -67,7 +67,7 @@ const EditSpeakerForm = () => {
     const formDataToSend = new FormData();
 
     formDataToSend.append("speaker_user_name", formData.speakerName);
-    formDataToSend.append("speaker_user",UserEditAbleData?.speaker_user?.id );
+    formDataToSend.append("speaker_user_id",UserEditAbleData?.speaker_user?.id );
     formDataToSend.append("speaker_event", [eventId]);
     formDataToSend.append("speaker_user_email", formData.emailAddress);
     formDataToSend.append("session_speaker", formData.sessions);
@@ -81,7 +81,7 @@ const EditSpeakerForm = () => {
 
     try {
       const response = await axios.patch(
-        `${BASE_URL}/user/speakers/${UserEditAbleData.speaker_id}/`,  
+        `${BASE_URL}/user/newspeakers/${UserEditAbleData.speaker_id}/`,  
               formDataToSend,
         {
           headers: {
