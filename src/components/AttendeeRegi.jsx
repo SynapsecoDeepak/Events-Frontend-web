@@ -15,22 +15,21 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
-import { eventPublicData } from "src/store/slice/eventSlice";
 
 const AttendeeRegi = () => {
   const dispatch = useDispatch();
 
   const [activeTab, setActiveTab] = useState(0); // State to manage active tab
   const eventIDByQueryID = useSelector((state) => state?.event?.eventIDByQuery);
-  const data = useSelector(
-    (state) => state?.event?.data?.ticket_types
+  const eventPublicData = useSelector(
+    (state) => state?.event?.eventPublicData?.ticket_types
   );
 
-  const [selectedTicket, setSelectedTicket] = useState(data[0]);
+  const [selectedTicket, setSelectedTicket] = useState(eventPublicData[0]);
 
   const handleTicketChange = (e) => {
     const selectedType = parseInt(e.target.value);
-    const selected = data.find(
+    const selected = eventPublicData.find(
       (ticket) => ticket.ticket_type_id === selectedType
     );
 
@@ -103,6 +102,7 @@ const AttendeeRegi = () => {
   };
 
   const handleSubmit = async (event) => {
+    dispatch(eventPublicData(null));
 
     event.preventDefault();
 
@@ -365,7 +365,7 @@ const AttendeeRegi = () => {
                   className="inputfield"
                   onChange={handleTicketChange}
                 >
-                  {data.map((ticket) => (
+                  {eventPublicData.map((ticket) => (
                     <option
                       key={ticket.ticket_type_id}
                       value={ticket.ticket_type_id}
