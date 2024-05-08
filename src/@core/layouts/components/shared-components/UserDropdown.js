@@ -31,7 +31,7 @@ import {
   Settings,
 } from "@mui/icons-material";
 import LanguageIcon from "@mui/icons-material/Language";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout, logoutAndResetEvent } from "src/store/slice/authSlice";
 import Cookies from "js-cookie";
 
@@ -50,7 +50,12 @@ const UserDropdown = () => {
   // ** States
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const [userDetail, setUserDetail] = useState({});
+
+  // const userDetails =  useSelector(state=>State?.auth?.user?.userDatadata)
+
+  const userDetails = useSelector((state) => state?.auth?.user?.userData?.data);
+
+
   const dispatch = useDispatch();
 
   const handleSignOut = () => {
@@ -104,8 +109,8 @@ const UserDropdown = () => {
         onClick={handleDropdownOpen}
         sx={{ width: 40, height: 40 }}
         src={
-          userDetail?.profile_pic
-            ? `http://104.211.25.86:8073/${userDetail?.profile_pic}`
+          userDetails?.profile_pic
+            ? `http://104.211.25.86:8073/${userDetails?.profile_pic}`
             : "/images/avatars/1.png"
         }
       />{" "}
@@ -136,8 +141,8 @@ const UserDropdown = () => {
               <Avatar
                 alt="John Doe"
                 src={
-                  userDetail?.profile_pic
-                    ? `http://104.211.25.86:8073/${userDetail?.profile_pic}`
+                  userDetails?.profile_pic
+                    ? `http://104.211.25.86:8073/${userDetails?.profile_pic}`
                     : "/images/avatars/1.png"
                 }
                 sx={{ width: "2.5rem", height: "2.5rem" }}
@@ -151,14 +156,14 @@ const UserDropdown = () => {
                 flexDirection: "column",
               }}
             >
-              <Typography sx={{ fontWeight: 600 }}>{`${
-                userDetail?.fname || "N/A"
-              } ${userDetail?.lname || "N/A"}`}</Typography>
+              <Typography sx={{ fontWeight: 600 }}>{
+                userDetails?.name || "N/A"}
+           </Typography>
               <Typography
                 variant="body2"
                 sx={{ fontSize: "0.8rem", color: "text.disabled" }}
               >
-                {`${userDetail?.user_type || "N/A"}`}
+                {`${userDetails?.user_type || "N/A"}`}
               </Typography>
             </Box>
           </Box>
