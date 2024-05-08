@@ -131,7 +131,7 @@ const DashboardTable = () => {
           </TableHead>
           <TableBody>
             {Array.isArray(eventData) &&
-              eventData.map((row) => (
+              [...eventData].reverse().map((row) => (
                 <TableRow
                   hover
                   key={row?.event_id}

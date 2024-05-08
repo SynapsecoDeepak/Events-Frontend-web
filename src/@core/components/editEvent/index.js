@@ -219,6 +219,14 @@ const EventEditForm = () => {
 
   const handleSubmit = async (event) => {
     console.log(UserEditAbleData.event_id)
+
+    if (!startDate || !endDate) {
+      toast.error('Date cannot be empty')
+          
+          return; 
+        }
+       
+
     event.preventDefault(); // Prevent default form submission
     const formDataToSend = new FormData(); // Create a new FormData object
 
@@ -269,7 +277,7 @@ const EventEditForm = () => {
       fetchEventData();
 
       toast.success("The Event added successfully");
-      // router.back();
+      router.back();
     } catch (error) {
       console.error("Error submitting data:", error);
     }

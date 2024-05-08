@@ -19,7 +19,6 @@ import toast from "react-hot-toast";
 import Cookies from "js-cookie";
 import { BASE_URL } from "src/constants";
 
-
 // import { Chip } from '@mui/material-next'
 // import { Chip } from '@mui/material-next'
 
@@ -27,10 +26,10 @@ const EditAttendees = () => {
   const router = useRouter();
 
   const state_token = useSelector((state) => state.auth.user?.userData?.token);
-  const UserEditAbleData = useSelector(    (state) => state?.event?.attendeesEditData);
+  const UserEditAbleData = useSelector(
+    (state) => state?.event?.attendeesEditData
+  );
   const eventId = useSelector((state) => state?.event?.eventID);
-
-
 
   console.log("UserEditAbledata", UserEditAbleData);
   const CookiesToken = Cookies.get("token");
@@ -39,24 +38,22 @@ const EditAttendees = () => {
 
   const [formData, setFormData] = useState({
     // State to hold form data
-    firstName: '',
-    lastName:'',
-    email:'',
-    contact:'',
-    organization:'',
-    designation:'',
-    address:'',
-    country:'',
-    state:'',
-    city:'',
-    zipCode:'',
+    firstName: UserEditAbleData?.attendee_user?.name,
+    lastName: "",
+    email: "",
+    contact: "",
+    organization: UserEditAbleData?.attendee_user?.organization_name,
+    designation: "",
+    address: "",
+    country: "",
+    state: "",
+    city: "",
+    zipCode: "",
   });
 
   const handleInputChange = (prop) => (event) => {
     setFormData({ ...formData, [prop]: event.target.value });
   };
-
- 
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -65,7 +62,7 @@ const EditAttendees = () => {
     formDataToSend.append("name", formData.firstName);
     formDataToSend.append("name", formData.lastName);
     formDataToSend.append("email", formData.email);
-    formDataToSend.append("user_type", 'Attendee');
+    formDataToSend.append("user_type", "Attendee");
     formDataToSend.append("location", formData.address);
     formDataToSend.append("organization_name", formData.organization);
     formDataToSend.append("designation", formData.designation);
@@ -74,10 +71,10 @@ const EditAttendees = () => {
     formDataToSend.append("county_of_residence", formData.country);
 
     try {
-      const response = await axios.put(
+      const response = await axios.patch(
         `${BASE_URL}/user/newattendees/
-        ${UserEditAbleData.attendee_id}/`,  
-              formDataToSend,
+        ${UserEditAbleData.attendee_id}/`,
+        formDataToSend,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -122,9 +119,9 @@ const EditAttendees = () => {
           </div>
           <div>
             <input
-                 id="firstName"
-                 value={formData.firstName}
-                 onChange={handleInputChange("firstName")}
+              id="firstName"
+              value={formData.firstName}
+              onChange={handleInputChange("firstName")}
               className={styles.input}
             />
           </div>
@@ -190,7 +187,7 @@ const EditAttendees = () => {
               id="designation"
               value={formData.designation}
               onChange={handleInputChange("designation")}
-        className={styles.input}
+              className={styles.input}
             />
           </div>
         </div>
@@ -204,7 +201,7 @@ const EditAttendees = () => {
               id="organization"
               value={formData.organization}
               onChange={handleInputChange("organization")}
-        className={styles.input}
+              className={styles.input}
             />
           </div>
         </div>
@@ -217,54 +214,49 @@ const EditAttendees = () => {
           marginBottom: 25,
         }}
       >
-      <div className={styles.column}>
-        <div>
-          <label className={styles.label}>Description</label>
+        <div className={styles.column}>
+          <div>
+            <label className={styles.label}>Address</label>
+          </div>
+          <div>
+            <input
+              type="text"
+              id="address"
+              value={formData.address}
+              onChange={handleInputChange("address")}
+              className={styles.input}
+            />
+          </div>
         </div>
-        <div>
-          <input
-            type="text"
-            id="address"
-            value={formData.address}
-            onChange={handleInputChange("address")}
-    className={styles.input}
-          />
+        <div className={styles.column}>
+          <div>
+            <label className={styles.label}>State</label>
+          </div>
+          <div>
+            <input
+              type="text"
+              id="state"
+              value={formData.state}
+              onChange={handleInputChange("state")}
+              className={styles.input}
+            />
+          </div>
+        </div>
+        <div className={styles.column}>
+          <div>
+            <label className={styles.label}>City</label>
+          </div>
+          <div>
+            <input
+              type="text"
+              id="city"
+              value={formData.city}
+              onChange={handleInputChange("city")}
+              className={styles.input}
+            />
+          </div>
         </div>
       </div>
-      <div className={styles.column}>
-        <div>
-          <label className={styles.label}>State</label>
-        </div>
-        <div>
-          <input
-            type="text"
-            id="state"
-            value={formData.state}
-            onChange={handleInputChange("state")}
-    className={styles.input}
-          />
-        </div>
-      </div>
-      <div className={styles.column}>
-        <div>
-          <label className={styles.label}>City</label>
-        </div>
-        <div>
-          <input
-            type="text"
-            id="city"
-            value={formData.city}
-            onChange={handleInputChange("city")}
-    className={styles.input}
-          />
-        </div>
-      </div>
-      </div>
-
-  
-
-
-  
 
       <div style={{ display: "flex", justifyContent: "center" }}>
         <button onClick={handleSubmit} className={styles.submitButton}>
