@@ -71,10 +71,7 @@ const EditAttendees = () => {
     formDataToSend.append("county_of_residence", formData.country);
 
     try {
-      const response = await axios.patch(
-        `${BASE_URL}/user/newattendees/
-        ${UserEditAbleData.attendee_id}/`,
-        formDataToSend,
+      const response = await axios.patch(`${BASE_URL}/user/newattendees/${UserEditAbleData.attendee_id}/`,formDataToSend,
         {
           headers: {
             Authorization: `Bearer ${token}`,

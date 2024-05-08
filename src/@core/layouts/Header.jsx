@@ -17,7 +17,7 @@ const Header = () => {
       }}
     >
       <div className="logo">
-        <img src={rowsDetails?.event_banner} alt="logo" />
+        <img style={{margin:'1rem 0.50rem'}} src={rowsDetails?.event_banner} alt="logo" width='20%' />
       </div>
       <div className="link">
         <ul
