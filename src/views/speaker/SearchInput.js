@@ -10,8 +10,30 @@ import TableCell from "@mui/material/TableCell";
 import Typography from "@mui/material/Typography";
 import TableContainer from "@mui/material/TableContainer";
 import { useRouter } from "next/router";
+import { useDispatch, useSelector } from "react-redux";
+import { updateFilteredData, updateSearchQuery } from "src/store/slice/eventSlice";
 const SearchInput = () => {
+
   const router = useRouter();
+  const dispatch = useDispatch();
+
+  const speakerData = useSelector((state) => state.event?.speakerData?.data);
+  
+  const handleInputChange = (event) => {
+    const query = event.target.value;
+    dispatch(updateSearchQuery(query));
+    filterData(query);
+  };
+ 
+  const filterData = (query) => {
+    const filteredData = speakerData.filter((speaker) =>
+      speaker?.speaker_user?.name.toLowerCase().includes(query.toLowerCase())
+    //  ||
+    //   speaker.organization.toLowerCase().includes(query.toLowerCase())
+    );
+    dispatch(updateFilteredData(filteredData));
+  };
+
   return (
     <Box
       sx={{
@@ -44,6 +66,7 @@ const SearchInput = () => {
         <input
           style={{ border: "none", width: "100%" }}
           type="text"
+          onChange={handleInputChange}
           placeholder="Search speaker name and organization"
         />
       </Box>

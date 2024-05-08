@@ -72,14 +72,22 @@ const DashboardTable = () => {
   // const [rowDataDetails, setRowDataDetails] = useState(null);
 
   const rows = useSelector((state) => state.event?.speakerData?.data);
-  const UserEditAbleData = useSelector(
-    (state) => state?.event?.speakerEditData
-  );
+  const filteredData = useSelector((state) => state.event?.filteredData);
+
+
+
+  const searchQuery = useSelector((state) => state?.event?.searchQuery);
+  const showResultNotFound =
+    (searchQuery && filteredData && filteredData.length === 0) ||
+    (searchQuery && !filteredData);
+
+  const dataToRender = filteredData && filteredData.length > 0 ? filteredData : rows;
+ 
+
+  const UserEditAbleData = useSelector((state) => state?.event?.speakerEditData);
   const CookiesToken = Cookies.get("token");
   const token = CookiesToken || state_token;
-  const rowsDetails = useSelector(
-    (state) => state.event?.speakerDataFullDetails?.data?.speaker_user
-  );
+  const rowsDetails = useSelector( (state) => state.event?.speakerDataFullDetails?.data?.speaker_user);
 
   const statusObj = {
     present: { color: "success" },
@@ -147,6 +155,11 @@ const DashboardTable = () => {
   return (
     <Card>
       <TableContainer>
+
+      {showResultNotFound ? (
+<Typography sx={{margin:'1rem 0rem',paddingLeft:"1rem"}}>No results found</Typography>
+      ) : (
+        
         <Table sx={{ minWidth: 800 }} aria-label="table in dashboard">
           <TableHead>
             <TableRow>
@@ -157,11 +170,11 @@ const DashboardTable = () => {
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
-          {rows == null &&(<Typography sx={{margin:'1rem 0rem',paddingLeft:"1rem"}}>Selected event does not have speaker list</Typography>)}
+          {dataToRender == null &&(<Typography sx={{margin:'1rem 0rem',paddingLeft:"1rem"}}>Selected event does not have speaker list</Typography>)}
 
           <TableBody>
-            {Array.isArray(rows) &&
-              [...rows].reverse().map((row) => (
+            {Array.isArray(dataToRender) &&
+              [...dataToRender].reverse().map((row) => (
                 <TableRow
                   hover
                   key={row?.speaker_user?.name}
@@ -231,6 +244,7 @@ const DashboardTable = () => {
               ))}
           </TableBody>
         </Table>
+      )}
       </TableContainer>
 
       {/* Dialog Box */}

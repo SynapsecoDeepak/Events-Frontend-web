@@ -11,66 +11,11 @@ import TableContainer from "@mui/material/TableContainer";
 import Button from "@mui/material/Button";
 import { Menu, MenuItem } from "@mui/material";
 import { ArrowDropDown, MoreVert } from "@mui/icons-material";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { registrationData } from "src/store/slice/eventSlice";
 import axios from "axios";
 import { BASE_URL } from "src/constants";
 
-const rows = [
-  {
-    age: 27,
-    status: "Active",
-    paymentStatus:'paid',
-    date: "2",
-    name: "Sally Quinn",
-    salary: "$19586.23",
-    organization: "The Energy Research Institute(TERI)",
-    designation: "Human Resources Assistant",
-  },
-  {
-    age: 61,
-    date: "5",
-    paymentStatus:'unpaid',
-
-    status: "Inactive",
-    name: "Margaret Bowers",
-    organization: "International Panel on Climate Change(IPCC)",
-    designation: "Nuclear Power Engineer",
-  },
-  {
-    age: 59,
-    date: "5",
-    name: "Minnie Roy",
-    status: "Active",
-    paymentStatus:'unpaid',
-
-    salary: "$18991.67",
-    organization: "Institute for Global Environment Startegies...",
-    designation: "Environmental Specialist",
-  },
-  {
-    age: 30,
-    date: "1",
-    status: "Inactive",
-    salary: "$19252.12",
-    paymentStatus:'unpaid',
-
-    name: "Ralph Leonard",
-    organization: "The Energy Research Institute(TERI)",
-    designation: "Sales Representative",
-  },
-  {
-    age: 66,
-    status: "Active",
-    date: "5",
-    paymentStatus:'unpaid',
-
-    salary: "$13076.28",
-    name: "Annie Martin",
-    designation: "Operator",
-    organization: "International Panel on Climate Change(IPCC)",
-  },
-];
 
 const statusObj = {
   absent: { color: "success" },
@@ -82,6 +27,7 @@ const statusObj2 = {
 };
 
 const DashboardTable = () => {
+  const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedAction, setSelectedAction] = useState(null);
 
@@ -109,8 +55,8 @@ const DashboardTable = () => {
       }
     )
     .then((response) => {
-      const attendees_list = response.data;
-      dispatch(registrationData(attendees_list));
+      const registration_list = response.data;
+      dispatch(registrationData(registration_list));
     })
     .catch((error) => {
       console.error("Error:", error);
@@ -124,7 +70,7 @@ const DashboardTable = () => {
 
 
 
-  console.log('redis',rowsDetails)
+  console.log('registrationdatat',rowsDetails)
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);

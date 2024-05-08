@@ -3,6 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   eventData: null,
   speakerData: null,
+  searchQuery: '',
+  filteredData: [], // Initialize filtered data as an empty array
   sponsorData: null,
   attendeesData: null,
   registrationData: null,
@@ -30,6 +32,13 @@ const eventSlice = createSlice({
     },
     speakerData(state, action) {
       state.speakerData = action.payload;
+    },
+    updateSearchQuery(state, action) {
+      state.searchQuery = action.payload;
+    },
+    // Action to update the filtered data
+    updateFilteredData(state, action) {
+      state.filteredData = action.payload;
     },
     registrationData(state, action) {
       state.registrationData = action.payload;
@@ -93,6 +102,8 @@ export const {
   eventID,
   eventIDByQuery,
   speakerData,
+  updateSearchQuery,
+  updateFilteredData,
   registrationData,
   speakerDataFullDetails,
   sponsorDataFullDetails,
