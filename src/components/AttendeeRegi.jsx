@@ -84,7 +84,7 @@ const AttendeeRegi = () => {
       setFormData((prevFormData) => ({
         ...prevFormData,
         [prop]: numberOfPersons,
-        totalAmountPayable: calculateTotalAmount(numberOfPersons),
+        subTotal: calculateTotalAmount(numberOfPersons),
       }));
     } else {
       setFormData({ ...formData, [prop]: event.target.value });
@@ -415,27 +415,6 @@ toast.error('Number of persons must be at least 1')
                 }}
               >
                 <span style={{ width: "30%", marginLeft: "1rem" }}>
-                  Ticket Price
-                </span>
-                <TextField
-                disabled
-                  id="ticketPrice"
-                  className="inputfield"
-                  value={formData.ticketPrice}
-                  onChange={handleInputChange("ticketPrice")}
-                  margin="normal"
-                />
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  gap: "10px",
-                  marginTop: "1rem",
-                }}
-              >
-                <span style={{ width: "30%", marginLeft: "1rem" }}>
                   Number of Person
                 </span>
                 <TextField
@@ -448,7 +427,32 @@ toast.error('Number of persons must be at least 1')
                   inputProps={{min:"0"}}
                 />
               </div>
-              {/* <div
+
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: "10px",
+                  marginTop: "1rem",
+                }}
+              >
+                <span style={{ width: "30%", marginLeft: "1rem" }}>
+                  Ticket Price
+                </span>
+                <TextField
+                disabled
+                  id="ticketPrice"
+                  className="inputfield"
+                  value={formData.ticketPrice}
+                  onChange={handleInputChange("ticketPrice")}
+                  margin="normal"
+                />
+              </div>
+
+            
+
+              <div
                 style={{
                   display: "flex",
                   justifyContent: "center",
@@ -461,13 +465,14 @@ toast.error('Number of persons must be at least 1')
                   Sub Total
                 </span>
                 <TextField
+                disabled
                   id="subTotal"
                   className="inputfield"
                   value={formData.subTotal}
                   onChange={handleInputChange("subTotal")}
                   margin="normal"
                 />
-              </div> */}
+              </div>
               <div
                 style={{
                   display: "flex",
