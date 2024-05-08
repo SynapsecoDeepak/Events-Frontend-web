@@ -62,15 +62,16 @@ const EditAttendees = () => {
     event.preventDefault();
     const formDataToSend = new FormData();
 
-    formDataToSend.append("speaker_user_name", formData.firstName);
-    formDataToSend.append("speaker_user_email", formData.lastName);
-    formDataToSend.append("session_speaker", formData.email);
-    formDataToSend.append("speaker_user_profile_photo", formData.address);
-    formDataToSend.append("speaker_user_location", formData.organization);
-    formDataToSend.append("speaker_user_website", formData.designation);
-    formDataToSend.append("speaker_user_twitter", formData.city);
-    formDataToSend.append("speaker_user_linkdin", formData.state);
-    formDataToSend.append("speaker_user_linkdin", formData.country);
+    formDataToSend.append("name", formData.firstName);
+    formDataToSend.append("name", formData.lastName);
+    formDataToSend.append("email", formData.email);
+    formDataToSend.append("user_type", 'Attendee');
+    formDataToSend.append("location", formData.address);
+    formDataToSend.append("organization_name", formData.organization);
+    formDataToSend.append("designation", formData.designation);
+    formDataToSend.append("city", formData.city);
+    formDataToSend.append("state", formData.state);
+    formDataToSend.append("county_of_residence", formData.country);
 
     try {
       const response = await axios.put(
@@ -98,7 +99,7 @@ const EditAttendees = () => {
       //   twitterLink: "",
       //   linkedInLink: "",
       // });
-      toast.success("The Sponsor added successfully");
+      toast.success("The attendee updated successfully");
       router.back();
     } catch (error) {
       console.error("Error submitting data:", error);

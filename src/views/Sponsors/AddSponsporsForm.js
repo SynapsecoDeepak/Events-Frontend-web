@@ -57,6 +57,22 @@ const AddSponsorsForm = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.email || !emailRegex.test(formData.email)) {
+      toast.error("Email is empty or has an invalid format.");
+      return; // Prevent further execution
+    }
+    if (!formData.name || formData.name=='') {
+      toast.error("Enter your name");
+      return; // Prevent further execution
+    }
+
+    if (!formData.logo || formData.logo=='') {
+      toast.error("Please Select Logo");
+      return; // Prevent further execution
+    }
+    
     const formDataToSend = new FormData(); // Create a new FormData object
 
     // Append each field to FormData object

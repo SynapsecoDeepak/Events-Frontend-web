@@ -21,6 +21,7 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios"; // Import axios for making API requests
 import {
   deleteSponsors,
+  sponsorData,
   sponsorDataFullDetails,
   sponsorsEditData,
 } from "src/store/slice/eventSlice";
@@ -32,13 +33,42 @@ import toast from "react-hot-toast";
 const DashboardTable = () => {
   const dispatch = useDispatch();
   const router = useRouter();
+
+  const eventId = useSelector((state) => state?.event?.eventID);
+  const state_token = useSelector((state) => state.auth.user?.userData?.token);
+
+
+
+  const fetchSponsorsData = async () => {
+   await axios
+    .get(
+      `${BASE_URL}/event/event_sponsors/${eventId}/sponsors/`,
+      {
+        headers: {
+          Authorization: `Bearer ${state_token}`,
+        },
+      }
+    )
+    .then((response) => {
+      console.log("sponsors", response.data);
+      const sponsors_list = response.data;
+      dispatch(sponsorData(sponsors_list));
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+  };
+  useEffect(() => {
+    fetchSponsorsData();
+  }, [])
+  
+
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedAction, setSelectedAction] = useState(null);
   const [selectedRowData, setSelectedRowData] = useState(null);
   // const [openDialog, setOpenDialog] = useState(false);
 
   const rows = useSelector((state) => state.event?.sponsorData?.data);
-  const state_token = useSelector((state) => state.auth.user?.userData?.token);
   const CookiesToken = Cookies.get("token");
   const token = CookiesToken || state_token;
   const rowsDetails = useSelector(
@@ -123,9 +153,11 @@ const DashboardTable = () => {
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
+          {rows == null &&(<Typography sx={{margin:'1rem 0rem',paddingLeft:"1rem"}}>Selected event does not have sponsor list</Typography>)}
+
           <TableBody>
             {Array.isArray(rows) &&
-              rows.map((row) => (
+               [...rows].reverse().map((row) => (
                 <TableRow
                   hover
                   key={row?.name}

@@ -21,6 +21,7 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios"; // Import axios for making API requests
 import {
   deleteSpeaker,
+  speakerData,
   speakerDataFullDetails,
   speakerEditData,
 } from "src/store/slice/eventSlice";
@@ -31,6 +32,38 @@ import toast from "react-hot-toast";
 
 const DashboardTable = () => {
   const dispatch = useDispatch();
+  const eventId = useSelector((state) => state?.event?.eventID);
+  const state_token = useSelector((state) => state.auth.user?.userData?.token);
+
+
+
+    const fetchSpeakerData = async () => {
+    await axios
+        .post(
+          `${BASE_URL}/event/event_speakers/`,
+          { event_id: eventId },
+          {
+            headers: {
+              Authorization: `Bearer ${state_token}`,
+            },
+          }
+        )
+        .then((response) => {
+          console.log("speaker:", response.data);
+          const speaker_data = response.data;
+          dispatch(speakerData(speaker_data));
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    };
+
+    useEffect(() => {
+      fetchSpeakerData();
+    }, [])
+    
+
+
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedAction, setSelectedAction] = useState(null);
@@ -39,7 +72,6 @@ const DashboardTable = () => {
   // const [rowDataDetails, setRowDataDetails] = useState(null);
 
   const rows = useSelector((state) => state.event?.speakerData?.data);
-  const state_token = useSelector((state) => state.auth.user?.userData?.token);
   const UserEditAbleData = useSelector(
     (state) => state?.event?.speakerEditData
   );
@@ -81,7 +113,7 @@ const DashboardTable = () => {
 
   const handleClose = () => {
     setAnchorEl(null);
-  setSelectedRowData(null)
+    setSelectedRowData(null);
   };
 
   const handleEdit = () => {
@@ -125,9 +157,11 @@ const DashboardTable = () => {
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
+          {rows == null &&(<Typography sx={{margin:'1rem 0rem',paddingLeft:"1rem"}}>Selected event does not have speaker list</Typography>)}
+
           <TableBody>
             {Array.isArray(rows) &&
-              rows.map((row) => (
+              [...rows].reverse().map((row) => (
                 <TableRow
                   hover
                   key={row?.speaker_user?.name}
@@ -213,10 +247,7 @@ const DashboardTable = () => {
           }}
         >
           <DialogTitle>Speaker Details</DialogTitle>
-          <Cancel
-            sx={{ color: "red" }}
-            onClick={handleClose}
-          />
+          <Cancel sx={{ color: "red" }} onClick={handleClose} />
         </Box>
         <DialogContent sx={{ width: "auto" }}>
           {rowsDetails && (

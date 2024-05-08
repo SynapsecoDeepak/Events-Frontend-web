@@ -87,7 +87,7 @@ const EditSponsorsForm = () => {
       //   thumbnail: null,
       //   email: "",
       // });
-      toast.success("The Sponsor added successfully");
+      toast.success("The Sponsor updated successfully");
       router.back();
     } catch (error) {
       console.error("Error submitting data:", error);

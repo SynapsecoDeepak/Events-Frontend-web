@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import Table from "@mui/material/Table";
@@ -12,6 +12,9 @@ import Button from "@mui/material/Button";
 import { Menu, MenuItem } from "@mui/material";
 import { ArrowDropDown, MoreVert } from "@mui/icons-material";
 import { useSelector } from "react-redux";
+import { registrationData } from "src/store/slice/eventSlice";
+import axios from "axios";
+import { BASE_URL } from "src/constants";
 
 const rows = [
   {
@@ -82,9 +85,44 @@ const DashboardTable = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedAction, setSelectedAction] = useState(null);
 
+
+  const eventId = useSelector((state) => state?.event?.eventID);
+  const userId = useSelector((state) => state.auth.user?.userData?.data?.id);
+  const state_token = useSelector((state) => state.auth.user?.userData?.token);
+
+  useEffect(() => {
+    fetchRegistrationData();
+  }, [])
+
+  const fetchRegistrationData = async () => {
+   await axios
+    .post(
+      `${BASE_URL}/user/registration_list/`,
+        {
+          "event_id":eventId,
+          "user_id":userId   
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${state_token}`,
+        },
+      }
+    )
+    .then((response) => {
+      const attendees_list = response.data;
+      dispatch(registrationData(attendees_list));
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+  }
+
+
   const rowsDetails = useSelector(
     (state) => state.event?.registrationData?.data
   );
+
+
 
   console.log('redis',rowsDetails)
 
@@ -114,8 +152,11 @@ const DashboardTable = () => {
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
+          {rowsDetails == null &&(<Typography sx={{margin:'1rem 0rem',paddingLeft:"1rem"}}>Selected event does not have registration list</Typography>)}
           <TableBody>
-            {rowsDetails?.map((row) => (
+          {Array.isArray(rowsDetails) &&
+               [...rowsDetails].reverse().map((row) => (
+            // {rowsDetails?.map((row) => (
               <TableRow
                 hover
                 key={row.registration_id}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import Table from "@mui/material/Table";
@@ -13,7 +13,7 @@ import { Menu, MenuItem } from "@mui/material";
 import { ArrowDropDown } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { BASE_URL } from "src/constants";
-import { attendeesEditData, deleteAttendee } from "src/store/slice/eventSlice";
+import { attendeesData, attendeesEditData, deleteAttendee } from "src/store/slice/eventSlice";
 import axios from "axios";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
@@ -32,6 +32,35 @@ const DashboardTable = () => {
   const state_token = useSelector((state) => state.auth.user?.userData?.token);
   const CookiesToken = Cookies.get("token");
   const token = CookiesToken || state_token;
+
+
+  useEffect(() => {
+    fetchAttendeeData();
+  }, [])
+
+  const eventId = useSelector((state) => state?.event?.eventID);
+
+  const fetchAttendeeData = async () => {
+   await axios
+  .get(
+    `${BASE_URL}/event/event_attendees/${eventId}/attendee/`,
+    {
+      headers: {
+        Authorization: `Bearer ${state_token}`,
+      },
+    }
+  )
+  .then((response) => {
+    console.log("Response:", response.data);
+    const attendees_list = response.data;
+    dispatch(attendeesData(attendees_list));
+  })
+  .catch((error) => {
+    console.error("Error:", error);
+  });
+
+  };
+
 
 
   const handleClick = (event) => {
@@ -87,9 +116,11 @@ const DashboardTable = () => {
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
+          {rows == null &&(<Typography sx={{margin:'1rem 0rem',paddingLeft:"1rem"}}>Selected event does not have attendee list</Typography>)}
+
           <TableBody>
             {Array.isArray(rows) &&
-              rows.map((row) => (
+              [...rows].reverse().map((row) => (
                 <TableRow
                   hover
                   key={row.attendee_user?.name}

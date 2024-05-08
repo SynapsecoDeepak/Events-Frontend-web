@@ -27,6 +27,7 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { BASE_URL } from "src/constants";
 import Cookies from "js-cookie";
+import router from "next/router";
 
 const AppBarContent = (props) => {
   const dispatch = useDispatch();
@@ -48,85 +49,15 @@ const AppBarContent = (props) => {
   const handleChange = (e) => {
     const selectedEventId = e.target.value;
     setEventList(e.target.value);
+    dispatch(speakerData(null))
+    dispatch(sponsorData(null))
+    dispatch(attendeesData(null))
+    dispatch(registrationData(null))
+    router.push('/')
     // storing event id  to use while in add speaker , sponsor form  to send event id
     dispatch(eventID(e.target.value))
       // Send a POST request with the selected event ID
-      axios
-        .post(
-          `${BASE_URL}/event/event_speakers/`,
-          { event_id: selectedEventId },
-          {
-            headers: {
-              Authorization: `Bearer ${state_token}`,
-            },
-          }
-        )
-        .then((response) => {
-          console.log("speaker:", response.data);
-          const speaker_data = response.data;
-          dispatch(speakerData(speaker_data));
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
-
-      axios
-        .get(
-          `${BASE_URL}/event/event_sponsors/${selectedEventId}/sponsors/`,
-          {
-            headers: {
-              Authorization: `Bearer ${state_token}`,
-            },
-          }
-        )
-        .then((response) => {
-          console.log("sponsors", response.data);
-          const sponsors_list = response.data;
-          dispatch(sponsorData(sponsors_list));
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
-
-      axios
-        .get(
-          `${BASE_URL}/event/event_attendees/${selectedEventId}/attendee/`,
-          {
-            headers: {
-              Authorization: `Bearer ${state_token}`,
-            },
-          }
-        )
-        .then((response) => {
-          console.log("Response:", response.data);
-          const attendees_list = response.data;
-          dispatch(attendeesData(attendees_list));
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
-
-      axios
-        .post(
-          `${BASE_URL}/user/registration_list/`,
-            {
-              "event_id":selectedEventId,
-              "user_id":userId   
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${state_token}`,
-            },
-          }
-        )
-        .then((response) => {
-          const attendees_list = response.data;
-          console.log("attendessdata:", response.data);
-          dispatch(registrationData(attendees_list));
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+     
   };
 
   return (

@@ -98,7 +98,7 @@ const AddSpeakerForm = () => {
         twitterLink: "",
         linkedInLink: "",
       });
-      toast.success("The Sponsor added successfully");
+      toast.success("The Speaker added successfully");
       // router.back();
     } catch (error) {
       console.error("Error submitting data:", error);
