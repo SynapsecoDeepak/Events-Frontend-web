@@ -301,4 +301,9 @@ padding-left: 4rem;
 .inputfield{
   width: 70%;
 }
-
+.attendeeRegistatin{
+  background: white!important;
+}
+.css-19qpywn-MuiInputBase-input-MuiOutlinedInput-input{
+  background: white!important;
+}

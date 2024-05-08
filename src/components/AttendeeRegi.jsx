@@ -12,15 +12,12 @@ import {
 } from "@mui/material";
 import { BASE_URL } from "src/constants";
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 
 const AttendeeRegi = () => {
-
-
-
- 
+  const dispatch = useDispatch();
 
   const [activeTab, setActiveTab] = useState(0); // State to manage active tab
   const eventIDByQueryID = useSelector((state) => state?.event?.eventIDByQuery);
@@ -30,16 +27,14 @@ const AttendeeRegi = () => {
 
   const [selectedTicket, setSelectedTicket] = useState(eventPublicData[0]);
 
-
-
   const handleTicketChange = (e) => {
     const selectedType = parseInt(e.target.value);
     const selected = eventPublicData.find(
       (ticket) => ticket.ticket_type_id === selectedType
     );
-   
+
     setSelectedTicket(selected);
-   
+
     // Update related fields in formData
     setFormData((prevFormData) => ({
       ...prevFormData,
@@ -50,7 +45,6 @@ const AttendeeRegi = () => {
       tax: selected.tax,
     }));
   };
-
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -72,11 +66,8 @@ const AttendeeRegi = () => {
     discount: selectedTicket.discount,
     fees: selectedTicket.fees,
     tax: selectedTicket.tax,
-    totalAmountPayable: '',
+    totalAmountPayable: "",
   });
-
-
-
 
   const handleInputChange = (prop) => (event) => {
     if (prop === "noOFPerson") {
@@ -96,33 +87,30 @@ const AttendeeRegi = () => {
     return numberOfPersons * ticketPrice;
   };
 
-
   const handleNext = () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.email || !emailRegex.test(formData.email)) {
+      toast.error("Email is empty or has an invalid format.");
+      return; // Prevent further execution
+    }
+    if (!formData.firstName || formData.firstName == "") {
+      toast.error("Enter your name");
+      return; // Prevent further execution
+    }
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!formData.email || !emailRegex.test(formData.email)) {
-    toast.error("Email is empty or has an invalid format.");
-    return; // Prevent further execution
-  }
-  if (!formData.firstName || formData.firstName=='') {
-    toast.error("Enter your name");
-    return; // Prevent further execution
-  }
-    
     setActiveTab(activeTab + 1); // Move to the next tab
   };
 
   const handleSubmit = async (event) => {
-    
+    dispatch(eventPublicData(null));
+
     event.preventDefault();
 
+    if (!formData.noOFPerson || formData.noOFPerson === "0") {
+      toast.error("Number of persons must be at least 1");
 
-  if (!formData.noOFPerson || formData.noOFPerson === "0") {
-toast.error('Number of persons must be at least 1')
-    
-    return; 
-  }
- 
+      return;
+    }
 
     const formDataToSend = {
       user: {
@@ -172,8 +160,9 @@ toast.error('Number of persons must be at least 1')
       style={{
         display: "flex",
         flexDirection: "column",
-        marginLeft: "8rem",
+        paddingLeft: "8rem",
         marginTop: "3rem",
+        background: "white !important",
       }}
     >
       <div className="tabdiv" style={{ width: "40%" }}>
@@ -201,7 +190,7 @@ toast.error('Number of persons must be at least 1')
         }}
       >
         {activeTab === 0 && (
-          <Box sx={{ padding: "2rem 5rem" }}>
+          <Box sx={{ padding: "2rem 5rem", background: "white" }}>
             <form>
               <Grid container spacing={2}>
                 <Grid item xs={6} md={4}>
@@ -351,6 +340,7 @@ toast.error('Number of persons must be at least 1')
                 width: "50%",
                 borderRadius: "10px",
                 background: "#F2F2F2",
+                padding: "1rem 2rem",
               }}
             >
               <div
@@ -418,13 +408,13 @@ toast.error('Number of persons must be at least 1')
                   Number of Person
                 </span>
                 <TextField
-                type="number"
+                  type="number"
                   id="noOFPerson"
                   className="inputfield"
                   value={formData.noOFPerson}
                   onChange={handleInputChange("noOFPerson")}
                   margin="normal"
-                  inputProps={{min:"0"}}
+                  inputProps={{ min: "0" }}
                 />
               </div>
 
@@ -441,7 +431,7 @@ toast.error('Number of persons must be at least 1')
                   Ticket Price
                 </span>
                 <TextField
-                disabled
+                  disabled
                   id="ticketPrice"
                   className="inputfield"
                   value={formData.ticketPrice}
@@ -449,8 +439,6 @@ toast.error('Number of persons must be at least 1')
                   margin="normal"
                 />
               </div>
-
-            
 
               <div
                 style={{
@@ -465,7 +453,7 @@ toast.error('Number of persons must be at least 1')
                   Sub Total
                 </span>
                 <TextField
-                disabled
+                  disabled
                   id="subTotal"
                   className="inputfield"
                   value={formData.subTotal}
@@ -486,7 +474,7 @@ toast.error('Number of persons must be at least 1')
                   Discount
                 </span>
                 <TextField
-               disabled
+                  disabled
                   id="discount"
                   className="inputfield"
                   value={formData.discount}
@@ -505,7 +493,7 @@ toast.error('Number of persons must be at least 1')
               >
                 <span style={{ width: "30%", marginLeft: "1rem" }}>Fees</span>
                 <TextField
-                disabled
+                  disabled
                   id="fees"
                   className="inputfield"
                   value={formData.fees}
@@ -524,7 +512,7 @@ toast.error('Number of persons must be at least 1')
               >
                 <span style={{ width: "30%", marginLeft: "1rem" }}>Tax</span>
                 <TextField
-                disabled
+                  disabled
                   id="tax"
                   className="inputfield"
                   value={formData.tax}
@@ -551,7 +539,7 @@ toast.error('Number of persons must be at least 1')
                   Total amount payable
                 </span>
                 <TextField
-                disabled
+                  disabled
                   id="totalAmountPayable"
                   className="inputfield"
                   value={formData.totalAmountPayable}

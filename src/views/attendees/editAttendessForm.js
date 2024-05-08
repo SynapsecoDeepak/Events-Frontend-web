@@ -40,7 +40,7 @@ const EditAttendees = () => {
     // State to hold form data
     firstName: UserEditAbleData?.attendee_user?.name,
     lastName: "",
-    email: "",
+    email: UserEditAbleData?.attendee_user?.email,
     contact: "",
     organization: UserEditAbleData?.attendee_user?.organization_name,
     designation: "",
@@ -59,10 +59,10 @@ const EditAttendees = () => {
     event.preventDefault();
     const formDataToSend = new FormData();
 
-    formDataToSend.append("name", formData.firstName);
-    formDataToSend.append("name", formData.lastName);
-    formDataToSend.append("email", formData.email);
-    formDataToSend.append("user_type", "Attendee");
+    formDataToSend.append("attendee_user_name", formData.firstName );
+    // formDataToSend.append("attendee_user_name", formData.lastName);
+    // formDataToSend.append("attendee_user_email", formData.email);
+    formDataToSend.append("attendee_user_id", UserEditAbleData.attendee_id);
     formDataToSend.append("location", formData.address);
     formDataToSend.append("organization_name", formData.organization);
     formDataToSend.append("designation", formData.designation);
@@ -143,6 +143,7 @@ const EditAttendees = () => {
           </div>
           <div>
             <input
+            disabled
               type="text"
               id="email"
               value={formData.email}

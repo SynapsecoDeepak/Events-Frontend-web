@@ -5,7 +5,7 @@ import AttendeeRegistration from 'src/components/AttendeeRegistration';
 
 const index = () => {
   return (
-    <div>
+    <div className='attendeeRegistatin' style={{background:'white !important'}}>
         <h1 className='attendeeheading'>Attendee Registration</h1>
         {/* <AttendeeRegistration/> */}
         <AttendeeRegi/>
