@@ -16,7 +16,12 @@ import {
   DialogContent,
   DialogTitle,
 } from "@mui/material";
-import { ArrowDropDown, Cancel } from "@mui/icons-material";
+import {
+  ArrowDropDown,
+  ArrowLeft,
+  ArrowRight,
+  Cancel,
+} from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios"; // Import axios for making API requests
 import {
@@ -35,34 +40,30 @@ const DashboardTable = () => {
   const eventId = useSelector((state) => state?.event?.eventID);
   const state_token = useSelector((state) => state.auth.user?.userData?.token);
 
-
-
-    const fetchSpeakerData = async () => {
+  const fetchSpeakerData = async () => {
     await axios
-        .post(
-          `${BASE_URL}/event/event_speakers/`,
-          { event_id: eventId },
-          {
-            headers: {
-              Authorization: `Bearer ${state_token}`,
-            },
-          }
-        )
-        .then((response) => {
-          console.log("speaker:", response.data);
-          const speaker_data = response.data;
-          dispatch(speakerData(speaker_data));
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
-    };
+      .post(
+        `${BASE_URL}/event/event_speakers/`,
+        { event_id: eventId },
+        {
+          headers: {
+            Authorization: `Bearer ${state_token}`,
+          },
+        }
+      )
+      .then((response) => {
+        console.log("speaker:", response.data);
+        const speaker_data = response.data;
+        dispatch(speakerData(speaker_data));
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
 
-    useEffect(() => {
-      fetchSpeakerData();
-    }, [])
-    
-
+  useEffect(() => {
+    fetchSpeakerData();
+  }, []);
 
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -74,25 +75,44 @@ const DashboardTable = () => {
   const rows = useSelector((state) => state.event?.speakerData?.data);
   const filteredData = useSelector((state) => state.event?.filteredData);
 
-
-
   const searchQuery = useSelector((state) => state?.event?.searchQuery);
   const showResultNotFound =
     (searchQuery && filteredData && filteredData.length === 0) ||
     (searchQuery && !filteredData);
 
-  const dataToRender = filteredData && filteredData.length > 0 ? filteredData : rows;
- 
+  const dataToRender =
+    filteredData && filteredData.length > 0 ? filteredData : rows;
 
-  const UserEditAbleData = useSelector((state) => state?.event?.speakerEditData);
+  const UserEditAbleData = useSelector(
+    (state) => state?.event?.speakerEditData
+  );
   const CookiesToken = Cookies.get("token");
   const token = CookiesToken || state_token;
-  const rowsDetails = useSelector( (state) => state.event?.speakerDataFullDetails?.data?.speaker_user);
+  const rowsDetails = useSelector(
+    (state) => state.event?.speakerDataFullDetails?.data?.speaker_user
+  );
 
   const statusObj = {
     present: { color: "success" },
     absent: { color: "#E2B675" },
   };
+
+  // Pagination start
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 3; // Adjust the number of items per page as needed
+
+  // Calculate indexes for pagination
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentData = dataToRender?.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(dataToRender?.length / itemsPerPage);
+
+  // Function to handle page change
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+  // Pagination end
 
   useEffect(() => {
     if (selectedRowData) {
@@ -155,96 +175,124 @@ const DashboardTable = () => {
   return (
     <Card>
       <TableContainer>
+        {showResultNotFound ? (
+          <Typography sx={{ margin: "1rem 0rem", paddingLeft: "1rem" }}>
+            No results found
+          </Typography>
+        ) : (
+          <Table sx={{ minWidth: 800 }} aria-label="table in dashboard">
+            <TableHead>
+              <TableRow>
+                <TableCell>Speaker Name</TableCell>
+                <TableCell>Organization</TableCell>
+                <TableCell>Session</TableCell>
+                <TableCell>Status</TableCell>
+                <TableCell>Action</TableCell>
+              </TableRow>
+            </TableHead>
+            {currentData == null && (
+              <Typography sx={{ margin: "1rem 0rem", paddingLeft: "1rem" }}>
+                Selected event does not have speaker list
+              </Typography>
+            )}
 
-      {showResultNotFound ? (
-<Typography sx={{margin:'1rem 0rem',paddingLeft:"1rem"}}>No results found</Typography>
-      ) : (
-        
-        <Table sx={{ minWidth: 800 }} aria-label="table in dashboard">
-          <TableHead>
-            <TableRow>
-              <TableCell>Speaker Name</TableCell>
-              <TableCell>Organization</TableCell>
-              <TableCell>Session</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Action</TableCell>
-            </TableRow>
-          </TableHead>
-          {dataToRender == null &&(<Typography sx={{margin:'1rem 0rem',paddingLeft:"1rem"}}>Selected event does not have speaker list</Typography>)}
-
-          <TableBody>
-            {Array.isArray(dataToRender) &&
-              [...dataToRender].reverse().map((row) => (
-                <TableRow
-                  hover
-                  key={row?.speaker_user?.name}
-                  sx={{ "&:last-of-type td, &:last-of-type th": { border: 0 } }}
-                >
-                  <TableCell
-                    sx={{ py: (theme) => `${theme.spacing(0.5)} !important` }}
-                    onClick={() => handleClick(row)}
+            <TableBody>
+              {Array.isArray(currentData) &&
+                [...currentData].reverse().map((row) => (
+                  <TableRow
+                    hover
+                    key={row?.speaker_user?.name}
+                    sx={{
+                      "&:last-of-type td, &:last-of-type th": { border: 0 },
+                    }}
                   >
-                    <Box sx={{ display: "flex", flexDirection: "column" }}>
-                      <Typography
+                    <TableCell
+                      sx={{ py: (theme) => `${theme.spacing(0.5)} !important` }}
+                      onClick={() => handleClick(row)}
+                    >
+                      <Box sx={{ display: "flex", flexDirection: "column" }}>
+                        <Typography
+                          sx={{
+                            fontWeight: 500,
+                            fontSize: "0.875rem !important",
+                          }}
+                        >
+                          {row?.speaker_user?.name}
+                        </Typography>
+                      </Box>
+                    </TableCell>
+                    <TableCell
+                      style={{ color: "#2BACE2" }}
+                      onClick={() => handleClick(row)}
+                    >
+                      {row?.speaker_user?.organization_name}
+                    </TableCell>
+                    <TableCell onClick={() => handleClick(row)}>
+                      {row?.date}
+                    </TableCell>
+                    <TableCell sx={{ fontSize: "12px !important" }}>
+                      <Button
+                        variant="contained"
                         sx={{
-                          fontWeight: 500,
-                          fontSize: "0.875rem !important",
+                          bgcolor: statusObj[row.speaker_user.status].color,
+                          padding: "5px",
+                          width: "68px",
+                          height: "22px",
                         }}
                       >
-                        {row?.speaker_user?.name}
-                      </Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell
-                    style={{ color: "#2BACE2" }}
-                    onClick={() => handleClick(row)}
-                  >
-                    {row?.speaker_user?.organization_name}
-                  </TableCell>
-                  <TableCell onClick={() => handleClick(row)}>
-                    {row?.date}
-                  </TableCell>
-                  <TableCell sx={{ fontSize: "12px !important" }}>
-                    <Button
-                      variant="contained"
-                      sx={{
-                        bgcolor: statusObj[row.speaker_user.status].color,
-                        padding: "5px",
-                        width: "68px",
-                        height: "22px",
-                      }}
-                    >
-                      {row.speaker_user.status}
-                    </Button>
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      sx={{
-                        backgroundColor: "#0E446C !important",
-                        color: "white !important",
-                      }}
-                      onClick={(event) => handleAction(event, row)}
-                    >
-                      Action <ArrowDropDown />
-                    </Button>
-                    <Menu
-                      id="simple-menu"
-                      anchorEl={anchorEl}
-                      keepMounted
-                      open={Boolean(anchorEl)}
-                      onClose={handleClose}
-                    >
-                      <MenuItem onClick={() => handleEdit(row)}>Edit</MenuItem>
-                      <MenuItem onClick={() => handleDelete(row)}>
-                        Delete
-                      </MenuItem>
-                    </Menu>
-                  </TableCell>
-                </TableRow>
+                        {row.speaker_user.status}
+                      </Button>
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        sx={{
+                          backgroundColor: "#0E446C !important",
+                          color: "white !important",
+                        }}
+                        onClick={(event) => handleAction(event, row)}
+                      >
+                        Action <ArrowDropDown />
+                      </Button>
+                      <Menu
+                        id="simple-menu"
+                        anchorEl={anchorEl}
+                        keepMounted
+                        open={Boolean(anchorEl)}
+                        onClose={handleClose}
+                      >
+                        <MenuItem onClick={() => handleEdit(row)}>
+                          Edit
+                        </MenuItem>
+                        <MenuItem onClick={() => handleDelete(row)}>
+                          Delete
+                        </MenuItem>
+                      </Menu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+
+            <div>
+              <Button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                <ArrowLeft />
+              </Button>
+              {Array.from({ length: totalPages }, (_, index) => (
+                <Button  key={index} onClick={() => handlePageChange(index + 1)}>
+                  {index + 1}
+                </Button>
               ))}
-          </TableBody>
-        </Table>
-      )}
+              <Button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                <ArrowRight />
+              </Button>
+            </div>
+          </Table>
+        )}
       </TableContainer>
 
       {/* Dialog Box */}

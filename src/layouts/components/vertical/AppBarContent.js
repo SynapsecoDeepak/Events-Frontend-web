@@ -21,7 +21,9 @@ import {
   eventID,
   registrationData,
   speakerData,
-  sponsorData
+  sponsorData,
+  updateFilteredData,
+  updateSearchQuery
 } from "src/store/slice/eventSlice";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
@@ -53,6 +55,8 @@ const AppBarContent = (props) => {
     dispatch(sponsorData(null))
     dispatch(attendeesData(null))
     dispatch(registrationData(null))
+    dispatch(updateFilteredData([]))
+    dispatch(updateSearchQuery(''))
     router.push('/')
     // storing event id  to use while in add speaker , sponsor form  to send event id
     dispatch(eventID(e.target.value))
