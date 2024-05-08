@@ -8,21 +8,49 @@ import {
   TextField,
   Grid,
   Box,
+  MenuItem,
 } from "@mui/material";
 import { BASE_URL } from "src/constants";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import Cookies from "js-cookie";
+import toast from "react-hot-toast";
 
 const AttendeeRegi = () => {
+
+
+
+ 
+
   const [activeTab, setActiveTab] = useState(0); // State to manage active tab
-
-  const state_token = useSelector((state) => state.auth.user?.userData?.token);
   const eventIDByQueryID = useSelector((state) => state?.event?.eventIDByQuery);
+  const eventPublicData = useSelector(
+    (state) => state?.event?.eventPublicData?.ticket_types
+  );
 
-  const CookiesToken = Cookies.get("token");
+  const [selectedTicket, setSelectedTicket] = useState(eventPublicData[0]);
 
-  const token = CookiesToken || state_token;
+
+
+  const handleTicketChange = (e) => {
+    const selectedType = parseInt(e.target.value);
+    const selected = eventPublicData.find(
+      (ticket) => ticket.ticket_type_id === selectedType
+    );
+   
+    setSelectedTicket(selected);
+   
+    // Update related fields in formData
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      ticketType: selected.type,
+      ticketPrice: selected.price,
+      discount: selected.discount,
+      fees: selected.fees,
+      tax: selected.tax,
+    }));
+  };
+
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -38,34 +66,64 @@ const AttendeeRegi = () => {
     zipCode: "",
     foodPreference: "",
     ticketType: "",
-    ticketPrice: "",
+    ticketPrice: selectedTicket.price,
     noOFPerson: "",
     subTotal: "",
-    ticket: "",
-    discount: "",
-    fees: "",
-    tax: "",
-    totalAmountPayable: "",
+    discount: selectedTicket.discount,
+    fees: selectedTicket.fees,
+    tax: selectedTicket.tax,
+    totalAmountPayable: '',
   });
 
+
+
+
   const handleInputChange = (prop) => (event) => {
-    setFormData({ ...formData, [prop]: event.target.value });
+    if (prop === "noOFPerson") {
+      const numberOfPersons = event.target.value;
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [prop]: numberOfPersons,
+        totalAmountPayable: calculateTotalAmount(numberOfPersons),
+      }));
+    } else {
+      setFormData({ ...formData, [prop]: event.target.value });
+    }
   };
 
-  // const handleFormDataChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setFormData({
-  //     ...formData,
-  //     [name]: value,
-  //   });
-  // };
+  const calculateTotalAmount = (numberOfPersons) => {
+    const ticketPrice = parseFloat(selectedTicket.price);
+    return numberOfPersons * ticketPrice;
+  };
+
 
   const handleNext = () => {
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!formData.email || !emailRegex.test(formData.email)) {
+    toast.error("Email is empty or has an invalid format.");
+    return; // Prevent further execution
+  }
+  if (!formData.firstName || formData.firstName=='') {
+    toast.error("Enter your name");
+    return; // Prevent further execution
+  }
+    
     setActiveTab(activeTab + 1); // Move to the next tab
   };
 
   const handleSubmit = async (event) => {
+    
     event.preventDefault();
+
+
+  if (!formData.noOFPerson || formData.noOFPerson === "0") {
+toast.error('Number of persons must be at least 1')
+    
+    return; 
+  }
+ 
+
     const formDataToSend = {
       user: {
         email: formData.email,
@@ -84,7 +142,7 @@ const AttendeeRegi = () => {
         website: formData.personalWebsite,
         organization_name: formData.organization,
       },
-      event_id:eventIDByQueryID,
+      event_id: eventIDByQueryID,
       ticket: {
         ticket_type: formData.ticketType,
         ticket_price: parseFloat(formData.ticketPrice), // Convert to number if necessary
@@ -135,7 +193,7 @@ const AttendeeRegi = () => {
 
       <div
         style={{
-          backgroundColor:"white !important",
+          backgroundColor: "white !important",
           width: "100%",
           maxWidth: 1000,
           border: "1px solid #C9C9C9",
@@ -305,16 +363,46 @@ const AttendeeRegi = () => {
                   marginTop: "1rem",
                 }}
               >
-                <span style={{ width: "30%", marginLeft: "1rem" }}>
+                <label
+                  style={{ width: "30%", marginLeft: "1rem" }}
+                  htmlFor="ticketType"
+                >
                   Ticket Type
-                </span>
-                <TextField
+                </label>
+
+                <select
+                  id="ticketType"
+                  className="inputfield"
+                  onChange={handleTicketChange}
+                >
+                  {eventPublicData.map((ticket) => (
+                    <option
+                      key={ticket.ticket_type_id}
+                      value={ticket.ticket_type_id}
+                    >
+                      {ticket.type}
+                    </option>
+                  ))}
+                </select>
+
+                {/* <TextField
                   id="ticketType"
                   className="inputfield"
                   value={formData.ticketType}
                   onChange={handleInputChange("ticketType")}
                   margin="normal"
-                />
+                /> */}
+
+                {/* 
+
+<label htmlFor="ticketType">Select Ticket Type:</label>
+<select id="ticketType" onChange={handleTicketChange}>
+          {ticketData.map(ticket => (
+<option key={ticket.ticket_type_id} value={ticket.ticket_type_id}>{ticket.type}</option>
+          ))}
+</select>
+
+*/}
               </div>
 
               <div
@@ -330,6 +418,7 @@ const AttendeeRegi = () => {
                   Ticket Price
                 </span>
                 <TextField
+                disabled
                   id="ticketPrice"
                   className="inputfield"
                   value={formData.ticketPrice}
@@ -350,14 +439,16 @@ const AttendeeRegi = () => {
                   Number of Person
                 </span>
                 <TextField
+                type="number"
                   id="noOFPerson"
                   className="inputfield"
                   value={formData.noOFPerson}
                   onChange={handleInputChange("noOFPerson")}
                   margin="normal"
+                  inputProps={{min:"0"}}
                 />
               </div>
-              <div
+              {/* <div
                 style={{
                   display: "flex",
                   justifyContent: "center",
@@ -376,25 +467,7 @@ const AttendeeRegi = () => {
                   onChange={handleInputChange("subTotal")}
                   margin="normal"
                 />
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  gap: "10px",
-                  marginTop: "1rem",
-                }}
-              >
-                <span style={{ width: "30%", marginLeft: "1rem" }}>Ticket</span>
-                <TextField
-                  id="ticket"
-                  className="inputfield"
-                  value={formData.ticket}
-                  onChange={handleInputChange("ticket")}
-                  margin="normal"
-                />
-              </div>
+              </div> */}
               <div
                 style={{
                   display: "flex",
@@ -408,6 +481,7 @@ const AttendeeRegi = () => {
                   Discount
                 </span>
                 <TextField
+               disabled
                   id="discount"
                   className="inputfield"
                   value={formData.discount}
@@ -426,6 +500,7 @@ const AttendeeRegi = () => {
               >
                 <span style={{ width: "30%", marginLeft: "1rem" }}>Fees</span>
                 <TextField
+                disabled
                   id="fees"
                   className="inputfield"
                   value={formData.fees}
@@ -444,6 +519,7 @@ const AttendeeRegi = () => {
               >
                 <span style={{ width: "30%", marginLeft: "1rem" }}>Tax</span>
                 <TextField
+                disabled
                   id="tax"
                   className="inputfield"
                   value={formData.tax}
@@ -470,6 +546,7 @@ const AttendeeRegi = () => {
                   Total amount payable
                 </span>
                 <TextField
+                disabled
                   id="totalAmountPayable"
                   className="inputfield"
                   value={formData.totalAmountPayable}
