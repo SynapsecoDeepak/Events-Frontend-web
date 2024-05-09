@@ -24,9 +24,9 @@ const EditAttendees = () => {
 
   const [formData, setFormData] = useState({
     // State to hold form data
-    firstName: UserEditAbleData?.attendee_user?.name,
+    firstName: UserEditAbleData?.data?.attendee_user?.name,
     lastName: "",
-    email: UserEditAbleData?.attendee_user?.email,
+    email: UserEditAbleData?.data?.attendee_user?.email,
     contact: "",
     organization: UserEditAbleData?.attendee_user?.organization_name,
     designation: "",
@@ -43,7 +43,7 @@ const EditAttendees = () => {
 
   const getAttendeeData = async () => {
     try {
-      const response = await axios.get(`${BASE_URL}/api/user/user_details/${attendeeIDforUpdate}/`, {
+      const response = await axios.get(`${BASE_URL}/user/webattendees/${attendeeIDforUpdate}/`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data", // Set content type as multipart/form-data
@@ -60,17 +60,17 @@ const EditAttendees = () => {
     if (UserEditAbleData) {
       console.log("use data to fil ", UserEditAbleData);
       setFormData({
-        firstName: UserEditAbleData?.name,
-        lastName: UserEditAbleData?.lname|| 'not available',
-        email:  UserEditAbleData?.email || 'not available',
-        contact:UserEditAbleData?.contact || 'not available',
-        organization: UserEditAbleData?.organization_name || 'not available',
-        designation: UserEditAbleData?.designation || 'not available',
-        address: UserEditAbleData?.address || 'not available',
-        country: UserEditAbleData?.country || 'not available',
-        state: UserEditAbleData?.state || 'not available',
-        city: UserEditAbleData?.city || 'not available',
-        zipCode: UserEditAbleData?.zipcode || 'not available',
+        firstName: UserEditAbleData?.data?.attendee_user?.name,
+        lastName: UserEditAbleData?.data?.attendee_user?.last_name|| 'not available',
+        email:  UserEditAbleData?.data?.attendee_user?.email || 'not available',
+        contact:UserEditAbleData?.data?.attendee_user?.contact || 'not available',
+        organization: UserEditAbleData?.data?.attendee_user?.organization_name || 'not available',
+        designation: UserEditAbleData?.data?.attendee_user?.designation || 'not available',
+        address: UserEditAbleData?.data?.attendee_user?.address || 'not available',
+        country: UserEditAbleData?.data?.attendee_user?.country || 'not available',
+        state: UserEditAbleData?.data?.attendee_user?.state || 'not available',
+        city: UserEditAbleData?.data?.attendee_user?.city || 'not available',
+        zipCode: UserEditAbleData?.data?.attendee_user?.zipcode || 'not available',
       });
     }
   }, [UserEditAbleData]);
@@ -82,16 +82,16 @@ const EditAttendees = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formDataToSend = new FormData();
-
     formDataToSend.append("attendee_user_name", formData.firstName );
-    // formDataToSend.append("attendee_user_name", formData.lastName);
-    // formDataToSend.append("attendee_user_email", formData.email);
-    formDataToSend.append("attendee_user_id", attendeeIDforUpdate);
-    formDataToSend.append("location", formData.address);
-    formDataToSend.append("organization_name", formData.organization);
-    formDataToSend.append("designation", formData.designation);
-    formDataToSend.append("city", formData.city);
-    formDataToSend.append("state", formData.state);
+    formDataToSend.append("attendee_user_last_name", formData.lastName );
+    formDataToSend.append("attendee_user_contact", formData.contact );
+    formDataToSend.append("attendee_user_id", UserEditAbleData?.data?.attendee_user?.id);
+    formDataToSend.append("attendee_user_location", formData.address);
+    formDataToSend.append("attendee_user_organization_name", formData.organization);
+    formDataToSend.append("attendee_user_designation", formData.designation);
+    formDataToSend.append("attendee_user_city", formData.city);
+    formDataToSend.append("attendee_user_address", formData.address);
+    formDataToSend.append("attendee_user_state", formData.state);
     formDataToSend.append("county_of_residence", formData.country);
 
     try {
@@ -191,7 +191,7 @@ const EditAttendees = () => {
           </div>
           <div>
             <input
-              type="text"
+              type="number"
               id="contact"
               value={formData.contact}
               onChange={handleInputChange("contact")}
