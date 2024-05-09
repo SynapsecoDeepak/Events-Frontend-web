@@ -22,6 +22,7 @@ import axios from "axios"; // Import axios for making API requests
 import {
   deleteEventData,
   eventEditData,
+  eventEditDataID,
 } from "src/store/slice/eventSlice";
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
@@ -34,15 +35,11 @@ const DashboardTable = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedAction, setSelectedAction] = useState(null);
   const [selectedRowData, setSelectedRowData] = useState(null);
-  // const [openDialog, setOpenDialog] = useState(false);
-  // const [rowDataDetails, setRowDataDetails] = useState(null);
-
   const rows = useSelector((state) => state.event?.speakerData?.data);
   const state_token = useSelector((state) => state.auth.user?.userData?.token);
-  const UserEditAbleData = useSelector(
-    (state) => state?.event?.eventEditData
+  const eventID = useSelector(
+    (state) => state?.event?.eventEditDataID
   );
-  console.log('evendata dele',UserEditAbleData)
   const CookiesToken = Cookies.get("token");
   const token = CookiesToken || state_token;
   const rowsDetails = useSelector(
@@ -57,8 +54,7 @@ const DashboardTable = () => {
 
   useEffect(() => {
     if (selectedRowData) {
-      // Fetch additional data when selectedRowData changes
-      fetchRowDataDetails(selectedRowData.speaker_id); // Assuming id exists in selectedRowData, replace it with your actual identifier
+      fetchRowDataDetails(selectedRowData.speaker_id); 
     }
   }, [selectedRowData]);
 
@@ -90,11 +86,11 @@ const DashboardTable = () => {
   };
 
   const handleDelete = async () => {
-   console.log('deleid', UserEditAbleData?.event_id)
+   console.log('deleid',eventID)
     try {
       const response = await axios.delete(
         `${BASE_URL}/event/
-        ${UserEditAbleData?.event_id}/`,
+        ${eventID}/`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -102,7 +98,7 @@ const DashboardTable = () => {
         }
       );
       toast.success("Event deleted successfully");
-      dispatch(deleteEventData(UserEditAbleData?.event_id));
+      dispatch(deleteEventData(eventID));
       setAnchorEl(null);
     } catch (error) {
       console.error("Error fetching row data details:", error);
@@ -111,9 +107,9 @@ const DashboardTable = () => {
   };
 
   const handleAction = (event, row) => {
-    console.log(row)
+    console.log(row.event_id)
     setAnchorEl(event.currentTarget);
-    dispatch(eventEditData(row));
+    dispatch(eventEditDataID(row?.event_id));
   };
 
   return (
@@ -131,7 +127,7 @@ const DashboardTable = () => {
           </TableHead>
           <TableBody>
             {Array.isArray(eventData) &&
-              [...eventData].map((row) => (
+              [...eventData].reverse().map((row) => (
                 <TableRow
                   hover
                   key={row?.event_id}

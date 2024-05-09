@@ -88,22 +88,11 @@ const EventCreateForm = () => {
     }
   };
 
-  // const handleEndDateChange = (date) => {
-  //   if (date < new Date()) {
-  //     setEndDate(new Date());
-  //     toast.error("End date cannot be in the past");
-  //   } else {
-  //     setEndDate(date);
-  //   }
-  // };
   const handleEndDateChange = (date) => {
-    // Check if the selected date is before the start date
     if (date < startDate) {
-      // If it's before the start date, set the end date to the start date
       setEndDate(startDate);
       toast.error("End date cannot be before start date");
     } else {
-      // If it's after or equal to the start date, set the end date to the selected date
       setEndDate(date);
     }
   };
@@ -131,12 +120,14 @@ const EventCreateForm = () => {
   };
 
   const handleSubmitCustomVenue = async () => {
-
 if(!pdfFile || pdfFile == null){
   toast.error("Please Upload Location details")
   return;
 }
-
+if(!venueName || venueName == ''){
+  toast.error("Please Enter Venue Name")
+  return;
+}
     try {
       // Construct form data with venue name and PDF file
       const formData = new FormData();
@@ -286,7 +277,7 @@ for (const fieldObj of fieldsToCheck) {
       fetchEventData();
 
       toast.success("The Event added successfully");
-      // router.back();
+      router.back();
     } catch (error) {
       console.error("Error submitting data:", error);
     }

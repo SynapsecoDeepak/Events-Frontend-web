@@ -17,7 +17,7 @@ const initialState = {
   speakerEditData: null,
   sponsorsEditData: null,
   attendeesEditData: null,
-  eventEditData: null,
+  eventEditDataID: '',
   eventPublicData:null
 };
 
@@ -80,8 +80,8 @@ const eventSlice = createSlice({
     attendeesEditData(state, action) {
       state.attendeesEditData = action.payload;
     },
-    eventEditData(state, action) {
-      state.eventEditData = action.payload;
+    eventEditDataID(state, action) {
+      state.eventEditDataID = action.payload;
     },
     eventPublicData(state, action) {
       state.eventPublicData = action.payload;
@@ -130,7 +130,7 @@ export const {
   speakerEditData,
   sponsorsEditData,
   attendeesEditData,
-  eventEditData,
+  eventEditDataID,
   deleteSpeaker,
   deleteSponsors,
   deleteAttendee,
