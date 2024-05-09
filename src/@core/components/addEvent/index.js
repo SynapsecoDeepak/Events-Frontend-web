@@ -131,6 +131,12 @@ const EventCreateForm = () => {
   };
 
   const handleSubmitCustomVenue = async () => {
+
+if(!pdfFile || pdfFile == null){
+  toast.error("Please Upload Location details")
+  return;
+}
+
     try {
       // Construct form data with venue name and PDF file
       const formData = new FormData();
@@ -217,6 +223,20 @@ const EventCreateForm = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission
+
+const fieldsToCheck = [
+  { field: startDate, message: 'Please select start date' },
+  { field: endDate, message: 'Please select end date' },
+  { field: selectedVenue, message: 'Please select venue' },
+];
+
+for (const fieldObj of fieldsToCheck) {
+  if (!fieldObj.field) {
+    toast.error(fieldObj.message);
+    return; // Stop further execution if any field is empty
+  }
+}
+
     const formDataToSend = new FormData(); // Create a new FormData object
 
     // Append each field to FormData object
@@ -372,6 +392,7 @@ const EventCreateForm = () => {
           />
           <input
             type="file"
+            accept="application/pdf"
             style={{ marginTop: "1rem" }}
             onChange={handlePdfFileChange}
           />
@@ -539,8 +560,7 @@ const EventCreateForm = () => {
               value={formData?.logo?.file?.name}
               className={styles.fileInput}
             />
-
-            <label for="fileInput" className={styles.customButton}>
+            <label  htmlFor="logo" className={styles.customButton}>
               Choose File
             </label>
           </div>
@@ -571,7 +591,7 @@ const EventCreateForm = () => {
               className={styles.fileInput}
             />
 
-            <label for="fileInput" className={styles.customButton}>
+            <label  htmlFor="thumbnail" className={styles.customButton}>
               Choose File
             </label>
           </div>
