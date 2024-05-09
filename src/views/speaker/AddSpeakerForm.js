@@ -251,7 +251,7 @@ const AddSpeakerForm = () => {
 
         <div className={styles.column} style={{ width: "48%" }}>
           <div>
-            <label className={styles.label}>Photo</label>
+            <label  className={styles.label}>Photo</label>
           </div>
           <div className={styles.fileInputContainer}>
             <input
@@ -263,7 +263,7 @@ const AddSpeakerForm = () => {
               onChange={handleImageChange}
               className={styles.fileInput}
             />
-            <label for="fileInput" className={styles.customButton}>
+            <label htmlFor="photo" className={styles.customButton}>
               Choose File
             </label>
           </div>

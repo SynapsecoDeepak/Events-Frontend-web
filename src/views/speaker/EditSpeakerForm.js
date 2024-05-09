@@ -13,45 +13,66 @@ import styles from "./speaker.module.css";
 import axios from "axios";
 
 import { useRouter } from "next/router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import Cookies from "js-cookie";
 import { BASE_URL } from "src/constants";
 
-
-// import { Chip } from '@mui/material-next'
-// import { Chip } from '@mui/material-next'
-
 const EditSpeakerForm = () => {
   const router = useRouter();
-
   const state_token = useSelector((state) => state.auth.user?.userData?.token);
-  const UserEditAbleData = useSelector(    (state) => state?.event?.speakerEditData);
+  // const UserEditAbleData = useSelector(    (state) => state?.event?.speakerEditData);
+
+  const [UserEditAbleData, SetUserEditAbleData] = useState("");
+
+
   const eventId = useSelector((state) => state?.event?.eventID);
-
-
+  const speakerIdForUpdate = useSelector((state) => state?.event?.eventEditDataID);
 
   console.log("UserEditAbledata", UserEditAbleData);
   const CookiesToken = Cookies.get("token");
 
   const token = CookiesToken || state_token;
 
+
+
+
+
   const [formData, setFormData] = useState({
     // State to hold form data
-    speakerName: UserEditAbleData.speaker_user.name,
+    speakerName: UserEditAbleData?.speaker_user?.name,
     emailAddress: "",
     contactNumber: "",
-    location: UserEditAbleData.location,
+    location: UserEditAbleData?.location,
     designation: "",
-    organization: UserEditAbleData.speaker_user.organization_name,
-    description: UserEditAbleData.bio,
+    organization: UserEditAbleData?.speaker_user?.organization_name,
+    description: UserEditAbleData?.bio,
     sessions: "",
     photo: {},
     personalWebsite: "",
     twitterLink: "",
     linkedInLink: "",
   });
+
+  useEffect(() => {
+    getSpeakerData();
+  }, []);
+
+  const getSpeakerData = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}/user/speakers/${speakerIdForUpdate}/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data", // Set content type as multipart/form-data
+        },
+      });
+      SetUserEditAbleData(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching venues:", error);
+    }
+  };
 
   const handleInputChange = (prop) => (event) => {
     setFormData({ ...formData, [prop]: event.target.value });
@@ -76,12 +97,9 @@ const EditSpeakerForm = () => {
     formDataToSend.append("speaker_user_website", formData.personalWebsite);
     formDataToSend.append("speaker_user_twitter", formData.twitterLink);
     formDataToSend.append("speaker_user_linkdin", formData.linkedInLink);
-    //  formDataToSend.append('expertise', formData.add);
-    //  formDataToSend.append('added_by', formData.thumbnail);
-
     try {
       const response = await axios.patch(
-        `${BASE_URL}/user/newspeakers/${UserEditAbleData.speaker_id}/`,  
+        `${BASE_URL}/user/newspeakers/${UserEditAbleData?.speaker_id}/`,  
               formDataToSend,
         {
           headers: {

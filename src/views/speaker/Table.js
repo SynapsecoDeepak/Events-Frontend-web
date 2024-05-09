@@ -26,6 +26,7 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios"; // Import axios for making API requests
 import {
   deleteSpeaker,
+  eventEditDataID,
   speakerData,
   speakerDataFullDetails,
   speakerEditData,
@@ -39,6 +40,10 @@ const DashboardTable = () => {
   const dispatch = useDispatch();
   const eventId = useSelector((state) => state?.event?.eventID);
   const state_token = useSelector((state) => state.auth.user?.userData?.token);
+  // taking speakerIdForDelete from this because using the same eventeditdataid slice to get speaker id
+  const speakerIdForDelete = useSelector(
+    (state) => state?.event?.eventEditDataID
+  );
 
   const fetchSpeakerData = async () => {
     await axios
@@ -69,9 +74,6 @@ const DashboardTable = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedAction, setSelectedAction] = useState(null);
   const [selectedRowData, setSelectedRowData] = useState(null);
-  // const [openDialog, setOpenDialog] = useState(false);
-  // const [rowDataDetails, setRowDataDetails] = useState(null);
-
   const rows = useSelector((state) => state.event?.speakerData?.data);
   const filteredData = useSelector((state) => state.event?.filteredData);
 
@@ -151,7 +153,7 @@ const DashboardTable = () => {
   const handleDelete = async () => {
     try {
       const response = await axios.delete(
-        `${BASE_URL}/user/speakers/${UserEditAbleData?.speaker_id}/`,
+        `${BASE_URL}/user/speakers/${speakerIdForDelete}/`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -168,8 +170,12 @@ const DashboardTable = () => {
   };
 
   const handleAction = (event, row) => {
+    console.log('rowid',row.speaker_id)
     setAnchorEl(event.currentTarget);
-    dispatch(speakerEditData(row));
+// using same eventeditdataid for all to get id of speaker 
+    dispatch(eventEditDataID(row?.speaker_id));
+
+    // dispatch(speakerEditData(row));
   };
 
   return (
