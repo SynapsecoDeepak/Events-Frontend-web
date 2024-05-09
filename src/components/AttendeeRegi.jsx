@@ -102,7 +102,7 @@ const AttendeeRegi = () => {
   };
 
   const handleSubmit = async (event) => {
-    dispatch(eventPublicData(null));
+    // dispatch(eventPublicData(null));
 
     event.preventDefault();
 
