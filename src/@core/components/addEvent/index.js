@@ -233,9 +233,9 @@ for (const fieldObj of fieldsToCheck) {
     // Append each field to FormData object
     formDataToSend.append("name", formData.name);
     formDataToSend.append("user", userId);
-    formDataToSend.append("shortDescription", formData.shortDescription);
+    formDataToSend.append("event_short_description", formData.shortDescription);
     formDataToSend.append("venue", selectedVenue);
-    formDataToSend.append("longDescription", description);
+    formDataToSend.append("event_long_description", description);
 
       // Extract only the date part from startDate and endDate
   const startDateOnly = startDate ? moment(startDate).format("YYYY-MM-DD") : null;
@@ -243,11 +243,11 @@ for (const fieldObj of fieldsToCheck) {
 
 
     formDataToSend.append("start_date", startDateOnly);
-    formDataToSend.append("startTime", startTime);
+    formDataToSend.append("time", startTime);
     formDataToSend.append("end_date", endDateOnly);
-    formDataToSend.append("endTime", endTime);
-    formDataToSend.append("logo", formData.logo); // Append logo file
-    formDataToSend.append("thumbnail", formData.thumbnail); // Append thumbnail file
+    formDataToSend.append("end_time", endTime);
+    formDataToSend.append("event_logo", formData.logo); // Append logo file
+    formDataToSend.append("event_banner", formData.thumbnail); // Append thumbnail file
     try {
       const response = await axios.post(
         `${BASE_URL}/event/create_event/`,
@@ -570,7 +570,7 @@ for (const fieldObj of fieldsToCheck) {
         </div>
         <div className={styles.column} style={{ width: "35%" }}>
           <div>
-            <label className={styles.label}>Thumbnail</label>
+            <label className={styles.label}>Event Banner</label>
           </div>
           <div className={styles.fileInputContainer}>
             <input

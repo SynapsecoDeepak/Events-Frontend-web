@@ -85,7 +85,7 @@ const EventEditForm = () => {
           : null
       );
       setStartTime(UserEditAbleData?.data?.time || "");
-      setEndTime(UserEditAbleData?.data?.endTime || "");
+      setEndTime(UserEditAbleData?.data?.end_time || "");
       setDescription(UserEditAbleData?.data?.event_long_description || "");
       setSelectedVenue(UserEditAbleData?.data?.venue[0] || "");
     }
@@ -259,27 +259,38 @@ const EventEditForm = () => {
   };
 
   const handleSubmit = async (event) => {
-    if (!startDate || !endDate) {
-      toast.error("Date cannot be empty");
-      return;
+
+    const fieldsToCheck = [
+      { field: startDate, message: 'Please select start date' },
+      { field: endDate, message: 'Please select end date' },
+      { field: formData.logo, message: 'Please select Logo' },
+      { field: formData.thumbnail, message: 'Please select Event Banner' },
+    ];
+    
+    for (const fieldObj of fieldsToCheck) {
+      if (!fieldObj.field) {
+        toast.error(fieldObj.message);
+        return; // Stop further execution if any field is empty
+      }
     }
+
     event.preventDefault(); // Prevent default form submission
     const formDataToSend = new FormData(); // Create a new FormData object
     formDataToSend.append("name", formData.name);
     formDataToSend.append("user", userId);
-    formDataToSend.append("shortDescription", formData.shortDescription);
+    formDataToSend.append("event_short_description", formData.shortDescription);
     formDataToSend.append("venue", selectedVenue);
-    formDataToSend.append("longDescription", description);
+    formDataToSend.append("event_long_description", description);
     const startDateOnly = startDate
       ? moment(startDate).format("YYYY-MM-DD")
       : null;
     const endDateOnly = endDate ? moment(endDate).format("YYYY-MM-DD") : null;
     formDataToSend.append("start_date", startDateOnly);
-    formDataToSend.append("startTime", startTime);
+    formDataToSend.append("time", startTime);
     formDataToSend.append("end_date", endDateOnly);
-    formDataToSend.append("endTime", endTime);
-    formDataToSend.append("logo", formData.logo); // Append logo file
-    formDataToSend.append("thumbnail", formData.thumbnail); // Append thumbnail file
+    formDataToSend.append("end_time", endTime);
+    formDataToSend.append("event_logo", formData.logo); // Append logo file
+    formDataToSend.append("event_banner", formData.thumbnail); // Append thumbnail file
     try {
       const response = await axios.put(
         `${BASE_URL}/event/newevents/${eventId}/`,
@@ -610,7 +621,7 @@ const EventEditForm = () => {
             </div>
             <div className={styles.column} style={{ width: "35%" }}>
               <div>
-                <label className={styles.label}>Thumbnail</label>
+                <label className={styles.label}>Event Banner</label>
               </div>
               <div className={styles.fileInputContainer}>
                 <input
