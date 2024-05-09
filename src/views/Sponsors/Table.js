@@ -109,10 +109,6 @@ const DashboardTable = () => {
   const rowsDetails = useSelector(
     (state) => state.event?.sponsorDataFullDetails?.data
   );
-  const UserEditAbleData = useSelector(
-    (state) => state?.event?.sponsorsEditData
-  );
-
   const statusObj = {
     true: { color: "#5EAF41" },
     false: { color: "#E2B675" },

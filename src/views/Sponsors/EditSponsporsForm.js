@@ -14,7 +14,7 @@ import styles from "./speaker.module.css";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Cookies from "js-cookie";
 import { BASE_URL } from "src/constants";
@@ -26,7 +26,11 @@ const EditSponsorsForm = () => {
   const router = useRouter();
 
   const state_token = useSelector((state) => state.auth.user?.userData?.token);
-  const UserEditAbleData = useSelector((state) => state?.event?.sponsorsEditData );
+  // const UserEditAbleData = useSelector((state) => state?.event?.sponsorsEditData );
+  const [UserEditAbleData, SetUserEditAbleData] = useState("");
+  const sponsorsIdForUpdate = useSelector((state) => state?.event?.eventEditDataID);
+
+
   const eventId = useSelector((state) => state?.event?.eventID);
   const CookiesToken = Cookies.get("token");
   const token = CookiesToken || state_token;
@@ -95,7 +99,7 @@ const EditSponsorsForm = () => {
     formDataToSend.append("thumbnail", formData.thumbnail); // Append thumbnail file
     try {
       const response = await axios.patch(
-        `${BASE_URL}/event/newsponsors/${UserEditAbleData.sponsor_id}/`,
+        `${BASE_URL}/event/newsponsors/${sponsorsIdForUpdate}/`,
         formDataToSend,
         {
           headers: {
@@ -119,6 +123,25 @@ const EditSponsorsForm = () => {
       console.error("Error submitting data:", error);
     }
   };
+
+  useEffect(() => {
+    getSponsorsData();
+  }, []);
+
+  const getSponsorsData = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}/user/speakers/${sponsorsIdForUpdate}/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data", // Set content type as multipart/form-data
+        },
+      });
+      SetUserEditAbleData(response.data);
+    } catch (error) {
+      console.error("Error fetching venues:", error);
+    }
+  };
+
 
   return (
     <div className={styles.container}>

@@ -85,9 +85,6 @@ const DashboardTable = () => {
   const dataToRender =
     filteredData && filteredData.length > 0 ? filteredData : rows;
 
-  const UserEditAbleData = useSelector(
-    (state) => state?.event?.speakerEditData
-  );
   const CookiesToken = Cookies.get("token");
   const token = CookiesToken || state_token;
   const rowsDetails = useSelector(
@@ -161,7 +158,7 @@ const DashboardTable = () => {
         }
       );
       toast.success("Speaker deleted successfully");
-      dispatch(deleteSpeaker(UserEditAbleData?.speaker_id));
+      dispatch(deleteSpeaker(speakerIdForDelete));
       setAnchorEl(null);
     } catch (error) {
       console.error("Error fetching row data details:", error);

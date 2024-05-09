@@ -99,7 +99,7 @@ const AddSpeakerForm = () => {
         linkedInLink: "",
       });
       toast.success("The Speaker added successfully");
-      // router.back();
+      router.push('/speaker');
     } catch (error) {
       console.error("Error submitting data:", error);
     }

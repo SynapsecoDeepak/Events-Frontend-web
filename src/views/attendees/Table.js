@@ -14,7 +14,7 @@ import { ArrowDropDown  , ArrowLeft,
   ArrowRight, } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { BASE_URL } from "src/constants";
-import { attendeesData, attendeesEditData, deleteAttendee } from "src/store/slice/eventSlice";
+import { attendeesData, attendeesEditData, deleteAttendee, eventEditDataID } from "src/store/slice/eventSlice";
 import axios from "axios";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
@@ -23,7 +23,11 @@ const DashboardTable = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const router = useRouter();
   const dispatch = useDispatch();
-  const [selectedAction, setSelectedAction] = useState(null);
+
+  // taking speakerIdForDelete from this because using the same eventeditdataid slice to get attendee id
+  const attendeeID = useSelector(
+    (state) => state?.event?.eventEditDataID
+  );
 
   const rows = useSelector((state) => state.event?.attendeesData?.data);
 
@@ -47,7 +51,6 @@ const DashboardTable = () => {
 
 
 
-  const UserEditAbleData = useSelector( (state) => state?.event?.attendeesEditData);
   const state_token = useSelector((state) => state.auth.user?.userData?.token);
   const CookiesToken = Cookies.get("token");
   const token = CookiesToken || state_token;
@@ -96,7 +99,7 @@ const DashboardTable = () => {
   const handleDelete = async() => {
     try {
       const response = await axios.delete(
-        `${BASE_URL}/user/attendees/${UserEditAbleData?.attendee_id}/`,
+        `${BASE_URL}/user/attendees/${attendeeID}/`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -104,7 +107,7 @@ const DashboardTable = () => {
         }
       );
       toast.success('Attendee deleted successfully')
-      dispatch(deleteAttendee(UserEditAbleData?.attendee_id))
+      dispatch(deleteAttendee(attendeeID))
       setAnchorEl(null)
     } catch (error) {
       console.error("Error fetching row data details:", error);
@@ -113,9 +116,10 @@ const DashboardTable = () => {
   };
 
   const handleAction = (event, row) => {
-    console.log(row)
     setAnchorEl(event.currentTarget);
-    dispatch(attendeesEditData(row));
+// using same eventeditdataid for all to get id of speaker 
+    dispatch(eventEditDataID(row?.attendee_id));
+    // dispatch(attendeesEditData(row));
   };
 
   const handleEdit = () => {

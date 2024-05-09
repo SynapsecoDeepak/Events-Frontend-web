@@ -13,22 +13,19 @@ import styles from "./speaker.module.css";
 import axios from "axios";
 
 import { useRouter } from "next/router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import Cookies from "js-cookie";
 import { BASE_URL } from "src/constants";
 
-// import { Chip } from '@mui/material-next'
-// import { Chip } from '@mui/material-next'
-
 const EditAttendees = () => {
   const router = useRouter();
 
   const state_token = useSelector((state) => state.auth.user?.userData?.token);
-  const UserEditAbleData = useSelector(
-    (state) => state?.event?.attendeesEditData
-  );
+  const [UserEditAbleData, SetUserEditAbleData] = useState("");
+  const attendeeIDforUpdate = useSelector((state) => state?.event?.eventEditDataID);
+
   const eventId = useSelector((state) => state?.event?.eventID);
 
   console.log("UserEditAbledata", UserEditAbleData);
@@ -51,6 +48,24 @@ const EditAttendees = () => {
     zipCode: "",
   });
 
+  useEffect(() => {
+    getAttendeeData();
+  }, []);
+
+  const getAttendeeData = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}/user/attendees/${attendeeIDforUpdate}/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data", // Set content type as multipart/form-data
+        },
+      });
+      SetUserEditAbleData(response.data);
+    } catch (error) {
+      console.error("Error fetching venues:", error);
+    }
+  };
+
   const handleInputChange = (prop) => (event) => {
     setFormData({ ...formData, [prop]: event.target.value });
   };
@@ -62,7 +77,7 @@ const EditAttendees = () => {
     formDataToSend.append("attendee_user_name", formData.firstName );
     // formDataToSend.append("attendee_user_name", formData.lastName);
     // formDataToSend.append("attendee_user_email", formData.email);
-    formDataToSend.append("attendee_user_id", UserEditAbleData.attendee_id);
+    formDataToSend.append("attendee_user_id", attendeeIDforUpdate);
     formDataToSend.append("location", formData.address);
     formDataToSend.append("organization_name", formData.organization);
     formDataToSend.append("designation", formData.designation);
@@ -71,7 +86,7 @@ const EditAttendees = () => {
     formDataToSend.append("county_of_residence", formData.country);
 
     try {
-      const response = await axios.patch(`${BASE_URL}/user/newattendees/${UserEditAbleData.attendee_id}/`,formDataToSend,
+      const response = await axios.patch(`${BASE_URL}/user/newattendees/${attendeeIDforUpdate}/`,formDataToSend,
         {
           headers: {
             Authorization: `Bearer ${token}`,

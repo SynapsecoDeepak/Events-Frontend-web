@@ -68,7 +68,6 @@ const EditSpeakerForm = () => {
         },
       });
       SetUserEditAbleData(response.data);
-      setLoading(false);
     } catch (error) {
       console.error("Error fetching venues:", error);
     }
