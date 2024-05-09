@@ -10,7 +10,8 @@ import Typography from "@mui/material/Typography";
 import TableContainer from "@mui/material/TableContainer";
 import Button from "@mui/material/Button";
 import { Menu, MenuItem } from "@mui/material";
-import { ArrowDropDown } from "@mui/icons-material";
+import { ArrowDropDown  , ArrowLeft,
+  ArrowRight, } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { BASE_URL } from "src/constants";
 import { attendeesData, attendeesEditData, deleteAttendee } from "src/store/slice/eventSlice";
@@ -18,10 +19,6 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
-import { ArrowLeft, ArrowRight } from "mdi-material-ui";
-
-
-
 const DashboardTable = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const router = useRouter();

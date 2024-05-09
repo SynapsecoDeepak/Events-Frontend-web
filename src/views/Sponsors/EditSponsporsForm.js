@@ -56,6 +56,32 @@ const EditSponsorsForm = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission
+
+    if (!formData.name || formData.name=='') {
+      toast.error("Enter your name");
+      return; // Prevent further execution
+    }
+
+    if (!formData.logo || formData.logo=='') {
+      toast.error("Please Select Logo");
+      return; // Prevent further execution
+    }
+    if (!formData.thumbnail || formData.thumbnail=='') {
+      toast.error("Please Select Banner");
+      return; // Prevent further execution
+    }
+
+    const fieldsToCheck = [
+      { field: formData.description, message: 'Please Enter Description' },
+      { field: formData.type, message: 'Please Enter Sponsors Type' },
+    ];
+    for (const fieldObj of fieldsToCheck) {
+      if (!fieldObj.field) {
+        toast.error(fieldObj.message);
+        return; // Stop further execution if any field is empty
+      }
+    }
+
     const formDataToSend = new FormData(); // Create a new FormData object
 
     // Append each field to FormData object

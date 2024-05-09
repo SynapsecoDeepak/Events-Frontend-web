@@ -16,11 +16,13 @@ import {
   DialogContent,
   DialogTitle,
 } from "@mui/material";
-import { ArrowDropDown, Cancel, Router } from "@mui/icons-material";
+import { ArrowDropDown, Cancel,   ArrowLeft,
+  ArrowRight, } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios"; // Import axios for making API requests
 import {
   deleteSponsors,
+  eventEditDataID,
   sponsorData,
   sponsorDataFullDetails,
   sponsorsEditData,
@@ -29,7 +31,7 @@ import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import { BASE_URL } from "src/constants";
 import toast from "react-hot-toast";
-import { ArrowLeft, ArrowRight } from "mdi-material-ui";
+
 
 const DashboardTable = () => {
   const dispatch = useDispatch();
@@ -37,7 +39,10 @@ const DashboardTable = () => {
 
   const eventId = useSelector((state) => state?.event?.eventID);
   const state_token = useSelector((state) => state.auth.user?.userData?.token);
-
+  // taking speakerIdForDelete from this because using the same eventeditdataid slice to get speaker id
+  const SponsorIdforDelete = useSelector(
+    (state) => state?.event?.eventEditDataID
+  );
 
 
   const fetchSponsorsData = async () => {
@@ -150,7 +155,7 @@ const DashboardTable = () => {
   const handleDelete = async () => {
     try {
       const response = await axios.delete(
-        `${BASE_URL}/event/sponsors/${UserEditAbleData?.sponsor_id}/`,
+        `${BASE_URL}/event/sponsors/${SponsorIdforDelete}/`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -158,7 +163,7 @@ const DashboardTable = () => {
         }
       );
       toast.success("Sponsor deleted successfully");
-      dispatch(deleteSponsors(UserEditAbleData?.sponsor_id));
+      dispatch(deleteSponsors(SponsorIdforDelete));
       setAnchorEl(null);
     } catch (error) {
       console.error("Error fetching row data details:", error);
@@ -167,8 +172,10 @@ const DashboardTable = () => {
   };
 
   const handleAction = (event, row) => {
+    // using same eventeditdataid for all to get id of speaker 
+    dispatch(eventEditDataID(row?.sponsor_id));
     setAnchorEl(event.currentTarget);
-    dispatch(sponsorsEditData(row));
+    // dispatch(sponsorsEditData(row));
   };
   return (
     <Card>

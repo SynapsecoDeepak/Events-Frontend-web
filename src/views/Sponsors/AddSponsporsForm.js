@@ -28,6 +28,8 @@ const AddSponsorsForm = () => {
   const state_token = useSelector((state) => state.auth.user?.userData?.token);
   const eventId = useSelector((state) => state?.event?.eventID);
   const CookiesToken = Cookies.get("token");
+  const [logoPreview, setLogoPreview] = useState("");
+  const [thumbnailPreview, setThumbnailPreview] = useState("");
 
   const token = CookiesToken || state_token;
 
@@ -48,11 +50,27 @@ const AddSponsorsForm = () => {
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     setFormData({ ...formData, logo: file });
+       // Generate preview URL for logo
+       const reader = new FileReader();
+       reader.onloadend = () => {
+         setLogoPreview(reader.result);
+       };
+       if (file) {
+         reader.readAsDataURL(file);
+       }
   };
 
   const handleImageChange2 = (event) => {
     const file = event.target.files[0];
     setFormData({ ...formData, thumbnail: file });
+       // Generate preview URL for logo
+       const reader = new FileReader();
+       reader.onloadend = () => {
+         setThumbnailPreview(reader.result);
+       };
+       if (file) {
+         reader.readAsDataURL(file);
+       }
   };
 
   const handleSubmit = async (event) => {
@@ -71,6 +89,18 @@ const AddSponsorsForm = () => {
     if (!formData.logo || formData.logo=='') {
       toast.error("Please Select Logo");
       return; // Prevent further execution
+    }
+
+    const fieldsToCheck = [
+      { field: formData.description, message: 'Please Enter Description' },
+      { field: formData.type, message: 'Please Enter Sponsors Type' },
+    ];
+    
+    for (const fieldObj of fieldsToCheck) {
+      if (!fieldObj.field) {
+        toast.error(fieldObj.message);
+        return; // Stop further execution if any field is empty
+      }
     }
     
     const formDataToSend = new FormData(); // Create a new FormData object
@@ -106,7 +136,7 @@ const AddSponsorsForm = () => {
         email: "",
       });
       toast.success("The Sponsor added successfully");
-      // router.back();
+      router.push('/sponsors');
     } catch (error) {
       console.error("Error submitting data:", error);
     }
@@ -197,7 +227,7 @@ const AddSponsorsForm = () => {
               value={formData?.logo?.file?.name}
               className={styles.fileInput}
             />
-            <label for="fileInput" className={styles.customButton}>
+            <label htmlFor="logo" className={styles.customButton}>
               Choose File
             </label>
           </div>
@@ -206,10 +236,17 @@ const AddSponsorsForm = () => {
               Example: Accepts PNG, GIF, JPG, JPEG
             </span>
           </div>
+          {logoPreview && (
+            <img
+              src={logoPreview}
+              alt="Logo Preview"
+              className={styles.previewImage}
+            />
+          )}
         </div>
         <div className={styles.column} style={{ width: "35%" }}>
           <div>
-            <label className={styles.label}>Thumbnail</label>
+            <label className={styles.label}>Banner</label>
           </div>
           <div className={styles.fileInputContainer}>
             <input
@@ -220,7 +257,7 @@ const AddSponsorsForm = () => {
               value={formData?.thumbnail?.file?.name}
               className={styles.fileInput}
             />
-            <label for="fileInput" className={styles.customButton}>
+            <label htmlFor="thumbnail" className={styles.customButton}>
               Choose File
             </label>
           </div>
@@ -229,6 +266,13 @@ const AddSponsorsForm = () => {
               Example: Accepts PNG, GIF, JPG, JPEG
             </span>
           </div>
+          {thumbnailPreview && (
+            <img
+              src={thumbnailPreview}
+              alt="Logo Preview"
+              className={styles.previewImage}
+            />
+          )}
         </div>
       </div>
       <div className={styles.fullWidth}>
