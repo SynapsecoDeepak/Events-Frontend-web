@@ -42,23 +42,25 @@ const EventCreateForm = () => {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    // Fetch venue data from the map API
-    const fetchVenues = async () => {
-      try {
-        const response = await axios.get(`${BASE_URL}/event/venues/`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data", // Set content type as multipart/form-data
-          },
-        });
-        setVenues(response.data.data);
-      } catch (error) {
-        console.error("Error fetching venues:", error);
-      }
-    };
 
     fetchVenues();
   }, []);
+
+      // Fetch venue data from the map API
+      const fetchVenues = async () => {
+        try {
+          const response = await axios.get(`${BASE_URL}/event/venues/`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data", // Set content type as multipart/form-data
+            },
+          });
+          setVenues(response.data.data);
+        } catch (error) {
+          console.error("Error fetching venues:", error);
+        }
+      };
+  
 
   const handleVenueInputChange = (event) => {
     setVenueName(event.target.value);
@@ -80,21 +82,12 @@ const EventCreateForm = () => {
     setOpen(false);
   };
 
-  // const handleStartDateChange = (date) => {
-  //   if (date < new Date()) {
-  //     setStartDate(new Date());
-  //   } else {
-  //     setStartDate(date);
-  //   }
-  // };
+
 
   const handleStartDateChange = (date) => {
-    // Check if the selected start date is after the current end date
     if (endDate && date > endDate) {
-      // Update the end date to be the same as the new start date
       setEndDate(date);
     }
-    // Update the start date
     setStartDate(date);
   };
 
@@ -106,17 +99,6 @@ const EventCreateForm = () => {
       setEndDate(date);
     }
   };
-
-  // const handleStartTimeChange = (event) => {
-  //   const selectedTime = event.target.value;
-  //   const currentTime = moment().format("HH:mm");
-  //   if (moment(selectedTime, "HH:mm").isBefore(moment(currentTime, "HH:mm"))) {
-  //     setStartTime(currentTime);
-  //     toast.error("Start time cannot be in the past");
-  //   } else {
-  //     setStartTime(selectedTime);
-  //   }
-  // };
 
 
   const handleStartTimeChange = (event) => {
@@ -159,47 +141,7 @@ const EventCreateForm = () => {
     }
   };
 
-  // const handleEndTimeChange = (event) => {
-  //   const selectedTime = event.target.value;
-  //   const currentTime = moment().format("HH:mm");
-  //   // Check if the selected time is before the start time
-  //   if (moment(selectedTime, "HH:mm").isBefore(moment(startTime, "HH:mm"))) {
-  //     setEndTime(startTime); // Set end time to be equal to start time
-  //     toast.error("End time cannot be less than start time");
-  //   } else {
-  //     setEndTime(selectedTime);
-  //   }
-  // };
-
-  // const handleEndTimeChange = (event) => {
-  //   const selectedTime = event.target.value;
-  //   const currentTime = moment().format("HH:mm");
-  //   // Check if the selected time is before the current time
-  //   if (moment(selectedTime, "HH:mm").isBefore(moment(currentTime, "HH:mm"))) {
-  //     setEndTime(currentTime);
-  //     toast.error("End time cannot be in the past");
-  //   } else if (moment(selectedTime, "HH:mm").isBefore(moment(startTime, "HH:mm"))) {
-  //     // Check if the selected time is before the start time
-  //     setEndTime(startTime); // Set end time to be equal to start time
-  //     toast.error("End time cannot be less than start time");
-  //   } else {
-  //     setEndTime(selectedTime);
-  //   }
-  // };
-
-
-  // const handleEndTimeChange = (event) => {
-  //   const selectedTime = event.target.value;
-  //   const currentTime = moment().format("HH:mm");
-  //   if (moment(selectedTime, "HH:mm").isBefore(moment(currentTime, "HH:mm"))) {
-  //     setEndTime(currentTime);
-  //     toast.error("End time cannot be in the past");
-  //   } else {
-  //     setEndTime(selectedTime);
-  //   }
-  // };
-
-  const handleSubmitCustomVenue = async () => {
+const handleSubmitCustomVenue = async () => {
 if(!pdfFile || pdfFile == null){
   toast.error("Please Upload Pdf Location details")
   return;
@@ -226,11 +168,7 @@ if(!venueName || venueName == ''){
         }
       );
       
-      
-      console.log("Response:", response.data.data.name);
-      const newVenue = response.data.data.name;
-      setVenues([...venues], newVenue);
-      // Clear form fields
+      fetchVenues();
       setOpen(false);
       setVenueName("");
       setPdfFile(null);
