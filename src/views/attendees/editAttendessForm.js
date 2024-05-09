@@ -55,6 +55,26 @@ const EditAttendees = () => {
     }
   };
 
+  useEffect(() => {
+    // Update form data once UserEditAbleData is available
+    if (UserEditAbleData) {
+      console.log("use data to fil ", UserEditAbleData);
+      setFormData({
+        firstName: UserEditAbleData?.name,
+        lastName: UserEditAbleData?.lname|| 'not available',
+        email:  UserEditAbleData?.email || 'not available',
+        contact:UserEditAbleData?.contact || 'not available',
+        organization: UserEditAbleData?.organization_name || 'not available',
+        designation: UserEditAbleData?.designation || 'not available',
+        address: UserEditAbleData?.address || 'not available',
+        country: UserEditAbleData?.country || 'not available',
+        state: UserEditAbleData?.state || 'not available',
+        city: UserEditAbleData?.city || 'not available',
+        zipCode: UserEditAbleData?.zipcode || 'not available',
+      });
+    }
+  }, [UserEditAbleData]);
+
   const handleInputChange = (prop) => (event) => {
     setFormData({ ...formData, [prop]: event.target.value });
   };
