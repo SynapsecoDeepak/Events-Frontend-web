@@ -234,13 +234,13 @@ const DashboardTable = () => {
                       <Button
                         variant="contained"
                         sx={{
-                          bgcolor: statusObj[row.speaker_user.status].color,
+                          bgcolor: statusObj[row?.speaker_user?.status].color,
                           padding: "5px",
                           width: "68px",
                           height: "22px",
                         }}
                       >
-                        {row.speaker_user.status}
+                        {row?.speaker_user?.status}
                       </Button>
                     </TableCell>
                     <TableCell>

@@ -5,6 +5,10 @@ const initialState = {
   speakerData: null,
   searchQuery: '',
   filteredData: [], // Initialize filtered data as an empty array
+  searchQuerySpon: '',
+  filteredDataSpon: [], // Initialize filtered data as an empty array
+  searchQueryAtten: '',
+  filteredDataAtten: [], // Initialize filtered data as an empty array
   sponsorData: null,
   attendeesData: null,
   registrationData: null,
@@ -36,10 +40,22 @@ const eventSlice = createSlice({
     updateSearchQuery(state, action) {
       state.searchQuery = action.payload;
     },
-    // Action to update the filtered data
     updateFilteredData(state, action) {
       state.filteredData = action.payload;
     },
+    updateSearchQuery(state, action) {
+      state.searchQuerySpon = action.payload;
+    },
+    updateFilteredDataSpon(state, action) {
+      state.filteredDataSpon = action.payload;
+    },
+    updateSearchQuery(state, action) {
+      state.searchQueryAtten = action.payload;
+    },
+    updateFilteredDataAtten(state, action) {
+      state.filteredDataAtten = action.payload;
+    },
+
     registrationData(state, action) {
       state.registrationData = action.payload;
     },
@@ -104,6 +120,8 @@ export const {
   speakerData,
   updateSearchQuery,
   updateFilteredData,
+  updateFilteredDataSpon,
+  updateFilteredDataAtten,
   registrationData,
   speakerDataFullDetails,
   sponsorDataFullDetails,
@@ -117,7 +135,7 @@ export const {
   deleteSponsors,
   deleteAttendee,
   deleteEventData,
-  eventPublicData
+  eventPublicData,
 } = eventSlice.actions;
 
 export default eventSlice.reducer;

@@ -23,6 +23,8 @@ import {
   speakerData,
   sponsorData,
   updateFilteredData,
+  updateFilteredDataAtten,
+  updateFilteredDataSpon,
   updateSearchQuery
 } from "src/store/slice/eventSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -56,6 +58,8 @@ const AppBarContent = (props) => {
     dispatch(attendeesData(null))
     dispatch(registrationData(null))
     dispatch(updateFilteredData([]))
+    dispatch(updateFilteredDataSpon([]))
+    dispatch(updateFilteredDataAtten([]))
     dispatch(updateSearchQuery(''))
     router.push('/')
     // storing event id  to use while in add speaker , sponsor form  to send event id

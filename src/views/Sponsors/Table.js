@@ -29,6 +29,7 @@ import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import { BASE_URL } from "src/constants";
 import toast from "react-hot-toast";
+import { ArrowLeft, ArrowRight } from "mdi-material-ui";
 
 const DashboardTable = () => {
   const dispatch = useDispatch();
@@ -69,6 +70,35 @@ const DashboardTable = () => {
   // const [openDialog, setOpenDialog] = useState(false);
 
   const rows = useSelector((state) => state.event?.sponsorData?.data);
+
+
+
+  const filteredData = useSelector((state) => state.event?.filteredDataSpon);
+
+  const searchQuery = useSelector((state) => state?.event?.searchQueryspon);
+  const showResultNotFound =
+    (searchQuery && filteredData && filteredData.length === 0) ||
+    (searchQuery && !filteredData);
+
+  const dataToRender =
+    filteredData && filteredData.length > 0 ? filteredData : rows;
+
+
+
+      // Pagination start
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 3; // Adjust the number of items per page as needed
+
+  // Calculate indexes for pagination
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentData = dataToRender?.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(dataToRender?.length / itemsPerPage);
+
+
+
+
   const CookiesToken = Cookies.get("token");
   const token = CookiesToken || state_token;
   const rowsDetails = useSelector(
@@ -143,6 +173,11 @@ const DashboardTable = () => {
   return (
     <Card>
       <TableContainer>
+      {showResultNotFound ? (
+          <Typography sx={{ margin: "1rem 0rem", paddingLeft: "1rem" }}>
+            No results found
+          </Typography>
+        ) : (
         <Table sx={{ minWidth: 800 }} aria-label="table in dashboard">
           <TableHead>
             <TableRow>
@@ -153,11 +188,11 @@ const DashboardTable = () => {
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
-          {rows == null &&(<Typography sx={{margin:'1rem 0rem',paddingLeft:"1rem"}}>Selected event does not have sponsor list</Typography>)}
+          {dataToRender == null &&(<Typography sx={{margin:'1rem 0rem',paddingLeft:"1rem"}}>Selected event does not have sponsor list</Typography>)}
 
           <TableBody>
-            {Array.isArray(rows) &&
-               [...rows].reverse().map((row) => (
+            {Array.isArray(dataToRender) &&
+               [...dataToRender].reverse().map((row) => (
                 <TableRow
                   hover
                   key={row?.name}
@@ -228,7 +263,27 @@ const DashboardTable = () => {
                 </TableRow>
               ))}
           </TableBody>
+          <div>
+              <Button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                <ArrowLeft />
+              </Button>
+              {Array.from({ length: totalPages }, (_, index) => (
+                <Button  key={index} onClick={() => handlePageChange(index + 1)}>
+                  {index + 1}
+                </Button>
+              ))}
+              <Button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                <ArrowRight />
+              </Button>
+            </div>
         </Table>
+        )}
       </TableContainer>
       {/* Dialog Box */}
 

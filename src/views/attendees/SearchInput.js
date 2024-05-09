@@ -3,9 +3,36 @@ import Box from "@mui/material/Box";
 import { useRouter } from "next/router";
 import ImportModal from "./Modal";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { updateFilteredDataAtten, updateSearchQuery } from "src/store/slice/eventSlice";
 
 const SearchInput = () => {
   const router = useRouter();
+  const dispatch = useDispatch();
+
+  const attendeesData = useSelector((state) => state.event?.attendeesData?.data);
+  
+  const handleInputChange = (event) => {
+    const query = event.target.value;
+    dispatch(updateSearchQuery(query));
+    filterData(query);
+  };
+ 
+  const filterData = (query) => {
+    const filteredData = attendeesData.filter((attendees) =>
+      attendees?.attendee_user?.name.toLowerCase().includes(query.toLowerCase())
+    //  ||
+    //   speaker.organization.toLowerCase().includes(query.toLowerCase())
+    );
+    dispatch(updateFilteredDataAtten(filteredData));
+  };
+
+
+
+
+
+
+
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 
   const handleImport = () => {
@@ -53,6 +80,7 @@ const SearchInput = () => {
         <input
           style={{ border: "none", width: "100%" }}
           type="text"
+          onChange={handleInputChange}
           placeholder="Search speaker name and organization"
         />
       </Box>
