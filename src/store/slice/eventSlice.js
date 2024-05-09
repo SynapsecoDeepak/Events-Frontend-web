@@ -9,6 +9,8 @@ const initialState = {
   filteredDataSpon: [], // Initialize filtered data as an empty array
   searchQueryAtten: '',
   filteredDataAtten: [], // Initialize filtered data as an empty array
+  searchQueryRegis: '',
+  filteredDataRegis: [], // Initialize filtered data as an empty array
   sponsorData: null,
   attendeesData: null,
   registrationData: null,
@@ -54,6 +56,13 @@ const eventSlice = createSlice({
     },
     updateFilteredDataAtten(state, action) {
       state.filteredDataAtten = action.payload;
+    },
+
+    updateSearchQuery(state, action) {
+      state.searchQueryRegis = action.payload;
+    },
+    updateFilteredDataRegis(state, action) {
+      state.filteredDataRegis = action.payload;
     },
 
     registrationData(state, action) {
@@ -122,6 +131,7 @@ export const {
   updateFilteredData,
   updateFilteredDataSpon,
   updateFilteredDataAtten,
+  updateFilteredDataRegis,
   registrationData,
   speakerDataFullDetails,
   sponsorDataFullDetails,

@@ -10,7 +10,7 @@ import Typography from "@mui/material/Typography";
 import TableContainer from "@mui/material/TableContainer";
 import Button from "@mui/material/Button";
 import { Menu, MenuItem } from "@mui/material";
-import { ArrowDropDown, MoreVert } from "@mui/icons-material";
+import { ArrowDropDown, ArrowLeft, ArrowRight, MoreVert } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { registrationData } from "src/store/slice/eventSlice";
 import axios from "axios";
@@ -30,6 +30,8 @@ const DashboardTable = () => {
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedAction, setSelectedAction] = useState(null);
+
+  
 
 
   const eventId = useSelector((state) => state?.event?.eventID);
@@ -69,6 +71,34 @@ const DashboardTable = () => {
   );
 
 
+  const filteredData = useSelector((state) => state.event?.filteredDataRegis);
+
+  const searchQuery = useSelector((state) => state?.event?.searchQuery);
+  const showResultNotFound =
+    (searchQuery && filteredData && filteredData.length === 0) ||
+    (searchQuery && !filteredData);
+
+  const dataToRender =
+    filteredData && filteredData.length > 0 ? filteredData : rowsDetails;
+
+
+    // Pagination start
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8; // Adjust the number of items per page as needed
+
+  // Calculate indexes for pagination
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentData = dataToRender?.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(dataToRender?.length / itemsPerPage);
+
+  // Function to handle page change
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+  // Pagination end
+
 
   console.log('registrationdatat',rowsDetails)
 
@@ -88,6 +118,11 @@ const DashboardTable = () => {
   return (
     <Card>
       <TableContainer>
+      {showResultNotFound ? (
+          <Typography sx={{ margin: "1rem 0rem", paddingLeft: "1rem" }}>
+            No results found
+          </Typography>
+        ) : (
         <Table sx={{ minWidth: 800 }} aria-label="table in dashboard">
           <TableHead>
             <TableRow>
@@ -98,10 +133,10 @@ const DashboardTable = () => {
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
-          {rowsDetails == null &&(<Typography sx={{margin:'1rem 0rem',paddingLeft:"1rem"}}>Selected event does not have registration list</Typography>)}
+          {currentData == null &&(<Typography sx={{margin:'1rem 0rem',paddingLeft:"1rem"}}>Selected event does not have registration list</Typography>)}
           <TableBody>
-          {Array.isArray(rowsDetails) &&
-               [...rowsDetails].reverse().map((row) => (
+          {Array.isArray(currentData) &&
+               [...currentData].reverse().map((row) => (
             // {rowsDetails?.map((row) => (
               <TableRow
                 hover
@@ -173,14 +208,28 @@ const DashboardTable = () => {
               </TableRow>
             ))}
           </TableBody>
+          <div>
+              <Button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                <ArrowLeft />
+              </Button>
+              {Array.from({ length: totalPages }, (_, index) => (
+                <Button  key={index} onClick={() => handlePageChange(index + 1)}>
+                  {index + 1}
+                </Button>
+              ))}
+              <Button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                <ArrowRight />
+              </Button>
+            </div>
         </Table>
-      </TableContainer>
-      {selectedAction && (
-        <Typography variant="subtitle1">
-          Selected Action: {selectedAction}
-        </Typography>
-      )}
-    </Card>
+        )}
+      </TableContainer>    </Card>
   );
 };
 
