@@ -28,6 +28,7 @@ import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import { BASE_URL } from "src/constants";
 import toast from "react-hot-toast";
+import ConfirmationDialog from "src/components/ConfrimationBox";
 
 const DashboardTable = () => {
   const dispatch = useDispatch();
@@ -91,21 +92,11 @@ const DashboardTable = () => {
     // }
   };
 
-  const handleClick = (rowData) => {
-    setSelectedRowData(rowData);
-  };
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  setSelectedRowData(null)
-  };
-
-  const handleEdit = () => {
-    router.push("/createevent/editEvent");
-  };
-
-  const handleDelete = async () => {
-   console.log('deleid',eventID)
+  const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
+ 
+  const handleDeleteConfirmed = async () => {
+    console.log('deleid',eventID)
     try {
       const response = await axios.delete(
         `${BASE_URL}/event/
@@ -119,11 +110,32 @@ const DashboardTable = () => {
       toast.success("Event deleted successfully");
       dispatch(deleteEventData(eventID));
       setAnchorEl(null);
+      setConfirmationDialogOpen(false);
+
     } catch (error) {
       console.error("Error fetching row data details:", error);
     }
     console.log("delete");
   };
+ 
+  const handleDelete = () => {
+    setConfirmationDialogOpen(true);
+  };
+
+  const handleClick = (rowData) => {
+    setSelectedRowData(rowData);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  setSelectedRowData(null)
+  };
+
+  const handleEdit = () => {
+    router.push("/createevent/editEvent");
+  };
+
+
 
   const handleAction = (event, row) => {
     console.log(row.event_id)
@@ -232,7 +244,13 @@ const DashboardTable = () => {
         </Table>
         )}
       </TableContainer>
+      
 
+      <ConfirmationDialog
+        open={confirmationDialogOpen}
+        onClose={() => setConfirmationDialogOpen(false)}
+        onConfirm={handleDeleteConfirmed}
+      />
       {/* Dialog Box */}
 
       <Dialog open={Boolean(selectedRowData)} onClose={handleClose}>

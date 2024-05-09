@@ -23,6 +23,9 @@ const ReactQuill = dynamic(
 const EventEditForm = () => {
   const router = useRouter();
   const dispatch = useDispatch();
+  const [logoPreview, setLogoPreview] = useState('');
+  const [thumbnailPreview, setThumbnailPreview] = useState('');
+
   const [loading, setLoading] = useState(true);
   const state_token = useSelector((state) => state.auth.user?.userData?.token);
   const userId = useSelector((state) => state?.auth?.user?.userData?.data?.id);
@@ -71,8 +74,8 @@ const EventEditForm = () => {
       setFormData({
         name: UserEditAbleData?.data?.name || "",
         shortDescription: UserEditAbleData?.data?.event_short_description || "",
-        logo: null,
-        thumbnail: null,
+        logo: UserEditAbleData.event_logo,
+        thumbnail: UserEditAbleData?.event_banner,
       });
       setStartDate(
         UserEditAbleData?.data?.start_date
@@ -88,6 +91,9 @@ const EventEditForm = () => {
       setEndTime(UserEditAbleData?.data?.end_time || "");
       setDescription(UserEditAbleData?.data?.event_long_description || "");
       setSelectedVenue(UserEditAbleData?.data?.venue[0] || "");
+      setLogoPreview(UserEditAbleData?.data?.event_logo);
+      setThumbnailPreview(UserEditAbleData?.data?.event_banner);
+console.log('logo previ',logoPreview)
     }
   }, [UserEditAbleData]);
 
@@ -183,43 +189,6 @@ const EventEditForm = () => {
     }
   };
 
-  // const handleStartTimeChange = (event) => {
-  //   const selectedTime = event.target.value;
-  //   const currentTime = moment().format("HH:mm");
-  //   if (moment(selectedTime, "HH:mm").isBefore(moment(currentTime, "HH:mm"))) {
-  //     setStartTime(currentTime);
-  //     toast.error("Start time cannot be in the past");
-  //   } else {
-  //     setStartTime(selectedTime);
-  //   }
-  // };
-
-  // const handleEndTimeChange = (event) => {
-  //   const selectedTime = event.target.value;
-  //   const currentTime = moment().format("HH:mm");
-  //   if (moment(selectedTime, "HH:mm").isBefore(moment(currentTime, "HH:mm"))) {
-  //     setEndTime(currentTime);
-  //     toast.error("End time cannot be in the past");
-  //   } else {
-  //     setEndTime(selectedTime);
-  //   }
-  // };
-
-  // const handleEndTimeChange = (event) => {
-  //   const selectedTime = event.target.value;
-  //   const currentTime = moment().format("HH:mm");
-  //   // Check if the selected time is before the current time
-  //   if (moment(selectedTime, "HH:mm").isBefore(moment(currentTime, "HH:mm"))) {
-  //     setEndTime(currentTime);
-  //     toast.error("End time cannot be in the past");
-  //   } else if (moment(selectedTime, "HH:mm").isBefore(moment(startTime, "HH:mm"))) {
-  //     // Check if the selected time is before the start time
-  //     setEndTime(startTime); // Set end time to be equal to start time
-  //     toast.error("End time cannot be less than start time");
-  //   } else {
-  //     setEndTime(selectedTime);
-  //   }
-  // };
 
   const handleEndTimeChange = (event) => {
     const selectedTime = event.target.value;
@@ -403,8 +372,6 @@ const EventEditForm = () => {
   const [description, setDescription] = useState(
     UserEditAbleData?.data?.event_long_description
   );
-  const [logoPreview, setLogoPreview] = useState("");
-  const [thumbnailPreview, setThumbnailPreview] = useState("");
 
   const handleDescriptionChange = (value) => {
     setDescription(value);
@@ -678,7 +645,7 @@ const EventEditForm = () => {
                   className={styles.fileInput}
                 />
 
-                <label for="fileInput" className={styles.customButton}>
+                <label htmlFor="logo" className={styles.customButton}>
                   Choose File
                 </label>
               </div>
@@ -711,7 +678,7 @@ const EventEditForm = () => {
                   className={styles.fileInput}
                 />
 
-                <label for="fileInput" className={styles.customButton}>
+                <label htmlFor="thumbnail" className={styles.customButton}>
                   Choose File
                 </label>
               </div>
