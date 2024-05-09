@@ -49,17 +49,22 @@ const EventCreateForm = () => {
       // Fetch venue data from the map API
       const fetchVenues = async () => {
         try {
-          const response = await axios.get(`${BASE_URL}/event/venues/`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "multipart/form-data", // Set content type as multipart/form-data
-            },
-          });
-          setVenues(response.data.data);
+            const response = await axios.get(`${BASE_URL}/event/venues/`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "multipart/form-data", // Set content type as multipart/form-data
+                },
+            });
+     
+            // Extract venue names and remove duplicates and null values
+            const uniqueVenues = response.data.data
+                .map(venue => venue.name) // Extract venue names
+                .filter((name, index, self) => name && self.indexOf(name) === index); // Filter out duplicates and null values
+            setVenues(uniqueVenues);
         } catch (error) {
-          console.error("Error fetching venues:", error);
+            console.error("Error fetching venues:", error);
         }
-      };
+    };
   
 
   const handleVenueInputChange = (event) => {
@@ -363,7 +368,7 @@ for (const fieldObj of fieldsToCheck) {
               <option value="">Select Venue</option>
               {venues.map((venue) => (
                 <option key={venue.id} value={venue.id}>
-                  {venue.name || 'null'}
+                  {venue || 'null'}
                 </option>
               ))}
             </select>
