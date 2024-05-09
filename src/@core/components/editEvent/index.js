@@ -172,18 +172,46 @@ const EventEditForm = () => {
     }
   };
 
+  // const handleEndTimeChange = (event) => {
+  //   const selectedTime = event.target.value;
+  //   const currentTime = moment().format("HH:mm");
+  //   if (moment(selectedTime, "HH:mm").isBefore(moment(currentTime, "HH:mm"))) {
+  //     setEndTime(currentTime);
+  //     toast.error("End time cannot be in the past");
+  //   } else {
+  //     setEndTime(selectedTime);
+  //   }
+  // };
+
   const handleEndTimeChange = (event) => {
     const selectedTime = event.target.value;
     const currentTime = moment().format("HH:mm");
+    // Check if the selected time is before the current time
     if (moment(selectedTime, "HH:mm").isBefore(moment(currentTime, "HH:mm"))) {
       setEndTime(currentTime);
       toast.error("End time cannot be in the past");
+    } else if (moment(selectedTime, "HH:mm").isBefore(moment(startTime, "HH:mm"))) {
+      // Check if the selected time is before the start time
+      setEndTime(startTime); // Set end time to be equal to start time
+      toast.error("End time cannot be less than start time");
     } else {
       setEndTime(selectedTime);
     }
   };
 
+
+
   const handleSubmitCustomVenue = async () => {
+
+    if(!pdfFile || pdfFile == null){
+      toast.error("Please Upload Pdf Location details")
+      return;
+    }
+    if(!venueName || venueName == ''){
+      toast.error("Please Enter Venue Name")
+      return;
+    }
+
     try {
       const formData = new FormData();
       formData.append("name", venueName);

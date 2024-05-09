@@ -62,6 +62,28 @@ const EditSpeakerForm = () => {
     }
   };
 
+
+  useEffect(() => {
+    // Update form data once UserEditAbleData is available
+    if (UserEditAbleData) {
+      console.log("use data to fil ", UserEditAbleData);
+      setFormData({
+        speakerName: UserEditAbleData?.speaker_user?.name,
+        emailAddress: "",
+        contactNumber: "",
+        location: UserEditAbleData?.location,
+        designation: "",
+        organization: UserEditAbleData?.speaker_user?.organization_name,
+        description: UserEditAbleData?.bio,
+        sessions: "",
+        photo: {},
+        personalWebsite: "",
+        twitterLink: "",
+        linkedInLink: "",
+      });
+    }
+  }, [UserEditAbleData]);
+
   const handleInputChange = (prop) => (event) => {
     setFormData({ ...formData, [prop]: event.target.value });
   };

@@ -16,7 +16,7 @@ import {
   DialogContent,
   DialogTitle,
 } from "@mui/material";
-import { ArrowDropDown, Cancel } from "@mui/icons-material";
+import { ArrowDropDown, ArrowLeft, ArrowRight, Cancel } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios"; // Import axios for making API requests
 import {
@@ -35,22 +35,41 @@ const DashboardTable = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedAction, setSelectedAction] = useState(null);
   const [selectedRowData, setSelectedRowData] = useState(null);
-  const rows = useSelector((state) => state.event?.speakerData?.data);
   const state_token = useSelector((state) => state.auth.user?.userData?.token);
   const eventID = useSelector(
     (state) => state?.event?.eventEditDataID
   );
   const CookiesToken = Cookies.get("token");
   const token = CookiesToken || state_token;
-  const rowsDetails = useSelector(
-    (state) => state.event?.speakerDataFullDetails?.data?.speaker_user
-  );
+
   const eventData = useSelector((state) => state.event?.eventData?.data);
 
   const statusObj = {
     present: { color: "success" },
     absent: { color: "#E2B675" },
   };
+
+  const filteredData = useSelector((state) => state.event?.filteredDataEvent);
+
+  const searchQuery = useSelector((state) => state?.event?.searchQuery);
+  const showResultNotFound =
+    (searchQuery && filteredData && filteredData.length === 0) ||
+    (searchQuery && !filteredData);
+
+  const dataToRender = filteredData && filteredData.length > 0 ? filteredData : eventData;
+    // Pagination start
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5; // Adjust the number of items per page as needed
+    // Calculate indexes for pagination
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentData = dataToRender?.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(dataToRender?.length / itemsPerPage);
+      // Function to handle page change
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+  // Pagination end
 
   useEffect(() => {
     if (selectedRowData) {
@@ -115,6 +134,11 @@ const DashboardTable = () => {
   return (
     <Card>
       <TableContainer>
+      {showResultNotFound ? (
+          <Typography sx={{ margin: "1rem 0rem", paddingLeft: "1rem" }}>
+            No results found
+          </Typography>
+        ) : (
         <Table sx={{ minWidth: 800 }} aria-label="table in dashboard">
           <TableHead>
             <TableRow>
@@ -126,8 +150,8 @@ const DashboardTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {Array.isArray(eventData) &&
-              [...eventData].reverse().map((row) => (
+            {Array.isArray(currentData) &&
+              [...currentData].reverse().map((row) => (
                 <TableRow
                   hover
                   key={row?.event_id}
@@ -160,19 +184,6 @@ const DashboardTable = () => {
                   <TableCell onClick={() => handleClick(row)}>
                     {row?.end_date}
                   </TableCell>
-                  {/* <TableCell sx={{ fontSize: "12px !important" }}>
-                    <Button
-                      variant="contained"
-                      sx={{
-                        bgcolor: statusObj[row.speaker_user.status].color,
-                        padding: "5px",
-                        width: "68px",
-                        height: "22px",
-                      }}
-                    >
-                      {row.speaker_user.status}
-                    </Button>
-                  </TableCell> */}
                  <TableCell>
                     <Button
                       sx={{
@@ -199,7 +210,27 @@ const DashboardTable = () => {
                 </TableRow>
               ))}
           </TableBody>
+          <div>
+              <Button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                <ArrowLeft />
+              </Button>
+              {Array.from({ length: totalPages }, (_, index) => (
+                <Button  key={index} onClick={() => handlePageChange(index + 1)}>
+                  {index + 1}
+                </Button>
+              ))}
+              <Button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                <ArrowRight />
+              </Button>
+            </div>
         </Table>
+        )}
       </TableContainer>
 
       {/* Dialog Box */}
@@ -221,41 +252,6 @@ const DashboardTable = () => {
             onClick={handleClose}
           />
         </Box>
-        <DialogContent sx={{ width: "auto" }}>
-          {rowsDetails && (
-            <Card>
-              <Box sx={{ p: 2 }}>
-                {/* Image */}
-                {rowsDetails?.profile_photo && (
-                  <Box sx={{ textAlign: "center" }}>
-                    <img
-                      src={`http://172.171.210.167/${rowsDetails?.profile_photo}`}
-                      alt="Speaker"
-                      style={{
-                        width: "auto",
-                        marginBottom: "16px",
-                        height: "auto",
-                      }}
-                    />
-                  </Box>
-                )}
-                {/* Speaker Details */}
-                <Typography variant="h6" gutterBottom>
-                  {rowsDetails?.name}
-                </Typography>
-                <Typography variant="body1" gutterBottom>
-                  Organization: {rowsDetails?.organization_name}
-                </Typography>
-                <Typography variant="body1" gutterBottom>
-                  Bio: {rowsDetails?.bio}
-                </Typography>
-                <Typography variant="body1" gutterBottom>
-                  Status: {rowsDetails?.status?.toString()}
-                </Typography>
-              </Box>
-            </Card>
-          )}
-        </DialogContent>
       </Dialog>
     </Card>
   );

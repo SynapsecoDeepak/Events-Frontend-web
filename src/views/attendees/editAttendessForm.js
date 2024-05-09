@@ -1,14 +1,3 @@
-// ** MUI Imports
-import Box from "@mui/material/Box";
-import Card from "@mui/material/Card";
-import Chip from "@mui/material/Chip";
-import Table from "@mui/material/Table";
-import TableRow from "@mui/material/TableRow";
-import TableHead from "@mui/material/TableHead";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import Typography from "@mui/material/Typography";
-import TableContainer from "@mui/material/TableContainer";
 import styles from "./speaker.module.css";
 import axios from "axios";
 
@@ -54,7 +43,7 @@ const EditAttendees = () => {
 
   const getAttendeeData = async () => {
     try {
-      const response = await axios.get(`${BASE_URL}/user/attendees/${attendeeIDforUpdate}/`, {
+      const response = await axios.get(`${BASE_URL}/api/user/user_details/${attendeeIDforUpdate}/`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data", // Set content type as multipart/form-data
