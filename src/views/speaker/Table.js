@@ -170,7 +170,7 @@ const DashboardTable = () => {
     console.log('rowid',row.speaker_id)
     setAnchorEl(event.currentTarget);
 // using same eventeditdataid for all to get id of speaker 
-    dispatch(eventEditDataID(row?.speaker_id));
+    dispatch(eventEditDataID(row?.speaker_user?.id));
 
     // dispatch(speakerEditData(row));
   };
