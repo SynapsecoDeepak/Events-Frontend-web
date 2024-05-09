@@ -130,7 +130,7 @@ const EditSponsorsForm = () => {
 
   const getSponsorsData = async () => {
     try {
-      const response = await axios.get(`${BASE_URL}/user/speakers/${sponsorsIdForUpdate}/`, {
+      const response = await axios.get(`${BASE_URL}/event/sponsors/${sponsorsIdForUpdate}/`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data", // Set content type as multipart/form-data

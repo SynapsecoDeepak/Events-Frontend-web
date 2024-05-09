@@ -30,12 +30,12 @@ const EditSpeakerForm = () => {
 
   const [formData, setFormData] = useState({
     // State to hold form data
-    speakerName: UserEditAbleData?.speaker_user?.name,
+    speakerName: UserEditAbleData?.name,
     emailAddress: "",
     contactNumber: "",
     location: UserEditAbleData?.location,
     designation: "",
-    organization: UserEditAbleData?.speaker_user?.organization_name,
+    organization: UserEditAbleData?.organization_name,
     description: UserEditAbleData?.bio,
     sessions: "",
     photo: {},
@@ -68,18 +68,18 @@ const EditSpeakerForm = () => {
     if (UserEditAbleData) {
       console.log("use data to fil ", UserEditAbleData);
       setFormData({
-        speakerName: UserEditAbleData?.speaker_user?.name,
-        emailAddress: "",
-        contactNumber: "",
-        location: UserEditAbleData?.location,
-        designation: "",
-        organization: UserEditAbleData?.speaker_user?.organization_name,
-        description: UserEditAbleData?.bio,
-        sessions: "",
+        speakerName: UserEditAbleData?.name,
+        emailAddress: UserEditAbleData?.email,
+        contactNumber: UserEditAbleData?.contactNumber || 'not available',
+        location: UserEditAbleData?.location || 'not available',
+        designation:  UserEditAbleData?.location || 'not available',
+        organization: UserEditAbleData?.organization_name  ||'not available',
+        description: UserEditAbleData?.description || 'not available',
+        sessions: UserEditAbleData?.session || 'not available',
         photo: {},
-        personalWebsite: "",
-        twitterLink: "",
-        linkedInLink: "",
+        personalWebsite: UserEditAbleData?.website  ||'not available',
+        twitterLink: UserEditAbleData?.twitter  ||'not available',
+        linkedInLink:UserEditAbleData?.linkdin  ||'not available', 
       });
     }
   }, [UserEditAbleData]);
@@ -109,7 +109,7 @@ const EditSpeakerForm = () => {
     formDataToSend.append("speaker_user_linkdin", formData.linkedInLink);
     try {
       const response = await axios.patch(
-        `${BASE_URL}/user/newspeakers/${UserEditAbleData?.speaker_id}/`,  
+        `${BASE_URL}/user/newspeakers/${UserEditAbleData?.id}/`,  
               formDataToSend,
         {
           headers: {
@@ -170,6 +170,7 @@ const EditSpeakerForm = () => {
           <div>
             <input
               type="text"
+              disabled
               value={formData.emailAddress}
               id="emailAddress"
               onChange={handleInputChange("emailAddress")}

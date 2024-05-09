@@ -80,12 +80,22 @@ const EventCreateForm = () => {
     setOpen(false);
   };
 
+  // const handleStartDateChange = (date) => {
+  //   if (date < new Date()) {
+  //     setStartDate(new Date());
+  //   } else {
+  //     setStartDate(date);
+  //   }
+  // };
+
   const handleStartDateChange = (date) => {
-    if (date < new Date()) {
-      setStartDate(new Date());
-    } else {
-      setStartDate(date);
+    // Check if the selected start date is after the current end date
+    if (endDate && date > endDate) {
+      // Update the end date to be the same as the new start date
+      setEndDate(date);
     }
+    // Update the start date
+    setStartDate(date);
   };
 
   const handleEndDateChange = (date) => {
@@ -97,32 +107,85 @@ const EventCreateForm = () => {
     }
   };
 
+  // const handleStartTimeChange = (event) => {
+  //   const selectedTime = event.target.value;
+  //   const currentTime = moment().format("HH:mm");
+  //   if (moment(selectedTime, "HH:mm").isBefore(moment(currentTime, "HH:mm"))) {
+  //     setStartTime(currentTime);
+  //     toast.error("Start time cannot be in the past");
+  //   } else {
+  //     setStartTime(selectedTime);
+  //   }
+  // };
+
+
   const handleStartTimeChange = (event) => {
     const selectedTime = event.target.value;
-    const currentTime = moment().format("HH:mm");
-    if (moment(selectedTime, "HH:mm").isBefore(moment(currentTime, "HH:mm"))) {
-      setStartTime(currentTime);
-      toast.error("Start time cannot be in the past");
+    const selectedDate = startDate || new Date(); // Use startDate if available, else use current date
+    const currentDate = new Date();
+    if (moment(selectedDate).isSame(currentDate, 'day')) {
+      // If the selected date is the current date
+      const currentTime = moment().format("HH:mm");
+      if (moment(selectedTime, "HH:mm").isBefore(moment(currentTime, "HH:mm"))) {
+        // If selected time is in the past, set it to the current time
+        setStartTime(currentTime);
+        toast.error("Start time cannot be in the past");
+      } else {
+        setStartTime(selectedTime);
+      }
     } else {
+      // If the selected date is a future date, allow any time selection
       setStartTime(selectedTime);
     }
   };
 
   const handleEndTimeChange = (event) => {
     const selectedTime = event.target.value;
-    const currentTime = moment().format("HH:mm");
-    // Check if the selected time is before the current time
-    if (moment(selectedTime, "HH:mm").isBefore(moment(currentTime, "HH:mm"))) {
-      setEndTime(currentTime);
-      toast.error("End time cannot be in the past");
-    } else if (moment(selectedTime, "HH:mm").isBefore(moment(startTime, "HH:mm"))) {
-      // Check if the selected time is before the start time
-      setEndTime(startTime); // Set end time to be equal to start time
-      toast.error("End time cannot be less than start time");
-    } else {
+    const currentDate = moment().format("YYYY-MM-DD");
+    // Check if start date is less than end date
+    if (moment(startDate).isBefore(endDate, 'day')) {
+      // If start date is less than end date, allow any time selection
       setEndTime(selectedTime);
+    } else {
+      // If start date is equal to end date or after end date, enforce end time validation
+      const currentTime = moment().format("HH:mm");
+      // Check if the selected time is before the start time
+      if (moment(selectedTime, "HH:mm").isBefore(moment(startTime, "HH:mm"))) {
+        setEndTime(startTime); // Set end time to be equal to start time
+        toast.error("End time cannot be less than start time");
+      } else {
+        setEndTime(selectedTime);
+      }
     }
   };
+
+  // const handleEndTimeChange = (event) => {
+  //   const selectedTime = event.target.value;
+  //   const currentTime = moment().format("HH:mm");
+  //   // Check if the selected time is before the start time
+  //   if (moment(selectedTime, "HH:mm").isBefore(moment(startTime, "HH:mm"))) {
+  //     setEndTime(startTime); // Set end time to be equal to start time
+  //     toast.error("End time cannot be less than start time");
+  //   } else {
+  //     setEndTime(selectedTime);
+  //   }
+  // };
+
+  // const handleEndTimeChange = (event) => {
+  //   const selectedTime = event.target.value;
+  //   const currentTime = moment().format("HH:mm");
+  //   // Check if the selected time is before the current time
+  //   if (moment(selectedTime, "HH:mm").isBefore(moment(currentTime, "HH:mm"))) {
+  //     setEndTime(currentTime);
+  //     toast.error("End time cannot be in the past");
+  //   } else if (moment(selectedTime, "HH:mm").isBefore(moment(startTime, "HH:mm"))) {
+  //     // Check if the selected time is before the start time
+  //     setEndTime(startTime); // Set end time to be equal to start time
+  //     toast.error("End time cannot be less than start time");
+  //   } else {
+  //     setEndTime(selectedTime);
+  //   }
+  // };
 
 
   // const handleEndTimeChange = (event) => {
@@ -162,6 +225,8 @@ if(!venueName || venueName == ''){
           },
         }
       );
+      
+      
       console.log("Response:", response.data.data.name);
       const newVenue = response.data.data.name;
       setVenues([...venues], newVenue);
@@ -235,6 +300,8 @@ if(!venueName || venueName == ''){
 const fieldsToCheck = [
   { field: startDate, message: 'Please select start date' },
   { field: endDate, message: 'Please select end date' },
+  { field: startTime, message: 'Please select start time' },
+  { field: endTime, message: 'Please select end time' },
   { field: selectedVenue, message: 'Please select venue' },
 ];
 
@@ -564,6 +631,7 @@ for (const fieldObj of fieldsToCheck) {
               placeholder="choose file"
               type="file"
               id="logo"
+              accept=".png, .jpg, .jpeg" // Update accept attribute
               onChange={handleImageChange}
               value={formData?.logo?.file?.name}
               className={styles.fileInput}
@@ -594,6 +662,7 @@ for (const fieldObj of fieldsToCheck) {
               placeholder="choose file"
               type="file"
               id="thumbnail"
+              accept=".png, .jpg, .jpeg" // Update accept attribute
               onChange={handleImageChange2}
               value={formData?.thumbnail?.file?.name}
               className={styles.fileInput}
