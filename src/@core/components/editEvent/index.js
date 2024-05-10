@@ -307,6 +307,9 @@ console.log('logo previ',logoPreview)
       { field: startTime, message: 'Please select start time' },
       { field: endTime, message: 'Please select end time' },
       { field: selectedVenue, message: 'Please select venue' },
+      { field: formData.name, message: 'Please  enter event name' },
+      { field: formData.logo, message: 'Please select logo' },
+      { field: formData.thumbnail, message: 'Please select banner' },
     
     ];
     

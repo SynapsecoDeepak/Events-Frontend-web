@@ -58,9 +58,10 @@ const EventCreateForm = () => {
      
             // Extract venue names and remove duplicates and null values
             const uniqueVenues = response.data.data
-                .map(venue => venue.name) // Extract venue names
-                .filter((name, index, self) => name && self.indexOf(name) === index); // Filter out duplicates and null values
-            setVenues(uniqueVenues);
+            //     .map(venue => venue.name) // Extract venue names
+            //     .filter((name, index, self) => name && self.indexOf(name) === index); // Filter out duplicates and null values
+            // setVenues(uniqueVenues);
+            setVenues(uniqueVenues)
         } catch (error) {
             console.error("Error fetching venues:", error);
         }
@@ -246,6 +247,10 @@ const fieldsToCheck = [
   { field: startTime, message: 'Please select start time' },
   { field: endTime, message: 'Please select end time' },
   { field: selectedVenue, message: 'Please select venue' },
+  { field: formData.name, message: 'Please  enter event name' },
+  { field: selectedVenue, message: 'Please select venue' },
+  { field: formData.logo, message: 'Please select logo' },
+  { field: formData.thumbnail, message: 'Please select banner' },
 ];
 
 for (const fieldObj of fieldsToCheck) {
@@ -368,7 +373,7 @@ for (const fieldObj of fieldsToCheck) {
               <option value="">Select Venue</option>
               {venues.map((venue) => (
                 <option key={venue.id} value={venue.id}>
-                  {venue || 'null'}
+                  {venue.name || 'null'}
                 </option>
               ))}
             </select>
