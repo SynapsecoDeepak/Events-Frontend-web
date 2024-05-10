@@ -38,7 +38,7 @@ const EditSpeakerForm = () => {
     organization: UserEditAbleData?.organization_name,
     description: UserEditAbleData?.bio,
     sessions: "",
-    photo: {},
+    photo: null,
     personalWebsite: "",
     twitterLink: "",
     linkedInLink: "",
@@ -76,11 +76,13 @@ const EditSpeakerForm = () => {
         organization: UserEditAbleData?.organization_name  ||'not available',
         description: UserEditAbleData?.description || 'not available',
         sessions: UserEditAbleData?.session || 'not available',
-        photo: {},
+        photo: UserEditAbleData?.profile_photo || 'not available',
         personalWebsite: UserEditAbleData?.website  ||'not available',
         twitterLink: UserEditAbleData?.twitter  ||'not available',
         linkedInLink:UserEditAbleData?.linkdin  ||'not available', 
       });
+      setLogoPreview(UserEditAbleData?.profile_photo);
+
     }
   }, [UserEditAbleData]);
 
@@ -88,13 +90,42 @@ const EditSpeakerForm = () => {
     setFormData({ ...formData, [prop]: event.target.value });
   };
 
+  const [logoPreview, setLogoPreview] = useState(UserEditAbleData?.profile_photo);
+
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     setFormData({ ...formData, photo: file });
+    // Generate preview URL for logo
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setLogoPreview(reader.result);
+    };
+    if (file) {
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    
+    const fieldsToCheck = [
+      { field: formData.speakerName, message: 'Please enter name' },
+      { field: formData.emailAddress, message: 'Please enter email' },
+      { field: formData.sessions, message: 'Please select session' },
+      { field: formData.photo, message: 'Please upload image' },
+      { field: formData.location, message: 'Please enter location' },
+      { field: formData.designation, message: 'Please enter designation' },
+      { field: formData.description, message: 'Please enter description' },
+      { field: formData.organization, message: 'Please enter organization' },
+    ];
+    
+    for (const fieldObj of fieldsToCheck) {
+      if (!fieldObj.field) {
+        toast.error(fieldObj.message);
+        return; // Stop further execution if any field is empty
+      }
+    }
+
     const formDataToSend = new FormData();
 
     formDataToSend.append("speaker_user_name", formData.speakerName);
@@ -107,6 +138,21 @@ const EditSpeakerForm = () => {
     formDataToSend.append("speaker_user_website", formData.personalWebsite);
     formDataToSend.append("speaker_user_twitter", formData.twitterLink);
     formDataToSend.append("speaker_user_linkdin", formData.linkedInLink);
+
+
+    if (typeof formData.photo === 'string') {
+      try {
+        const response = await axios.get(formData.photo, { responseType: 'blob' });
+        const file = new File([response.data], 'logo.png', { type: response.data.type });
+        formDataToSend.append("speaker_user_profile_photo", file);
+      } catch (error) {
+        console.error('Error fetching logo:', error);
+        toast.error('Error fetching logo. Please upload a new logo.');
+        return;
+      }
+    } else {
+      formDataToSend.append("speaker_user_profile_photo", formData.photo);
+    }
     try {
       const response = await axios.patch(
         `${BASE_URL}/user/newspeakers/${UserEditAbleData?.id}/`,  
@@ -307,6 +353,13 @@ const EditSpeakerForm = () => {
               Example: Accepts PNG, GIF, JPG, JPEG
             </span>
           </div>
+          {logoPreview && (
+            <img
+              src={logoPreview}
+              alt="Logo Preview"
+              className={styles.previewImage}
+            />
+          )}
         </div>
       </div>
 

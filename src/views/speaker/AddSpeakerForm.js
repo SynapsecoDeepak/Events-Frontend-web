@@ -49,15 +49,52 @@ const AddSpeakerForm = () => {
 
   const handleInputChange = (prop) => (event) => {
     setFormData({ ...formData, [prop]: event.target.value });
+    
   };
+
+  const [logoPreview, setLogoPreview] = useState("");
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     setFormData({ ...formData, photo: file });
+        // Generate preview URL for logo
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setLogoPreview(reader.result);
+        };
+        if (file) {
+          reader.readAsDataURL(file);
+        }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    // Check if email address is in a valid format
+    if (!emailPattern.test(formData.emailAddress)) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+
+    const fieldsToCheck = [
+      { field: formData.speakerName, message: 'Please enter name' },
+      { field: formData.emailAddress, message: 'Please enter email' },
+      { field: formData.sessions, message: 'Please select session' },
+      { field: formData.photo, message: 'Please upload image' },
+      { field: formData.location, message: 'Please enter location' },
+      { field: formData.designation, message: 'Please enter designation' },
+      { field: formData.description, message: 'Please enter description' },
+      { field: formData.organization, message: 'Please enter organization' },
+    ];
+    
+    for (const fieldObj of fieldsToCheck) {
+      if (!fieldObj.field) {
+        toast.error(fieldObj.message);
+        return; // Stop further execution if any field is empty
+      }
+    }
     const formDataToSend = new FormData();
 
     formDataToSend.append("speaker_user_name", formData.speakerName);
@@ -69,9 +106,9 @@ const AddSpeakerForm = () => {
     formDataToSend.append("speaker_user_website", formData.personalWebsite);
     formDataToSend.append("speaker_user_twitter", formData.twitterLink);
     formDataToSend.append("speaker_user_linkdin", formData.linkedInLink);
-    //  formDataToSend.append('expertise', formData.add);
-    //  formDataToSend.append('added_by', formData.thumbnail);
-
+    formDataToSend.append("speaker_user_desginaton", formData.designation);
+    formDataToSend.append("speaker_user_organization", formData.organization);
+    formDataToSend.append("speaker_user_description", formData.description);
     try {
       const response = await axios.post(
         `${BASE_URL}/user/create_speaker/`,
@@ -98,6 +135,9 @@ const AddSpeakerForm = () => {
         twitterLink: "",
         linkedInLink: "",
       });
+      setLogoPreview(null)
+
+
       toast.success("The Speaker added successfully");
       router.push('/speaker');
     } catch (error) {
@@ -149,7 +189,8 @@ const AddSpeakerForm = () => {
           </div>
           <div>
             <input
-              type="text"
+              type="number"
+              min="0"
               value={formData.contactNumber}
               id="contactNumber"
               onChange={handleInputChange("contactNumber")}
@@ -267,6 +308,13 @@ const AddSpeakerForm = () => {
               Choose File
             </label>
           </div>
+          {logoPreview && (
+            <img
+              src={logoPreview}
+              alt="Logo Preview"
+              className={styles.previewImage}
+            />
+          )}
           <div>
             <span style={{ fontSize: 11, color: "#707070" }}>
               Example: Accepts PNG, GIF, JPG, JPEG
