@@ -74,7 +74,7 @@ const EditSpeakerForm = () => {
         location: UserEditAbleData?.location || 'not available',
         designation:  UserEditAbleData?.location || 'not available',
         organization: UserEditAbleData?.organization_name  ||'not available',
-        description: UserEditAbleData?.description || 'not available',
+        description: UserEditAbleData?.bio || 'not available',
         sessions: UserEditAbleData?.session || 'not available',
         photo: UserEditAbleData?.profile_photo || 'not available',
         personalWebsite: UserEditAbleData?.website  ||'not available',
@@ -115,8 +115,8 @@ const EditSpeakerForm = () => {
       { field: formData.photo, message: 'Please upload image' },
       { field: formData.location, message: 'Please enter location' },
       { field: formData.designation, message: 'Please enter designation' },
-      { field: formData.description, message: 'Please enter description' },
       { field: formData.organization, message: 'Please enter organization' },
+      { field: formData.description, message: 'Please enter description' },
     ];
     
     for (const fieldObj of fieldsToCheck) {
@@ -138,6 +138,7 @@ const EditSpeakerForm = () => {
     formDataToSend.append("speaker_user_website", formData.personalWebsite);
     formDataToSend.append("speaker_user_twitter", formData.twitterLink);
     formDataToSend.append("speaker_user_linkdin", formData.linkedInLink);
+    formDataToSend.append("speaker_user_bio", formData.description);
 
 
     if (typeof formData.photo === 'string') {
@@ -230,7 +231,8 @@ const EditSpeakerForm = () => {
           </div>
           <div>
             <input
-              type="text"
+              type="number"
+              min="0"
               value={formData.contactNumber}
               id="contactNumber"
               onChange={handleInputChange("contactNumber")}
@@ -292,7 +294,7 @@ const EditSpeakerForm = () => {
       </div>
       <div className={styles.fullWidth}>
         <div>
-          <label className={styles.label}>Description</label>
+          <label className={styles.label}>Bio</label>
         </div>
         <div>
           <textarea

@@ -108,7 +108,7 @@ const AddSpeakerForm = () => {
     formDataToSend.append("speaker_user_linkdin", formData.linkedInLink);
     formDataToSend.append("speaker_user_desginaton", formData.designation);
     formDataToSend.append("speaker_user_organization", formData.organization);
-    formDataToSend.append("speaker_user_description", formData.description);
+    formDataToSend.append("speaker_user_bio", formData.description);
     try {
       const response = await axios.post(
         `${BASE_URL}/user/create_speaker/`,
@@ -252,7 +252,7 @@ const AddSpeakerForm = () => {
       </div>
       <div className={styles.fullWidth}>
         <div>
-          <label className={styles.label}>Description</label>
+          <label className={styles.label}>Bio</label>
         </div>
         <div>
           <textarea

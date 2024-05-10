@@ -115,12 +115,13 @@ const AttendeeRegi = () => {
     const formDataToSend = {
       user: {
         email: formData.email,
-        name: `${formData.firstName} ${formData.lastName}`,
+        name: formData.firstName,
+        last_name:formData.lastName,
         tc: true, // Assuming this is a checkbox for terms and conditions
         user_type: "Attendee",
         county_of_residence: formData.country,
         designation: formData.designation,
-        location: formData.address,
+        address: formData.address,
         city: formData.city,
         state: formData.state,
         zipcode: parseInt(formData.zipCode),
@@ -129,6 +130,7 @@ const AttendeeRegi = () => {
         twitter: formData.twitterLink,
         website: formData.personalWebsite,
         organization_name: formData.organization,
+        contact: formData.contact,
       },
       event_id: eventIDByQueryID,
       ticket: {
@@ -140,16 +142,18 @@ const AttendeeRegi = () => {
         tax: parseFloat(formData.tax), // Convert to number if necessary
       },
     };
-    setActiveTab(activeTab + 1); // Move to the next tab
 
     try {
       const response = await axios.post(
         `${BASE_URL}/user/attendee_registration/`,
         formDataToSend
       );
-      console.log("Data submitted successfully:", response.data);
-
-      toast.success("Attendee registered successfully");
+      if (!response.data.status) {
+        toast.error("Attendee already registered for this event.");
+        return;
+      }
+      toast.success("Attendee Register Successfully");
+      setActiveTab(activeTab + 1); // Move to the next tab
     } catch (error) {
       console.error("Error submitting data:", error);
     }
@@ -224,6 +228,8 @@ const AttendeeRegi = () => {
                   Contact
                   <TextField
                     id="contact"
+                    type="number"
+                    min="0"
                     value={formData.contact}
                     onChange={handleInputChange("contact")}
                     margin="normal"
@@ -233,6 +239,7 @@ const AttendeeRegi = () => {
                   Organization
                   <TextField
                     id="organization"
+                    type="text"
                     value={formData.organization}
                     onChange={handleInputChange("organization")}
                     margin="normal"
