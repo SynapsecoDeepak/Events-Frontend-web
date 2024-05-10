@@ -81,19 +81,17 @@ const AddSponsorsForm = () => {
       toast.error("Email is empty or has an invalid format.");
       return; // Prevent further execution
     }
-    if (!formData.name || formData.name=='') {
-      toast.error("Enter your name");
-      return; // Prevent further execution
-    }
 
-    if (!formData.logo || formData.logo=='') {
-      toast.error("Please Select Logo");
-      return; // Prevent further execution
-    }
 
     const fieldsToCheck = [
       { field: formData.description, message: 'Please Enter Description' },
       { field: formData.type, message: 'Please Enter Sponsors Type' },
+      { field: formData.name, message: 'Please enter name' },
+      { field: formData.logo, message: 'Please upload logo' },
+      { field: formData.sponsor_tagline, message: 'Please enter tagline' },
+      { field: formData.description, message: 'Please enter description' },
+      { field: formData.thumbnail, message: 'Please upload banner' },
+      { field: formData.type, message: 'Please enter sponsors type' },
     ];
     
     for (const fieldObj of fieldsToCheck) {
@@ -223,6 +221,7 @@ const AddSponsorsForm = () => {
               placeholder="choose file"
               type="file"
               id="logo"
+              accept="image/*"
               onChange={handleImageChange}
               value={formData?.logo?.file?.name}
               className={styles.fileInput}
@@ -253,6 +252,8 @@ const AddSponsorsForm = () => {
               placeholder="choose file"
               type="file"
               id="thumbnail"
+              accept="image/*"
+
               onChange={handleImageChange2}
               value={formData?.thumbnail?.file?.name}
               className={styles.fileInput}

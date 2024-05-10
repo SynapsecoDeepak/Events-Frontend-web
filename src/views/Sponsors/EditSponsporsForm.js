@@ -212,6 +212,8 @@ const EditSponsorsForm = () => {
               placeholder="choose file"
               type="file"
               id="logo"
+              accept="image/*"
+
               onChange={handleImageChange}
               value={formData?.logo?.file?.name}
               className={styles.fileInput}
@@ -233,6 +235,7 @@ const EditSponsorsForm = () => {
           <div className={styles.fileInputContainer}>
             <input
               placeholder="choose file"
+              accept="image/*"
               type="file"
               id="thumbnail"
               onChange={handleImageChange2}

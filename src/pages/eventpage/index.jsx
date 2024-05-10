@@ -28,6 +28,7 @@ const EventPage = () => {
           const response = await axios.get(`${BASE_URL}/event/eventpage/${id}/`, {
           });
           dispatch(eventPublicData(response.data))
+          console.log('event data to float',response.data)
         } catch (error) {
           console.error("api error", error);
         }
@@ -828,12 +829,17 @@ const EventPage = () => {
           </div>
         </div>
 
-        <div className="right_div">
+        {/* <div className="right_div">
           <h3>{rowsDetails?.event_short_description}</h3>
           <p>
           {rowsDetails?.event_long_description}
           </p>
-        </div>
+        </div> */}
+
+<div className="right_div">
+        <h3>{rowsDetails?.event_short_description}</h3>
+        <div dangerouslySetInnerHTML={{ __html: rowsDetails?.event_long_description }} />
+      </div>
       </div>
       <div className="bottondiv">
         <button className="Reg_botton" onClick={handleRoute}>
