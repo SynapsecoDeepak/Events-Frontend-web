@@ -19,6 +19,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
+import ConfirmationDialog from "src/components/ConfrimationBox";
 const DashboardTable = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const router = useRouter();
@@ -93,10 +94,14 @@ const DashboardTable = () => {
     setAnchorEl(null);
   };
 
+  const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
+
+  const handleDelete = () => {
+    setConfirmationDialogOpen(true);
+  };
 
 
-
-  const handleDelete = async() => {
+  const handleDeleteConfirmed = async() => {
     try {
       const response = await axios.delete(
         `${BASE_URL}/user/attendees/${attendeeID}/`,
@@ -109,6 +114,8 @@ const DashboardTable = () => {
       toast.success('Attendee deleted successfully')
       dispatch(deleteAttendee(attendeeID))
       setAnchorEl(null)
+      setConfirmationDialogOpen(false);
+
     } catch (error) {
       console.error("Error fetching row data details:", error);
     }
@@ -236,6 +243,12 @@ const DashboardTable = () => {
           Selected Action: {selectedAction}
         </Typography>
       )} */}
+
+<ConfirmationDialog
+        open={confirmationDialogOpen}
+        onClose={() => setConfirmationDialogOpen(false)}
+        onConfirm={handleDeleteConfirmed}
+      />
     </Card>
   );
 };

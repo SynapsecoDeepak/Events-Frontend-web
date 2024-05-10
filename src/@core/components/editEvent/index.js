@@ -74,8 +74,8 @@ const EventEditForm = () => {
       setFormData({
         name: UserEditAbleData?.data?.name || "",
         shortDescription: UserEditAbleData?.data?.event_short_description || "",
-        logo: UserEditAbleData.event_logo,
-        thumbnail: UserEditAbleData?.event_banner,
+        logo: UserEditAbleData?.data?.event_logo,
+        thumbnail: UserEditAbleData?.data?.event_banner,
       });
       setStartDate(
         UserEditAbleData?.data?.start_date
