@@ -35,6 +35,7 @@ import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import { BASE_URL } from "src/constants";
 import toast from "react-hot-toast";
+import ConfirmationDialog from "src/components/ConfrimationBox";
 
 const DashboardTable = () => {
   const dispatch = useDispatch();
@@ -87,6 +88,7 @@ const DashboardTable = () => {
 
   const CookiesToken = Cookies.get("token");
   const token = CookiesToken || state_token;
+
   const rowsDetails = useSelector(
     (state) => state.event?.speakerDataFullDetails?.data?.speaker_user
   );
@@ -147,7 +149,15 @@ const DashboardTable = () => {
     router.push("/speaker/edit-speaker");
   };
 
-  const handleDelete = async () => {
+  const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
+
+  const handleDelete = () => {
+    setConfirmationDialogOpen(true);
+  };
+
+
+
+  const handleDeleteConfirmed = async () => {
     try {
       const response = await axios.delete(
         `${BASE_URL}/user/speakers/${speakerIdForDelete}/`,
@@ -160,6 +170,8 @@ const DashboardTable = () => {
       toast.success("Speaker deleted successfully");
       dispatch(deleteSpeaker(speakerIdForDelete));
       setAnchorEl(null);
+      setConfirmationDialogOpen(false);
+
     } catch (error) {
       console.error("Error fetching row data details:", error);
     }
@@ -349,6 +361,11 @@ const DashboardTable = () => {
           )}
         </DialogContent>
       </Dialog>
+      <ConfirmationDialog
+        open={confirmationDialogOpen}
+        onClose={() => setConfirmationDialogOpen(false)}
+        onConfirm={handleDeleteConfirmed}
+      />
     </Card>
   );
 };

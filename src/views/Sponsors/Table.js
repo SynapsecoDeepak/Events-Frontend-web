@@ -31,6 +31,7 @@ import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import { BASE_URL } from "src/constants";
 import toast from "react-hot-toast";
+import ConfirmationDialog from "src/components/ConfrimationBox";
 
 
 const DashboardTable = () => {
@@ -148,7 +149,13 @@ const DashboardTable = () => {
     router.push("/sponsors/edit-sponsors");
   };
 
-  const handleDelete = async () => {
+  const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
+
+  const handleDelete = () => {
+    setConfirmationDialogOpen(true);
+  };
+
+  const handleDeleteConfirmed = async () => {
     try {
       const response = await axios.delete(
         `${BASE_URL}/event/sponsors/${SponsorIdforDelete}/`,
@@ -161,6 +168,8 @@ const DashboardTable = () => {
       toast.success("Sponsor deleted successfully");
       dispatch(deleteSponsors(SponsorIdforDelete));
       setAnchorEl(null);
+      setConfirmationDialogOpen(false);
+
     } catch (error) {
       console.error("Error fetching row data details:", error);
     }
@@ -345,6 +354,13 @@ const DashboardTable = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      <ConfirmationDialog
+        open={confirmationDialogOpen}
+        onClose={() => setConfirmationDialogOpen(false)}
+        onConfirm={handleDeleteConfirmed}
+      />
+
     </Card>
   );
 };
