@@ -335,8 +335,41 @@ console.log('logo previ',logoPreview)
     formDataToSend.append("time", startTime);
     formDataToSend.append("end_date", endDateOnly);
     formDataToSend.append("end_time", endTime);
-    formDataToSend.append("event_logo", formData.logo); // Append logo file
-    formDataToSend.append("event_banner", formData.thumbnail); // Append thumbnail file
+    // formDataToSend.append("event_logo", formData.logo); // Append logo file
+    // formDataToSend.append("event_banner", formData.thumbnail); // Append thumbnail file
+
+
+
+    if (typeof formData.logo === 'string') {
+      try {
+        const response = await axios.get(formData.logo, { responseType: 'blob' });
+        const file = new File([response.data], 'logo.png', { type: response.data.type });
+        formDataToSend.append("event_logo", file);
+      } catch (error) {
+        console.error('Error fetching logo:', error);
+        toast.error('Error fetching logo. Please upload a new logo.');
+        return;
+      }
+    } else {
+      formDataToSend.append("event_logo", formData.logo);
+    }
+   
+    // If thumbnail is a URL, try to fetch the file and append it to formDataToSend
+    if (typeof formData.thumbnail === 'string') {
+      try {
+        const response = await axios.get(formData.thumbnail, { responseType: 'blob' });
+        const file = new File([response.data], 'thumbnail.png', { type: response.data.type });
+        formDataToSend.append("event_banner", file);
+      } catch (error) {
+        console.error('Error fetching thumbnail:', error);
+        toast.error('Error fetching thumbnail. Please upload a new thumbnail.');
+        return;
+      }
+    } else {
+      formDataToSend.append("event_banner", formData.thumbnail);
+    }
+   
+
     try {
       const response = await axios.put(
         `${BASE_URL}/event/newevents/${eventId}/`,
