@@ -491,6 +491,7 @@ for (const fieldObj of fieldsToCheck) {
               <DatePicker
                 selected={startDate}
                 onChange={handleStartDateChange}
+                minDate={new Date()} 
                 dateFormat="dd/MM/yyyy"
                 className={styles.input}
               />
