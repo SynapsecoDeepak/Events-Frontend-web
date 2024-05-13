@@ -334,6 +334,7 @@ const AttendeeRegi = () => {
 
         {activeTab === 1 && (
           <div
+          className="tic_tab"
             style={{
               display: "flex",
               background: "#white",
@@ -344,6 +345,7 @@ const AttendeeRegi = () => {
             }}
           >
             <div
+            className="tic_mul_div"
               style={{
                 width: "50%",
                 borderRadius: "10px",
@@ -557,8 +559,9 @@ const AttendeeRegi = () => {
               </div>
             </div>
 
-            <div style={{ width: "50%" }}>
+            <div  className="pay_div" style={{ width: "50%" }}>
               <div
+             
                 style={{
                   padding: "1rem",
                   borderRadius: "10px",
@@ -575,6 +578,7 @@ const AttendeeRegi = () => {
               </div>
 
               <div
+              className="btn_"
                 style={{
                   display: "flex",
                   justifyContent: "flex-end",
