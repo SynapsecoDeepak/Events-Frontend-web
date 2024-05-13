@@ -261,49 +261,88 @@ height: 72px; */
 .secondimage {
   width: 30%;
   position: relative;
-
 }
 .thirdimage {
   width: 30%;
   position: relative;
-
 }
 
-.firstimg{
+.firstimg {
   width: 100% !important;
 }
 
-.secondimg{
+.secondimg {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%,-50%);
+  transform: translate(-50%, -50%);
 }
 
-.attendeeheading{
+.attendeeheading {
   text-align: left;
-letter-spacing: 0px;
-color: #0E436B;
-opacity: 1;
-padding-top: 2rem;
-padding-left: 4rem;
-
+  letter-spacing: 0px;
+  color: #0e436b;
+  opacity: 1;
+  padding-top: 2rem;
+  padding-left: 4rem;
 }
 
 /* styles.css */
 .tabdiv .nav-item .nav-link.active {
-  background-color: #0E436B !important; /* Change background color to blue */
+  background-color: #0e436b !important; /* Change background color to blue */
   color: white !important; /* Change text color to white */
 }
-.tabdiv .nav-item .nav-link{
+.tabdiv .nav-item .nav-link {
   color: #858585 !important; /* Change text color to white */
 }
-.inputfield{
+.inputfield {
   width: 70%;
 }
-.attendeeRegistatin{
-  background: white!important;
+.attendeeRegistatin {
+  background: white !important;
 }
-.css-19qpywn-MuiInputBase-input-MuiOutlinedInput-input{
-  background: white!important;
+.css-19qpywn-MuiInputBase-input-MuiOutlinedInput-input {
+  background: white !important;
+}
+
+@media only screen and (max-width: 767px) {
+  .main_div {
+    flex-direction: column;
+  }
+
+  .image_div {
+    width: 100%;
+  }
+  .event_date {
+    width: 100%;
+  }
+  .right_div {
+    width: 100%;
+  }
+  .threediv {
+    padding: 0rem;
+    padding: 0rem;
+    justify-content: space-evenly;
+  }
+  .logo  img{
+   display: none;
+ 
+  }
+  .nav_tab{
+   padding-left: 0rem!important;
+   padding: 0rem 0.5rem !important;
+  }
+  .tabdiv{
+    width: 100% !important;
+  }
+  .css-y9khln{
+    padding: 1rem 2rem !important;
+  }
+  .css-1rv3ei8-MuiFormControl-root-MuiTextField-root {
+    margin-top: 8px !important;
+  }
+  .Reg_botton {
+padding: 0.5rem 2rem !important;
+font-size: 16px!important;
+  }
 }

@@ -161,6 +161,7 @@ const AttendeeRegi = () => {
 
   return (
     <div
+    className="nav_tab"
       style={{
         display: "flex",
         flexDirection: "column",
