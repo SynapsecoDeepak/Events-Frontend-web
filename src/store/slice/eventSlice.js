@@ -22,7 +22,8 @@ const initialState = {
   sponsorsEditData: null,
   attendeesEditData: null,
   eventEditDataID: '',
-  eventPublicData:null
+  eventPublicData:null,
+  recentActivities:[]
 };
 
 const eventSlice = createSlice({
@@ -37,6 +38,9 @@ const eventSlice = createSlice({
     },
     eventIDByQuery(state, action) {
       state.eventIDByQuery = action.payload;
+    },
+    recentActivities(state, action) {
+      state.recentActivities = action.payload;
     },
     speakerData(state, action) {
       state.speakerData = action.payload;
@@ -134,6 +138,7 @@ const eventSlice = createSlice({
 export const {
   event,
   eventID,
+  recentActivities,
   eventIDByQuery,
   speakerData,
   updateSearchQuery,

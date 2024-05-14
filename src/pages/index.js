@@ -32,7 +32,7 @@ import UpcommingEvents from "src/views/tables/UpcomingEvents";
 import RecentActivities from "src/views/tables/RecentActivities";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { event } from "src/store/slice/eventSlice";
+import { event, recentActivities } from "src/store/slice/eventSlice";
 import { BASE_URL } from "src/constants";
 import Cookies from "js-cookie";
 import { login } from "src/store/slice/authSlice";
@@ -65,6 +65,24 @@ const Dashboard = () => {
           console.error("api error", e);
         });
     }
+  }, []);
+
+
+  useEffect(() => {
+    const fetchActivities = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/event/recent_activities/`, {
+          headers: {
+            Authorization: `Bearer ${state_token}`,
+          }});
+        dispatch(recentActivities(response.data))
+        console.log(response.data)
+      } catch (error) {
+        console.error('Error fetching recent activities:', error);
+      }
+    };
+
+    fetchActivities();
   }, []);
 
   return (
