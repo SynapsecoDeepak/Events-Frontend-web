@@ -40,8 +40,8 @@ const RecentActivities = () => {
   const formatTimestamp = (timestamp) => {
     const date = new Date(timestamp);
     const formattedDate = `${date.getMonth() + 1}-${date.getDate()}-${date.getFullYear()}`;
-    const formattedTime = `${date.getHours()}:${('0' + date.getMinutes()).slice(-2)}`;
-    return `${formattedDate} ${formattedTime}`;
+    // const formattedTime = `${date.getHours()}:${('0' + date.getMinutes()).slice(-2)}`;
+    return `${formattedDate}`;
   };
 
   return (
@@ -51,7 +51,7 @@ const RecentActivities = () => {
           
         </TableHead>
         <TableBody>
-          {recentActivities.map(row => (
+          {recentActivities?.map(row => (
             <TableRow
               key={row?.activity_description}
               sx={{
@@ -64,7 +64,7 @@ const RecentActivities = () => {
                 <div className='borderAMPM'>
               {/* <span className='primary-dash-title'>{formatTimestamp(row?.created_on)}</span> */}
               <br/>
-               <span className='dashboard-title' style={{fontSize: '10px !important'}} >{formatTimestamp(row?.created_on)}</span>
+               <span className='dashboard-title' style={{fontSize: '10px !important'}} >{formatTimestamp(row?.updated_on)}</span>
                </div>
               </TableCell>
               <TableCell align='left' style={{width:'10%'}} className='sub-title'>{row?.activity_description}</TableCell>

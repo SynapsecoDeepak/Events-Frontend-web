@@ -17,7 +17,7 @@ const EditSpeakerForm = () => {
 
 
   const eventId = useSelector((state) => state?.event?.eventID);
-  const speakerIdForUpdate = useSelector((state) => state?.event?.eventEditDataID);
+  const speakerIdForUpdate = useSelector((state) => state?.event?.eventEditDataID?.speaker_id);
 
   console.log("UserEditAbledata", UserEditAbleData);
   const CookiesToken = Cookies.get("token");
@@ -25,19 +25,18 @@ const EditSpeakerForm = () => {
   const token = CookiesToken || state_token;
 
 
-
-
+  const [sessions, setSessions] = useState([]);
+  const [selectedSession, setSelectedSession] = useState('');
 
   const [formData, setFormData] = useState({
     // State to hold form data
-    speakerName: UserEditAbleData?.name,
+    speakerName: '',
     emailAddress: "",
     contactNumber: "",
-    location: UserEditAbleData?.location,
+    location:'',
     designation: "",
-    organization: UserEditAbleData?.organization_name,
-    description: UserEditAbleData?.bio,
-    sessions: "",
+    organization: '',
+    description: '',
     photo: null,
     personalWebsite: "",
     twitterLink: "",
@@ -47,16 +46,16 @@ const EditSpeakerForm = () => {
   useEffect(() => {
     getSpeakerData();
   }, []);
-
+  
   const getSpeakerData = async () => {
     try {
-      const response = await axios.get(`${BASE_URL}/api/user/user_details/${speakerIdForUpdate}/`, {
+      const response = await axios.get(`${BASE_URL}/user/webspeakers/${speakerIdForUpdate}/`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data", // Set content type as multipart/form-data
         },
       });
-      SetUserEditAbleData(response.data);
+      SetUserEditAbleData(response.data.data);
     } catch (error) {
       console.error("Error fetching venues:", error);
     }
@@ -68,20 +67,20 @@ const EditSpeakerForm = () => {
     if (UserEditAbleData) {
       console.log("use data to fil ", UserEditAbleData);
       setFormData({
-        speakerName: UserEditAbleData?.name,
-        emailAddress: UserEditAbleData?.email,
-        contactNumber: UserEditAbleData?.contactNumber || 'not available',
-        location: UserEditAbleData?.location || 'not available',
-        designation:  UserEditAbleData?.location || 'not available',
-        organization: UserEditAbleData?.organization_name  ||'not available',
-        description: UserEditAbleData?.bio || 'not available',
-        sessions: UserEditAbleData?.session || 'not available',
-        photo: UserEditAbleData?.profile_photo || 'not available',
-        personalWebsite: UserEditAbleData?.website  ||'not available',
-        twitterLink: UserEditAbleData?.twitter  ||'not available',
-        linkedInLink:UserEditAbleData?.linkdin  ||'not available', 
+        speakerName: UserEditAbleData?.speaker_user?.name,
+        emailAddress: UserEditAbleData?.speaker_user?.email,
+        contactNumber: UserEditAbleData?.speaker_user?.contact || 'not available',
+        location: UserEditAbleData?.speaker_user?.location || 'not available',
+        designation:  UserEditAbleData?.speaker_user?.designation || 'not available',
+        organization: UserEditAbleData?.speaker_user?.organization_name  ||'not available',
+        description: UserEditAbleData?.speaker_user?.bio || 'not available',
+        photo: UserEditAbleData?.speaker_user?.profile_photo || 'not available',
+        personalWebsite: UserEditAbleData?.speaker_user?.website  ||'not available',
+        twitterLink: UserEditAbleData?.speaker_user?.twitter  ||'not available',
+        linkedInLink:UserEditAbleData?.speaker_user?.linkdin  ||'not available', 
       });
-      setLogoPreview(UserEditAbleData?.profile_photo);
+      setLogoPreview(UserEditAbleData?.speaker_user?.profile_photo);
+setSelectedSession( UserEditAbleData?.speaker_user?.sessions[0] || 'not available')
 
     }
   }, [UserEditAbleData]);
@@ -90,7 +89,7 @@ const EditSpeakerForm = () => {
     setFormData({ ...formData, [prop]: event.target.value });
   };
 
-  const [logoPreview, setLogoPreview] = useState(UserEditAbleData?.profile_photo);
+  const [logoPreview, setLogoPreview] = useState(UserEditAbleData?.speaker_user?.profile_photo);
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -133,7 +132,6 @@ const EditSpeakerForm = () => {
     formDataToSend.append("speaker_event", [eventId]);
     formDataToSend.append("speaker_user_email", formData.emailAddress);
     formDataToSend.append("session_speaker", formData.sessions);
-    formDataToSend.append("speaker_user_profile_photo", formData.photo);
     formDataToSend.append("speaker_user_location", formData.location);
     formDataToSend.append("speaker_user_website", formData.personalWebsite);
     formDataToSend.append("speaker_user_twitter", formData.twitterLink);
@@ -154,9 +152,10 @@ const EditSpeakerForm = () => {
     } else {
       formDataToSend.append("speaker_user_profile_photo", formData.photo);
     }
+    
     try {
       const response = await axios.patch(
-        `${BASE_URL}/user/newspeakers/${UserEditAbleData?.id}/`,  
+        `${BASE_URL}/user/newspeakers/${UserEditAbleData?.speaker_id}/`,  
               formDataToSend,
         {
           headers: {

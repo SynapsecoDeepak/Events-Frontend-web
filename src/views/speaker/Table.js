@@ -43,7 +43,7 @@ const DashboardTable = () => {
   const state_token = useSelector((state) => state.auth.user?.userData?.token);
   // taking speakerIdForDelete from this because using the same eventeditdataid slice to get speaker id
   const speakerIdForDelete = useSelector(
-    (state) => state?.event?.eventEditDataID
+    (state) => state?.event?.eventEditDataID.speaker_id
   );
 
   const fetchSpeakerData = async () => {
@@ -181,7 +181,7 @@ const DashboardTable = () => {
   const handleAction = (event, row) => {
     setAnchorEl(event.currentTarget);
 // using same eventeditdataid for all to get id of speaker 
-    dispatch(eventEditDataID(row?.speaker_user?.id));
+    dispatch(eventEditDataID(row));
 
     // dispatch(speakerEditData(row));
   };
@@ -239,7 +239,7 @@ const DashboardTable = () => {
                       style={{ color: "#2BACE2" }}
                       onClick={() => handleClick(row)}
                     >
-                      {row?.speaker_user?.organization_name}
+                      {row?.speaker_user?.organization_name ||'not available'}
                     </TableCell>
                     <TableCell onClick={() => handleClick(row)}>
                       {row?.date}

@@ -63,11 +63,13 @@ const AddSpeakerForm = () => {
     setFormData({ ...formData, [prop]: event.target.value });
   };
 
+
   const handleSession = (event) => {
     // If you want to handle multiple selections, you need to get all selected options
-    const selectedSessions = Array.from(event.target.selectedOptions, option => option.value);
-    setSelectedSession(selectedSessions);    
+    const selectedSessionId = event.target.value;
+    setSelectedSession(selectedSessionId);    
   };
+  
   
 
   const [logoPreview, setLogoPreview] = useState("");
@@ -123,7 +125,7 @@ const AddSpeakerForm = () => {
     formDataToSend.append("speaker_user_name", formData.speakerName);
     formDataToSend.append("event_id", eventId);
     formDataToSend.append("speaker_user_email", formData.emailAddress);
-    formDataToSend.append("session_speaker", sessions);
+    formDataToSend.append("session_id", selectedSession);
     formDataToSend.append("speaker_user_profile_photo", formData.photo);
     formDataToSend.append("speaker_user_location", formData.location);
     formDataToSend.append("speaker_user_twitter", formData.twitterLink);
@@ -301,13 +303,13 @@ const AddSpeakerForm = () => {
           </div>
           <div>
             <select
-              value={sessions}
+              value={selectedSession}
               onChange={handleSession}
               className={styles.input}
             >
               <option value="">Choose session</option>
               {sessions.map((session) => (
-                <option key={session.id} value={session.id}>
+                <option key={session.session_id} value={session.session_id}>
                   {session.title}
                 </option>
               ))}
