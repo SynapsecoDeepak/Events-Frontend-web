@@ -42,7 +42,25 @@ const EventPage = () => {
       (state) => state.event?.eventPublicData?.data
     );
   
+    console.log('row details ; ',rowsDetails)
 
+
+    const startDate = rowsDetails?.start_date; // Assuming rowsDetails is your data object
+if (startDate) {
+  const formattedStartDate = new Date(startDate).toLocaleDateString('en-US', {
+    month: '2-digit',
+    day: '2-digit',
+    year: 'numeric'
+  });
+}
+    const endDate = rowsDetails?.end_date; // Assuming rowsDetails is your data object
+if (endDate) {
+  const formattedEndDate = new Date(endDate).toLocaleDateString('en-US', {
+    month: '2-digit',
+    day: '2-digit',
+    year: 'numeric'
+  });
+}
 
 
   const handleRoute = () => {
@@ -822,7 +840,7 @@ const EventPage = () => {
           </div>
           <div className="event_text">
             <p className="first">{rowsDetails?.name}</p>
-            <p className="second" style={{fontSize:'1rem'}}>{rowsDetails?.start_date} to {rowsDetails?.start_date}</p>
+            <p className="second" style={{fontSize:'1rem'}}>{formattedStartDate} to {formattedEndDate}</p>
             {/* <p className="third">{rowsDetails?.time}-{rowsDetails?.end_time} </p> */}
             {/* <p className="third">10:00Am - 4:00Pm</p> */}
             {/* <p className="four">2024</p> */}

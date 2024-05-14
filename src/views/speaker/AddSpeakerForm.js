@@ -1,20 +1,9 @@
-// ** MUI Imports
-import Box from "@mui/material/Box";
-import Card from "@mui/material/Card";
-import Chip from "@mui/material/Chip";
-import Table from "@mui/material/Table";
-import TableRow from "@mui/material/TableRow";
-import TableHead from "@mui/material/TableHead";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import Typography from "@mui/material/Typography";
-import TableContainer from "@mui/material/TableContainer";
 import styles from "./speaker.module.css";
 import axios from "axios";
 import Cookies from "js-cookie";
 
 import { useRouter } from "next/router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { BASE_URL } from "src/constants";
@@ -31,6 +20,30 @@ const AddSpeakerForm = () => {
 
   const token = CookiesToken || state_token;
 
+  const [sessions, setSessions] = useState([]);
+  const [selectedSession, setSelectedSession] = useState('');
+
+  useEffect(() => {
+    const fetchSession = async () => {
+      try {
+        const response = await axios.post(
+          `${BASE_URL}/event/event_sessions/`,
+          { event_id: eventId },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data", // Set content type as multipart/form-data
+            },
+          }
+        );
+        setSessions(response.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchSession();
+  }, []);
+
   const [formData, setFormData] = useState({
     // State to hold form data
     speakerName: "",
@@ -40,8 +53,7 @@ const AddSpeakerForm = () => {
     designation: "",
     organization: "",
     description: "",
-    sessions: "",
-    photo: {},
+    photo: null,
     personalWebsite: "",
     twitterLink: "",
     linkedInLink: "",
@@ -49,22 +61,28 @@ const AddSpeakerForm = () => {
 
   const handleInputChange = (prop) => (event) => {
     setFormData({ ...formData, [prop]: event.target.value });
-    
   };
+
+  const handleSession = (event) => {
+    // If you want to handle multiple selections, you need to get all selected options
+    const selectedSessions = Array.from(event.target.selectedOptions, option => option.value);
+    setSelectedSession(selectedSessions);    
+  };
+  
 
   const [logoPreview, setLogoPreview] = useState("");
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     setFormData({ ...formData, photo: file });
-        // Generate preview URL for logo
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setLogoPreview(reader.result);
-        };
-        if (file) {
-          reader.readAsDataURL(file);
-        }
+    // Generate preview URL for logo
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setLogoPreview(reader.result);
+    };
+    if (file) {
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSubmit = async (event) => {
@@ -78,17 +96,22 @@ const AddSpeakerForm = () => {
       return;
     }
 
+    // if (!selectedSession.length) {
+    //   toast.error("Please select a session");
+    //   return;
+    // }
+
     const fieldsToCheck = [
-      { field: formData.speakerName, message: 'Please enter name' },
-      { field: formData.emailAddress, message: 'Please enter email' },
-      { field: formData.sessions, message: 'Please select session' },
-      { field: formData.photo, message: 'Please upload image' },
-      { field: formData.location, message: 'Please enter location' },
-      { field: formData.designation, message: 'Please enter designation' },
-      { field: formData.description, message: 'Please enter description' },
-      { field: formData.organization, message: 'Please enter organization' },
+      { field: formData.speakerName, message: "Please enter name" },
+      { field: formData.emailAddress, message: "Please enter email" },
+      { field: selectedSession, message: "Please select session" },
+      { field: formData.photo, message: "Please upload image" },
+      { field: formData.location, message: "Please enter location" },
+      { field: formData.designation, message: "Please enter designation" },
+      { field: formData.description, message: "Please enter description" },
+      { field: formData.organization, message: "Please enter organization" },
     ];
-    
+
     for (const fieldObj of fieldsToCheck) {
       if (!fieldObj.field) {
         toast.error(fieldObj.message);
@@ -98,17 +121,17 @@ const AddSpeakerForm = () => {
     const formDataToSend = new FormData();
 
     formDataToSend.append("speaker_user_name", formData.speakerName);
-    formDataToSend.append("speaker_event", eventId);
+    formDataToSend.append("event_id", eventId);
     formDataToSend.append("speaker_user_email", formData.emailAddress);
-    formDataToSend.append("session_speaker", formData.sessions);
+    formDataToSend.append("session_speaker", sessions);
     formDataToSend.append("speaker_user_profile_photo", formData.photo);
     formDataToSend.append("speaker_user_location", formData.location);
-    formDataToSend.append("speaker_user_website", formData.personalWebsite);
     formDataToSend.append("speaker_user_twitter", formData.twitterLink);
+    formDataToSend.append("speaker_user_website", formData.personalWebsite);
     formDataToSend.append("speaker_user_linkdin", formData.linkedInLink);
-    formDataToSend.append("speaker_user_desginaton", formData.designation);
+    formDataToSend.append("speaker_user_designation", formData.designation);
     formDataToSend.append("speaker_user_organization", formData.organization);
-    formDataToSend.append("speaker_user_bio", formData.description);
+    formDataToSend.append("bio", formData.description);
     try {
       const response = await axios.post(
         `${BASE_URL}/user/create_speaker/`,
@@ -129,17 +152,15 @@ const AddSpeakerForm = () => {
         designation: "",
         organization: "",
         description: "",
-        sessions: "",
-        photo: {},
+        photo: null,
         personalWebsite: "",
         twitterLink: "",
         linkedInLink: "",
       });
-      setLogoPreview(null)
-
+      setLogoPreview(null);
 
       toast.success("The Speaker added successfully");
-      router.push('/speaker');
+      router.push("/speaker");
     } catch (error) {
       console.error("Error submitting data:", error);
     }
@@ -279,20 +300,24 @@ const AddSpeakerForm = () => {
             <label className={styles.label}>Sessions</label>
           </div>
           <div>
-            <input
-              placeholder="choose your sessions"
+            <select
+              value={sessions}
+              onChange={handleSession}
               className={styles.input}
-              type="text"
-              value={formData.sessions}
-              id="sessions"
-              onChange={handleInputChange("sessions")}
-            />
+            >
+              <option value="">Choose session</option>
+              {sessions.map((session) => (
+                <option key={session.id} value={session.id}>
+                  {session.title}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
         <div className={styles.column} style={{ width: "48%" }}>
           <div>
-            <label  className={styles.label}>Photo</label>
+            <label className={styles.label}>Photo</label>
           </div>
           <div className={styles.fileInputContainer}>
             <input
@@ -311,6 +336,7 @@ const AddSpeakerForm = () => {
           {logoPreview && (
             <img
               src={logoPreview}
+              style={{marginTop:"1rem",width:"50%"}}
               alt="Logo Preview"
               className={styles.previewImage}
             />
