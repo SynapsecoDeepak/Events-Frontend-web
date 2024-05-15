@@ -37,6 +37,29 @@ const EventEditForm = () => {
     fetchVenues();
   }, []);
 
+
+  const [selectedTimezone, setSelectedTimezone] = useState();
+
+  // Options for the timezone select field
+  const timezoneOptions = [
+    { value: "PT", label: "Pacific Time (US & Canada)" },
+    { value: "ET", label: "Eastern Time (US & Canada)" },
+    { value: "CT", label: "Central Time (US & Canada)" },
+    { value: "MT", label: "Mountain Time (US & Canada)" },
+    { value: "AZT", label: "Arizona Time (US)" },
+    { value: "HAT", label: "Hawaii-Aleutian Time (US)" },
+    { value: "GMT", label: "Greenwich Mean Time" },
+    { value: "BST", label: "British Summer Time" },
+    { value: "CET", label: "Central European Time" },
+    { value: "JST", label: "Japan Standard Time" },
+    { value: "IST", label: "Indian Standard Time" },
+    { value: "UTC", label: "Coordinated Universal Time (UTC)" },
+  ];
+
+  const handleTimezoneChange = (event) => {
+   setSelectedTimezone(event.target.value);
+ };
+
   const getEventData = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/event/${eventId}/`, {
@@ -93,6 +116,7 @@ const EventEditForm = () => {
       setSelectedVenue(UserEditAbleData?.data?.venue[0] || "");
       setLogoPreview(UserEditAbleData?.data?.event_logo);
       setThumbnailPreview(UserEditAbleData?.data?.event_banner);
+      setSelectedTimezone(UserEditAbleData?.data?.timezone)
 console.log('logo previ',logoPreview)
     }
   }, [UserEditAbleData]);
@@ -310,6 +334,8 @@ console.log('logo previ',logoPreview)
       { field: formData.name, message: 'Please  enter event name' },
       { field: formData.logo, message: 'Please select logo' },
       { field: formData.thumbnail, message: 'Please select banner' },
+      { field: selectedTimezone, message: 'Please select Time Zone' },
+
     
     ];
     
@@ -327,6 +353,8 @@ console.log('logo previ',logoPreview)
     formDataToSend.append("event_short_description", formData.shortDescription);
     formDataToSend.append("venue", selectedVenue);
     formDataToSend.append("event_long_description", description);
+    formDataToSend.append("timezone", selectedTimezone);
+
     const startDateOnly = startDate
       ? moment(startDate).format("YYYY-MM-DD")
       : null;
@@ -644,6 +672,38 @@ console.log('logo previ',logoPreview)
                 </div>
               </div>
             </div>
+
+            {/* time zone  */}
+            <div
+          style={{
+            display: "flex",
+            width: "50%",
+            marginTop: "2rem",
+            justifyContent: "flex-start",
+            gap: "1em",
+            marginBottom: 25,
+          }}
+        >
+        <div className={styles.column}>
+        <div>
+          <label className={styles.label}>Timezone</label>
+        </div>
+        <div>
+          <select
+            value={selectedTimezone}
+            onChange={handleTimezoneChange}
+            className={styles.input}
+          >
+            <option value="">Select</option>
+            {timezoneOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+      </div>
           </div>
 
           <div

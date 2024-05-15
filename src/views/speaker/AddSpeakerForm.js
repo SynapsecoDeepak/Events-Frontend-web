@@ -122,17 +122,18 @@ const AddSpeakerForm = () => {
     }
     const formDataToSend = new FormData();
 
-    formDataToSend.append("speaker_user_name", formData.speakerName);
+    formDataToSend.append("name", formData.speakerName);
     formDataToSend.append("event_id", eventId);
-    formDataToSend.append("speaker_user_email", formData.emailAddress);
+    formDataToSend.append("email", formData.emailAddress);
     formDataToSend.append("session_id", selectedSession);
-    formDataToSend.append("speaker_user_profile_photo", formData.photo);
-    formDataToSend.append("speaker_user_location", formData.location);
-    formDataToSend.append("speaker_user_twitter", formData.twitterLink);
-    formDataToSend.append("speaker_user_website", formData.personalWebsite);
-    formDataToSend.append("speaker_user_linkdin", formData.linkedInLink);
-    formDataToSend.append("speaker_user_designation", formData.designation);
-    formDataToSend.append("speaker_user_organization", formData.organization);
+    formDataToSend.append("user_type", 'Speaker');
+    // formDataToSend.append("speaker_user_profile_photo", formData.photo);
+    formDataToSend.append("location", formData.location);
+    formDataToSend.append("twitter", formData.twitterLink);
+    formDataToSend.append("website", formData.personalWebsite);
+    formDataToSend.append("linkdin", formData.linkedInLink);
+    formDataToSend.append("designation", formData.designation);
+    formDataToSend.append("organization_name", formData.organization);
     formDataToSend.append("bio", formData.description);
     try {
       const response = await axios.post(

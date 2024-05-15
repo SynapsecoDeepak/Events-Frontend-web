@@ -41,6 +41,31 @@ const EventCreateForm = () => {
   const [pdfFile, setPdfFile] = useState(null);
   const [open, setOpen] = useState(false);
 
+
+   // State variable to hold the selected timezone
+   const [selectedTimezone, setSelectedTimezone] = useState("");
+
+   // Options for the timezone select field
+   const timezoneOptions = [
+     { value: "PT", label: "Pacific Time (US & Canada)" },
+     { value: "ET", label: "Eastern Time (US & Canada)" },
+     { value: "CT", label: "Central Time (US & Canada)" },
+     { value: "MT", label: "Mountain Time (US & Canada)" },
+     { value: "AZT", label: "Arizona Time (US)" },
+     { value: "HAT", label: "Hawaii-Aleutian Time (US)" },
+     { value: "GMT", label: "Greenwich Mean Time" },
+     { value: "BST", label: "British Summer Time" },
+     { value: "CET", label: "Central European Time" },
+     { value: "JST", label: "Japan Standard Time" },
+     { value: "IST", label: "Indian Standard Time" },
+     { value: "UTC", label: "Coordinated Universal Time (UTC)" },
+   ];
+
+   const handleTimezoneChange = (event) => {
+    setSelectedTimezone(event.target.value);
+  };
+
+
   useEffect(() => {
 
     fetchVenues();
@@ -251,6 +276,7 @@ const fieldsToCheck = [
   { field: selectedVenue, message: 'Please select venue' },
   { field: formData.logo, message: 'Please select logo' },
   { field: formData.thumbnail, message: 'Please select banner' },
+  { field: selectedTimezone, message: 'Please select Time Zone' },
 ];
 
 for (const fieldObj of fieldsToCheck) {
@@ -268,6 +294,7 @@ for (const fieldObj of fieldsToCheck) {
     formDataToSend.append("event_short_description", formData.shortDescription);
     formDataToSend.append("venue", selectedVenue);
     formDataToSend.append("event_long_description", description);
+    formDataToSend.append("timezone", selectedTimezone);
 
       // Extract only the date part from startDate and endDate
   const startDateOnly = startDate ? moment(startDate).format("YYYY-MM-DD") : null;
@@ -550,6 +577,40 @@ for (const fieldObj of fieldsToCheck) {
             </div>
           </div>
         </div>
+
+        {/* time zone */}
+
+        <div
+          style={{
+            display: "flex",
+            width: "50%",
+            marginTop: "2rem",
+            justifyContent: "flex-start",
+            gap: "1em",
+            marginBottom: 25,
+          }}
+        >
+        <div className={styles.column}>
+        <div>
+          <label className={styles.label}>Timezone</label>
+        </div>
+        <div>
+          <select
+            value={selectedTimezone}
+            onChange={handleTimezoneChange}
+            className={styles.input}
+          >
+            <option value="">Select</option>
+            {timezoneOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+      </div>
+
       </div>
 
       <div
