@@ -92,6 +92,14 @@ const DashboardTable = () => {
     // }
   };
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const year = date.getFullYear();
+    return `${month}/${day}/${year}`;
+  };
+
 
   const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
  
@@ -191,10 +199,10 @@ const DashboardTable = () => {
                     {row?.venue[0]}
                   </TableCell>
                   <TableCell onClick={() => handleClick(row)}>
-                    {row?.start_date}
+                   {formatDate(row?.start_date)}
                   </TableCell>
                   <TableCell onClick={() => handleClick(row)}>
-                    {row?.end_date}
+                  {formatDate(row?.end_date)}
                   </TableCell>
                  <TableCell>
                     <Button
