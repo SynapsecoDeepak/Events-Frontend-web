@@ -221,13 +221,14 @@ if(!venueName || venueName == ''){
   };
 
 
-  const MAX_FILE_SIZE_MB = 10; // Maximum file size in MB
+  const MAX_FILE_SIZE_MB = 5; // Maximum file size in MB
 
-// Function to check if the file size is within the limit
-const isValidFileSize = (file) => {
+// Function to check if the image size is exactly 5 MB
+const isValidImageSize = (file) => {
   const fileSizeMB = file.size / (1024 * 1024); // Convert file size to MB
-  return fileSizeMB <= MAX_FILE_SIZE_MB;
+  return fileSizeMB === 5; // Return true if the file size is exactly 5 MB
 };
+
 
 
   const handleImageChange = (event) => {
@@ -236,6 +237,17 @@ const isValidFileSize = (file) => {
       toast.error(`Image size should not exceed ${MAX_FILE_SIZE_MB} MB`);
       return;
     }
+
+      // Ensure logo dimensions are 150x150 px
+  const image = new Image();
+  image.onload = function () {
+    if (this.width !== 150 || this.height !== 150) {
+      toast.error("Logo dimensions should be 150x150 px");
+      return;
+    }
+  }
+
+
     setFormData({ ...formData, logo: file });
 
     // Generate preview URL for logo
@@ -253,6 +265,15 @@ const isValidFileSize = (file) => {
     if (!isValidFileSize(file)) {
       toast.error(`Image size should not exceed ${MAX_FILE_SIZE_MB} MB`);
       return;
+    }
+
+
+    const image = new Image();
+    image.onload = function () {
+      if (this.width !== 300 || this.height !== 250) {
+        toast.error("Banner dimensions should be 300x250 px");
+        return;
+      }
     }
     setFormData({ ...formData, thumbnail: file });
 
