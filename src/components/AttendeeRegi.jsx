@@ -46,6 +46,11 @@ const AttendeeRegi = () => {
     }));
   };
 
+
+  const handleBack = () => {
+    setActiveTab(activeTab - 1); // Move to the previous tab
+  };
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -95,6 +100,10 @@ const AttendeeRegi = () => {
     }
     if (!formData.firstName || formData.firstName == "") {
       toast.error("Enter your name");
+      return; // Prevent further execution
+    }
+    if (!formData.contact || formData.contact == "") {
+      toast.error("Enter your contact number");
       return; // Prevent further execution
     }
 
@@ -585,12 +594,20 @@ const AttendeeRegi = () => {
                   marginTop: "4rem",
                 }}
               >
+                  <Button  variant="contained"
+                  color="primary" sx={{
+                    background: "#0E436B",
+                    borderRadius: "40px",
+                    color: "white",
+                    marginTop: "2rem",
+                  }} onClick={handleBack}>Back</Button> {/* Back button */}
                 <Button
                   sx={{
                     background: "#0E436B",
                     borderRadius: "40px",
                     color: "white",
                     marginTop: "2rem",
+                    marginRight:"1rem"
                   }}
                   variant="contained"
                   color="primary"
@@ -598,7 +615,10 @@ const AttendeeRegi = () => {
                 >
                   Next
                 </Button>
+              
+
               </div>
+
             </div>
           </div>
         )}
