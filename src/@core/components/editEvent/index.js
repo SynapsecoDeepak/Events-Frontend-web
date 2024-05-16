@@ -614,7 +614,7 @@ console.log('logo previ',logoPreview)
                   <DatePicker
                     selected={startDate}
                     onChange={handleStartDateChange}
-                    dateFormat="dd/MM/yyyy"
+                    dateFormat="MM/dd/yyyy"
                     className={styles.input}
                   />
                 </div>
@@ -653,7 +653,7 @@ console.log('logo previ',logoPreview)
                   <DatePicker
                     selected={endDate}
                     onChange={handleEndDateChange}
-                    dateFormat="dd/MM/yyyy"
+                    dateFormat="MM/dd/yyyy"
                     className={styles.input}
                   />
                 </div>
