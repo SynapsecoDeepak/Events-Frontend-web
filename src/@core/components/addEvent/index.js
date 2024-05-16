@@ -220,8 +220,22 @@ if(!venueName || venueName == ''){
     setFormData({ ...formData, [prop]: event.target.value });
   };
 
+
+  const MAX_FILE_SIZE_MB = 10; // Maximum file size in MB
+
+// Function to check if the file size is within the limit
+const isValidFileSize = (file) => {
+  const fileSizeMB = file.size / (1024 * 1024); // Convert file size to MB
+  return fileSizeMB <= MAX_FILE_SIZE_MB;
+};
+
+
   const handleImageChange = (event) => {
     const file = event.target.files[0];
+    if (!isValidFileSize(file)) {
+      toast.error(`Image size should not exceed ${MAX_FILE_SIZE_MB} MB`);
+      return;
+    }
     setFormData({ ...formData, logo: file });
 
     // Generate preview URL for logo
@@ -236,6 +250,10 @@ if(!venueName || venueName == ''){
 
   const handleImageChange2 = (event) => {
     const file = event.target.files[0];
+    if (!isValidFileSize(file)) {
+      toast.error(`Image size should not exceed ${MAX_FILE_SIZE_MB} MB`);
+      return;
+    }
     setFormData({ ...formData, thumbnail: file });
 
     // Generate preview URL for thumbnail
