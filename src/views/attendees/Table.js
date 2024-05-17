@@ -49,7 +49,9 @@ const DashboardTable = () => {
   const currentData = dataToRender?.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(dataToRender?.length / itemsPerPage);
 
-
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
 
   const state_token = useSelector((state) => state.auth.user?.userData?.token);
@@ -151,11 +153,11 @@ const DashboardTable = () => {
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
-          {dataToRender == null &&(<Typography sx={{margin:'1rem 0rem',paddingLeft:"1rem"}}>Selected event does not have attendee list</Typography>)}
+          {currentData == null &&(<Typography sx={{margin:'1rem 0rem',paddingLeft:"1rem"}}>Selected event does not have attendee list</Typography>)}
 
           <TableBody>
-            {Array.isArray(dataToRender) &&
-              [...dataToRender].reverse().map((row) => (
+            {Array.isArray(currentData) &&
+              [...currentData].reverse().map((row) => (
                 <TableRow
                   hover
                   key={row.attendee_user?.name}

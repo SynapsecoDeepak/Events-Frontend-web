@@ -283,13 +283,12 @@ console.log('logo previ',logoPreview)
 // Function to check if the image size is exactly 5 MB
 const isValidImageSize = (file) => {
   const fileSizeMB = file.size / (1024 * 1024); // Convert file size to MB
-  return fileSizeMB === 5; // Return true if the file size is exactly 5 MB
+  return fileSizeMB <= 5; // Return true if the file size is less than or equal to 5 MB
 };
-
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
-    if (!isValidFileSize(file)) {
+    if (!isValidImageSize(file)) {
       toast.error(`Image size should not exceed ${MAX_FILE_SIZE_MB} MB`);
       return;
     }
@@ -317,7 +316,7 @@ const isValidImageSize = (file) => {
 
   const handleImageChange2 = (event) => {
     const file = event.target.files[0];
-    if (!isValidFileSize(file)) {
+    if (!isValidImageSize(file)) {
       toast.error(`Image size should not exceed ${MAX_FILE_SIZE_MB} MB`);
       return;
     }

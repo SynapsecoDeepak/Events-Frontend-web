@@ -223,29 +223,29 @@ if(!venueName || venueName == ''){
 
   const MAX_FILE_SIZE_MB = 5; // Maximum file size in MB
 
-// Function to check if the image size is exactly 5 MB
-const isValidImageSize = (file) => {
-  const fileSizeMB = file.size / (1024 * 1024); // Convert file size to MB
-  return fileSizeMB === 5; // Return true if the file size is exactly 5 MB
-};
+  const isValidImageSize = (file) => {
+    const fileSizeMB = file.size / (1024 * 1024); // Convert file size to MB
+    return fileSizeMB <= 5; // Return true if the file size is less than or equal to 5 MB
+  };
 
 
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
-    if (!isValidFileSize(file)) {
+    if (!isValidImageSize(file)) {
       toast.error(`Image size should not exceed ${MAX_FILE_SIZE_MB} MB`);
-      return;
+      return; // Return early if image size exceeds the limit
     }
 
-      // Ensure logo dimensions are 150x150 px
-  const image = new Image();
-  image.onload = function () {
-    if (this.width !== 150 || this.height !== 150) {
-      toast.error("Logo dimensions should be 150x150 px");
-      return;
-    }
-  }
+    const image = new Image();
+    image.onload = function () {
+      if (this.width !== 150 || this.height !== 150) {
+        toast.error("Logo dimensions should be 150x150 px");
+        return;
+      }
+    };
+  
+
 
 
     setFormData({ ...formData, logo: file });
@@ -262,11 +262,9 @@ const isValidImageSize = (file) => {
 
   const handleImageChange2 = (event) => {
     const file = event.target.files[0];
-    if (!isValidFileSize(file)) {
+    if (!isValidImageSize(file)) {
       toast.error(`Image size should not exceed ${MAX_FILE_SIZE_MB} MB`);
-      return;
     }
-
 
     const image = new Image();
     image.onload = function () {
@@ -274,7 +272,8 @@ const isValidImageSize = (file) => {
         toast.error("Banner dimensions should be 300x250 px");
         return;
       }
-    }
+    };
+
     setFormData({ ...formData, thumbnail: file });
 
     // Generate preview URL for thumbnail
