@@ -30,6 +30,7 @@ const RecentActivities = () => {
 
   console.log('rescent activ',recentActivities)
 
+
   
   // const formatTimestamp = (timestamp) => {
   //   const date = new Date(timestamp);
@@ -43,6 +44,16 @@ const RecentActivities = () => {
     // const formattedTime = `${date.getHours()}:${('0' + date.getMinutes()).slice(-2)}`;
     return `${formattedDate}`;
   };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); 
+    const day = (date.getDate() + 1).toString().padStart(2, '0'); 
+        // const day = date.getDate();
+    const year = date.getFullYear();
+    return `${month}/${day}/${year}`;
+  };
+
 
   return (
     <TableContainer style={{ height: 460, overflowY: 'auto' }}  component={Paper}>
@@ -64,7 +75,7 @@ const RecentActivities = () => {
                 <div className='borderAMPM'>
               {/* <span className='primary-dash-title'>{formatTimestamp(row?.created_on)}</span> */}
               <br/>
-               <span className='dashboard-title' style={{fontSize: '10px !important'}} >{formatTimestamp(row?.updated_on)}</span>
+               <span className='dashboard-title' style={{fontSize: '10px !important'}} >{formatDate(row?.updated_on)}</span>
                </div>
               </TableCell>
               <TableCell align='left' style={{width:'10%'}} className='sub-title'>{row?.activity_description}</TableCell>
