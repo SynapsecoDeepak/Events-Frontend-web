@@ -244,9 +244,6 @@ if(!venueName || venueName == ''){
         return;
       }
     };
-  
-
-
 
     setFormData({ ...formData, logo: file });
 
@@ -264,6 +261,7 @@ if(!venueName || venueName == ''){
     const file = event.target.files[0];
     if (!isValidImageSize(file)) {
       toast.error(`Image size should not exceed ${MAX_FILE_SIZE_MB} MB`);
+      return;
     }
 
     const image = new Image();
